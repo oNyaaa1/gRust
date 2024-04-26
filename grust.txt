@@ -1,0 +1,12 @@
+"grust"
+{
+	"base"		"base"
+	"title"		"gRust | Modded"
+	"category"	"other"
+	"maps"		""
+	"menusystem"	"1"
+
+	"settings"
+	{
+	}
+}

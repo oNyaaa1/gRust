@@ -1,4 +1,7 @@
 local frame = nil
+local lastwep = {}
+local class = ""
+local framen = nil
 local but = {}
 local right
 local inventory = inventory or {}
@@ -76,20 +79,22 @@ net.Receive(
     end
 )
 
-function GetInvItems()
-    return inventory.Test
-end
-
-local lastwep = {}
-local class = ""
 local inv = function()
     if IsValid(frame) then return end
     local pnl = {}
     local scrw, scrh = ScrW(), ScrH()
     frame = vgui.Create("DPanel")
     frame:SetSize(517, 415)
-    frame:SetPos(scrw * 0.35, scrh * 0.40)
+    frame:SetPos(scrw * 0.145, scrh * 0.40)
     frame.Paint = function(self, w, h)
+        surface.SetDrawColor(80, 76, 70, 121)
+        surface.DrawRect(0, 0, w, h)
+    end
+
+    framen = vgui.Create("DPanel")
+    framen:SetSize(517, 415)
+    framen:SetPos(frame:GetWide() * 1.45, scrh * 0.40)
+    framen.Paint = function(self, w, h)
         surface.SetDrawColor(80, 76, 70, 121)
         surface.DrawRect(0, 0, w, h)
     end
@@ -101,49 +106,23 @@ local inv = function()
     grid:SetColumns(6)
     grid:SetHorizontalMargin(2)
     grid:SetVerticalMargin(2)
-    --[[
-    grid:Receiver( "Rust_Droppable", function( self, panels, bDoDrop, Command, x, y )
-        if bDoDrop then
-            local mypnl = vgui.GetHoveredPanel()
-
-            for k, v in pairs( panels ) do
-                self:AddItem( v )
-                --if mypnl == self and panels[1] ~= mypnl then
-                --local item = {
-                --   name = v.Name,
-                --    model = v.Model,
-                --     class = v.Class,
-                -- }
-                --table.insert( inventory.Test, item )
-                --end
-            end
-        end
-    end )]]
-    for k, v in pairs(GetInvItems()) do
+    for k, v in pairs(inventory.Test) do
         local pnl = vgui.Create("DTileLayout")
         pnl:SetTall(105)
         grid:AddCell(pnl)
-        -- local btn = vgui.Create("DButton", pnl)
-        --btn:SetText("")
-        -- btn.ColumnNumber = k
-        --btn.Name = v.Name
-        --btn.Model = v.Mdl
-        -- btn.Class = v.WepClass
-        --btn.removed = false
-        -- btn:SetSize(pnl:GetWide(), pnl:GetTall())
-        --btn:Droppable("gDrop")
         local modelPanel = vgui.Create("DImageButton", pnl)
         modelPanel:SetSize(pnl:GetWide(), pnl:GetTall())
         modelPanel:SetImage(v.Mdl)
         modelPanel.DoClick = function()
-            print(GetSlot_Slots(tonumber(k)))
-            net.Start("inv_give")
-            net.WriteString(GetSlot_Slots(tonumber(k)))
-            net.SendToServer()
+            if v.WepClass ~= "none" then
+                net.Start("inv_give")
+                net.WriteString(GetSlot_Slots(tonumber(k)))
+                net.SendToServer()
+            end
         end
 
         modelPanel.DoRightClick = function()
-            if v.Name ~= "Wood" then
+            if v.WepClass ~= "none" then
                 local menu = DermaMenu()
                 for i = 1, 5 do
                     menu:AddOption(
@@ -160,22 +139,8 @@ local inv = function()
                                 net.WriteString(GetSlot_Slots(tonumber(i)))
                                 net.SendToServer()
                             end
-                            --for k1, v1 in pairs(Panel2[i].nClass) do
-                            --[[local modelPanel = vgui.Create("DModelPanel", Panel2[i])
-                        modelPanel.ColumnNumber = k
-                        modelPanel:SetSize(pnl:GetWide(), pnl:GetTall())
-                        modelPanel:SetModel(weapons.Get(v.WepClass).WorldModel)
-                        function modelPanel:LayoutEntity(Entity)
-                            return
-                        end
-
-                        local PrevMins, PrevMaxs = modelPanel.Entity:GetRenderBounds()
-                        modelPanel:SetCamPos(PrevMins:Distance(PrevMaxs) * Vector(0.50, 0.50, 0.15) + Vector(0, 0, 5))
-                        modelPanel:SetLookAt((PrevMaxs + PrevMins) / 2)]]
-                            --end
                         end
                     )
-                    --print(Panel2[i].nClass.slotx)
                 end
 
                 menu:AddOption("Close", function() end)
@@ -183,67 +148,12 @@ local inv = function()
             end
         end
 
-        --[[local modelPanel = vgui.Create("DModelPanel", pnl)
-        modelPanel:SetSize(pnl:GetWide(), pnl:GetTall())
-        modelPanel:SetModel(weapons.Get(v.WepClass).WorldModel)
-        function modelPanel:LayoutEntity(Entity)
-            return
-        end
-
-        local PrevMins, PrevMaxs = modelPanel.Entity:GetRenderBounds()
-        modelPanel:SetCamPos(PrevMins:Distance(PrevMaxs) * Vector(0.50, 0.50, 0.15) + Vector(0, 0, 5))
-        modelPanel:SetLookAt((PrevMaxs + PrevMins) / 2)
-        modelPanel.DoClick = function()
-            net.Start("inv_give")
-            net.WriteString(v.WepClass)
-            net.SendToServer()
-        end]]
         local DLabel = vgui.Create("DLabel", modelPanel)
         DLabel:SetPos(1, 80)
         DLabel:SetWrap(true)
         DLabel:SetText(v.Name .. " Amt: " .. v.Amount)
-        --[[modelPanel.DoRightClick = function()
-            local menu = DermaMenu()
-            for i = 1, 5 do
-                menu:AddOption(
-                    "Slot " .. i .. " " .. v.WepClass,
-                    function()
-                        SlotShutterSlot(tonumber(i), tostring(v.WepClass))
-                        Panel2[i]:Clear()
-                        --for k1, v1 in pairs(Panel2[i].nClass) do
-                        local modelPanel = vgui.Create("DModelPanel", Panel2[i])
-                        modelPanel.ColumnNumber = k
-                        modelPanel:SetSize(pnl:GetWide(), pnl:GetTall())
-                        modelPanel:SetModel(weapons.Get(v.WepClass).WorldModel)
-                        function modelPanel:LayoutEntity(Entity)
-                            return
-                        end
-
-                        local PrevMins, PrevMaxs = modelPanel.Entity:GetRenderBounds()
-                        modelPanel:SetCamPos(PrevMins:Distance(PrevMaxs) * Vector(0.50, 0.50, 0.15) + Vector(0, 0, 5))
-                        modelPanel:SetLookAt((PrevMaxs + PrevMins) / 2)
-                        --end
-                    end
-                )
-                --print(Panel2[i].nClass.slotx)
-            end
-
-            menu:AddOption("Close", function() end)
-            menu:Open()
-        end]]
     end
 end
-
-gameevent.Listen("entity_killed")
-hook.Add(
-    "entity_killed",
-    "entity_killed_example",
-    function(data)
-        for i = 1, 6 do
-            --Panel2[i]:Clear()
-        end
-    end
-)
 
 hook.Add(
     "OnSpawnMenuOpen",
@@ -260,7 +170,8 @@ hook.Add(
     "Context",
     function()
         gui.EnableScreenClicker(false)
-        frame:Remove()
+        if IsValid(frame) then frame:Remove() end
+        if IsValid(framen) then framen:Remove() end
     end
 )
 
@@ -302,10 +213,6 @@ hook.Add(
                 surface.DrawRect(0, 0, w, h)
             end
 
-            --     for k, v in pairs( inventory.Test ) do
-            --[[ 
-        grid:Receiver( "Rust_Droppable", Rememeber )]]
-            -- end
             Panel2[i] = vgui.Create("DPanel", frame)
             Panel2[i]:SetText("")
             Panel2[i]:SetSize(200, 200)
@@ -320,10 +227,9 @@ hook.Add(
                 Slotx = invw.SlotPos
             }
 
-            --grid:AddCell( Panel2[i] )
             invw.Storage = invw.Storage + 1
             if invw.Storage <= 5 then invw.SlotPos = invw.SlotPos + 120 end
-            DoOne(GetInvItems())
+            DoOne(inventory.Test)
             InitPostEntity = true
         end
     end
@@ -342,4 +248,3 @@ hook.Add(
         end
     end
 )
---hook.Add("PlayerButtonDown", "PlayerButtonDownWikiExample", function(ply, button) if button == 27 then ply:ShowInventory() end end)

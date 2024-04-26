@@ -42,6 +42,18 @@ if SERVER then
     function ENT:Think()
     end
 
+    function ENT:RecoveryTime(pos)
+        timer.Simple(
+            3, --60 * math.random(28,32),
+            function()
+                local ent = ents.Create("sent_rocks")
+                ent:SetPos(pos)
+                ent:Spawn()
+                ent:Activate()
+            end
+        )
+    end
+
     function ENT:OnTakeDamage(dmg)
         local ply = dmg:GetAttacker()
         local wep = ply:GetActiveWeapon()
@@ -53,6 +65,18 @@ if SERVER then
             if self:GetSkin() == 1 then
                 ply.Counter_Metal = math.random(5, 9)
                 ply:SetEnoughMetal(ply.Counter_Metal)
+                AddToInventory(
+                    ply,
+                    {
+                        Name = "Metal Ore",
+                        WepClass = "none",
+                        Mdl = "materials/items/resources/metal_ore.png",
+                        Ammo_New = "none",
+                        Amount = ply:GetEnoughMetal(),
+                    },
+                    true
+                )
+
                 net.Start("Sent_Vood")
                 net.WriteBool(true)
                 net.WriteString("Metal")
@@ -63,6 +87,18 @@ if SERVER then
             elseif self:GetSkin() == 2 then
                 ply.Counter_Sulfur = math.random(5, 9)
                 ply:SetEnoughSulfur(ply.Counter_Sulfur)
+                AddToInventory(
+                    ply,
+                    {
+                        Name = "Sulfur Ore",
+                        WepClass = "none",
+                        Mdl = "materials/items/resources/sulfur_ore.png",
+                        Ammo_New = "none",
+                        Amount = ply:GetEnoughSulfur(),
+                    },
+                    true
+                )
+
                 net.Start("Sent_Vood")
                 net.WriteBool(true)
                 net.WriteString("Sulfur")
@@ -73,6 +109,18 @@ if SERVER then
             elseif self:GetSkin() == 3 then
                 ply.Counter_Stone = math.random(5, 9)
                 ply:SetEnoughStone(ply.Counter_Stone)
+                AddToInventory(
+                    ply,
+                    {
+                        Name = "Stone",
+                        WepClass = "none",
+                        Mdl = "materials/items/resources/stone.png",
+                        Ammo_New = "none",
+                        Amount = ply:GetEnoughStone(),
+                    },
+                    true
+                )
+
                 net.Start("Sent_Vood")
                 net.WriteBool(true)
                 net.WriteString("Stone")
@@ -81,46 +129,18 @@ if SERVER then
                 ply.ResetTime = 0
                 ply.NotHitting = true
             end
+
             ply:EmitSound("tools/rock_strike_1.mp3")
             self.AttacksRock = self.AttacksRock + 10
-            if self.AttacksRock >= 100 then
-                self.Entity:SetModel("models/environment/ores/ore_node_stage2.mdl")
-                
+            if self.AttacksRock >= 100 then self.Entity:SetModel("models/environment/ores/ore_node_stage2.mdl") end
+            if self.AttacksRock >= 150 then self.Entity:SetModel("models/environment/ores/ore_node_stage3.mdl") end
+            if self.AttacksRock >= 200 then
+                self:RecoveryTime(self:GetPos())
+                self:Remove()
             end
-
-            if self.AttacksRock >= 150 then
-                self.Entity:SetModel("models/environment/ores/ore_node_stage3.mdl")
-            end
-
-            if self.AttacksRock >= 200 then self:Remove() end
         end
     end
 
-    --[[local ply = dmg:GetAttacker()
-		local inflictor = dmg:GetInflictor()
-		if type(inflictor) == "Entity" then return end
-		self.Ent_Health = self.Ent_Health - dmg:GetDamage()
-		
-		ply.Rnd_Amt = dmg:GetDamage()
-		ply.Rnd_Amts = dmg:GetDamage()
-		ply.Sulfur_Ore = math.random(1,2)
-		ply.Metal_Ore = math.random(1,2)
-		if ply.Sulfur_Ore == 2 and self:GetMaterial() == "models/blacksnow/rust_rock" then
-		if tonumber(ply:GetPData("ge_easter_egg_sulfur",0)) >= 1000 then ply:ChatPrint("Max amount reached") return end
-		ply:SetPData("ge_easter_egg_sulfur", ply:GetPData("ge_easter_egg_sulfur",0) + ply.Rnd_Amts)
-		ply:SetNWInt("ge_easter_egg_sulfur", ply:GetPData("ge_easter_egg_sulfur",0))
-		ply:ChatPrint(Format("Gained %s Sulfur, Your amount is %s", ply.Rnd_Amts,ply:GetPData("ge_easter_egg_sulfur",0)))
-		end
-		if ply.Metal_Ore == 2 and self:GetMaterial() == "models/blacksnow/rock_ore" then
-		if tonumber(ply:GetPData("ge_easter_egg_metalore",0)) >= 1000 then ply:ChatPrint("Max amount reached") return end
-		ply:SetPData("ge_easter_egg_metalore", ply:GetPData("ge_easter_egg_metalore",0) + ply.Rnd_Amts)
-		ply:SetNWInt("ge_easter_egg_metalore", ply:GetPData("ge_easter_egg_metalore",0))
-		ply:ChatPrint(Format("Gained %s Metal ore, Your amount is %s", ply.Rnd_Amts,ply:GetPData("ge_easter_egg_metalore",0)))
-		end
-		if tonumber(ply:GetPData("ge_easter_egg_stone",0)) >= 1000 then ply:ChatPrint("Max amount reached") return end
-		ply:SetPData("ge_easter_egg_stone", ply:GetPData("ge_easter_egg_stone",0) + ply.Rnd_Amt)
-		ply:SetNWInt("ge_easter_egg_stone", ply:GetPData("ge_easter_egg_stone",0))
-		ply:ChatPrint(Format("Gained %s Stone, Your amount is %s", ply.Rnd_Amt,ply:GetPData("ge_easter_egg_stone",0)))]]
     function ENT:Use(btn, ply)
     end
 

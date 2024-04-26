@@ -13,7 +13,7 @@ function AddToInventory(ply, item, alter)
     --table.insert( ply.Inv, item )
     if item.Name == "" then return end
     --if table.HasValue( ply.Inventory, item.Name ) then
-    ply:Give(item.WepClass)
+    if item.WepClass ~= "none" then ply:Give(item.WepClass) end
     if item.Ammo_New ~= "none" then ply:GiveAmmo(100, item.Ammo_New) end
     --
     ModifyInventory(ply, item, item.Amount)
@@ -100,7 +100,11 @@ function ModifyInventory(ply, item, amount)
         table.insert(ply.Inventory, item)
     else
         for k, v in pairs(ply.Inventory) do
-            if item.Name == v.Name then v.Amount = amount end
+            if v.Name == "Scrap" then
+                v.Amount = v.Amount + amount
+            elseif item.Name == v.Name then
+                v.Amount = amount
+            end
         end
     end
 end
