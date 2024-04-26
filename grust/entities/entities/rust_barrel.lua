@@ -62,7 +62,7 @@ function ENT:RecoveryTime(pos)
 	if CurTime() <= self.Time then return end
 	self.Time = CurTime() + 5
 	timer.Simple(
-		3, --60 * math.random(28,32),
+		60 * math.random(28,32),
 		function()
 			local ent = ents.Create("rust_barrel")
 			ent:SetPos(pos)

@@ -463,6 +463,7 @@ Crafting.Table = {
     {
         Textation = "Hammer",
         func = function(txt)
+            print(txt)
             net.Start("gRust_Queue_Crafting")
             net.WriteString(txt)
             net.SendToServer()
@@ -501,7 +502,9 @@ local Panelnb = {}
 function AddItemPanel_2(txt, Craft, CancelCraft, where, img, num, newpnl, timers)
     local pass = false
     for k, v in pairs(Crafting.Table) do
-        if v.Where == where then pass = true end
+        if v.Where == where then
+            pass = true
+        end
     end
 
     if pass == false then return end
@@ -517,7 +520,7 @@ function AddItemPanel_2(txt, Craft, CancelCraft, where, img, num, newpnl, timers
     --Paneln:SetSize(150, 100)
     Panelnb[num].DoClick = function()
         --AddQueueItem("items/tools/building_plan.png", 10, 6, 1)
-        --C//raft(Panelnb[num].Text)
+        Craft(Panelnb[num].Text)
         Crafting.Panel2b = vgui.Create("XeninUI.Panel", newpnl)
         Crafting.Panel2b:Dock(LEFT)
         Crafting.Panel2b:SetSize(150, newpnl:GetTall())
