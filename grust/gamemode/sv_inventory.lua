@@ -90,6 +90,7 @@ function RemoveFromInventory(ply, item)
 end
 
 function ModifyInventory(ply, item, amount)
+    amount = amount or 1
     local alter = false
     for k, v in pairs(ply.Inventory) do
         if item.Name == v.Name then alter = true end
