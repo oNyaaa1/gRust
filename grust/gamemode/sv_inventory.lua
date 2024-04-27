@@ -30,6 +30,16 @@ function AddToInventory(ply, item, alter)
     --end
 end
 
+hook.Remove("PlayerButtonDown", "KeyDown_Minimap")
+hook.Add(
+    "PlayerInitialSpawn",
+    "MiniMap",
+    function(ply)
+        umsg.Start("Minimap", ply)
+        umsg.End()
+    end
+)
+
 util.AddNetworkString("grust_SendItOVa")
 function InitializeInventory(ply)
     ply.Inventory = {}
