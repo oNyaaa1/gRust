@@ -77,7 +77,9 @@ hook.Add(
             local ent = ply:GetEyeTrace().Entity
             if ent.StackWood == nil then ent.StackWood = 0 end
             if ent.StackWood >= 100 and ent.StackWood >= 100 then timer.Simple(60, function() ent.StackWood = 0 end) end
-            if IsValid(ply) and IsValid(wep) and IsValid(ent) and string.find(wep:GetClass(), "hatchet") and not string.find(ply:GetEyeTrace().Entity:GetClass(), "sent_") and ent.StackWood <= 100 then
+            if IsValid(ply) and IsValid(wep) and IsValid(ent) and string.find(wep:GetClass(), "hatchet") and ent.StackWood <= 100 then
+                local str, str2 = string.find(ply:GetEyeTrace().Entity:GetClass(), "sent_"), string.find(ply:GetEyeTrace().Entity:GetClass(), "rust_")
+                if str or str2 then return end
                 ent.StackWood = ent.StackWood + math.random(1, 5)
                 ply.Counter_Vood = math.random(5, 9)
                 ply:SetEnoughVood(ply.Counter_Vood)
@@ -126,7 +128,7 @@ local function Translation(txt)
         return         {
             name = "Hammer",
             Class = "hands_hammer",
-            Mdl = "items/tools/building_plan.png",
+            Mdl = "items/tools/hammer.png",
             ammo = "none",
             timer = 20,
         }
@@ -136,7 +138,7 @@ local function Translation(txt)
         return         {
             name = "Building Plan",
             Class = "hands_builder",
-            Mdl = "items/tools/hammer.png",
+            Mdl = "items/tools/building_plan.png",
             ammo = "none",
             timer = 25,
         }
@@ -173,19 +175,11 @@ net.Receive(
                         WepClass = trans.Class,
                         Mdl = trans.Mdl,
                         Ammo_New = trans.ammo,
+                        Amount = 1,
                     }
                 )
             end
         )
-        --print(trans.name, trans.mdl, trans.Class, trans.ammo, ply)
-        --inventory.AddItem(trans.name, trans.Mdl, trans.Class, trans.ammo, ply)
-        --for k, v in pairs( GetInvItems( ply ) ) do
-        --ply:Give(trans.Class)
-        -- if v.ammo ~= "none" then
-        --ply:GiveAmmo(100, trans.ammo)
-        -- end
-        --end
-        -- end )
     end
 )
 

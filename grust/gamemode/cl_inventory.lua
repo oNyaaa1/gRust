@@ -115,6 +115,7 @@ local inv = function()
         modelPanel:SetImage(v.Mdl)
         modelPanel.DoClick = function()
             if v.WepClass ~= "none" then
+                if GetSlot_Slots(tonumber(k)) == nil then return end
                 net.Start("inv_give")
                 net.WriteString(GetSlot_Slots(tonumber(k)))
                 net.SendToServer()
@@ -135,9 +136,12 @@ local inv = function()
                             modelPanel:SetImage(v.Mdl)
                             modelPanel.ColumnNumber = k
                             modelPanel.DoClick = function()
-                                net.Start("inv_give")
-                                net.WriteString(GetSlot_Slots(tonumber(i)))
-                                net.SendToServer()
+                                if v.WepClass ~= "none" then
+                                    if GetSlot_Slots(tonumber(k)) == nil then return end
+                                    net.Start("inv_give")
+                                    net.WriteString(GetSlot_Slots(tonumber(i)))
+                                    net.SendToServer()
+                                end
                             end
                         end
                     )

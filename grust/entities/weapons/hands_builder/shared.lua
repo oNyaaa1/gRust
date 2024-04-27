@@ -13,7 +13,7 @@ SWEP.Spawnable = true
 SWEP.AdminOnly = false
 SWEP.Category = "gRust"
 SWEP.UseHands = true
-SWEP.ViewModel = "models/weapons/darky_m/rust/c_hammer.mdl"
+SWEP.ViewModel = ""
 SWEP.WorldModel = "models/weapons/darky_m/rust/w_hammer.mdl"
 SWEP.Weight = 5
 SWEP.AutoSwitchTo = false
@@ -100,45 +100,10 @@ function SWEP:PrimaryAttack()
     if SERVER then
         local ply = self:GetOwner()
         if not IsValid(ply) then return end
-        //if not ply:HasEnoughVood(25) then return end
+        if not ply:HasEnoughVood(25) then return end
         if SERVER then
             local Pos, Angl
             local Position = math.Round(360 - ply:GetAngles().y % 360)
-            --[[if Position >= 1 and Position <= 40 or Position >= 320 and Position <= 360 then
-                Angl = 0
-            elseif Position > 50 and Position < 120 then
-                Angl = 0
-            elseif Position > 146 and Position < 217 then
-                Angl = 0
-            elseif Position > 234 and Position < 310 then
-                Angl = 0
-            end]]
-            --end
-            --Ture(ply)
-            --[[ if ModelFN == "sent_wall" then
-                local twig = ents.Create(ModelFN)
-                twig:SetModel(ply.ReadModel)
-                twig:SetPos(ply.ReadVec)
-                twig:SetAngles(Angle(0, ply.ReadAng, 0))
-                twig:Spawn()
-                twig:Activate()
-                twig.PropOwned = ply
-                constraint.Weld(twig, Entity(0), 0, 0, 0, false, false)
-                for i, jpg in pairs(ents.FindInSphere(ply.ReadVec, 0.1)) do
-                    if twig:GetPos() == jpg then v:Remove() end
-                end
-
-                local ent = ents.Create("sent_pillar")
-                ent:Spawn()
-                ent:Activate()
-                ent:SetPos(ply.ReadVec + twig:GetRight() * 90)
-                constraint.Weld(twig, ent, 0, 0, 0, true, true)
-                local ent = ents.Create("sent_pillar")
-                ent:Spawn()
-                ent:Activate()
-                ent:SetPos(ply.ReadVec + twig:GetRight() * -90)
-                constraint.Weld(twig, ent, 0, 0, 0, true, true)
-            else]]
             local twig = ents.Create(ModelFN)
             twig:SetModel(ply.ReadModel)
             twig:SetPos(ply.ReadVec)

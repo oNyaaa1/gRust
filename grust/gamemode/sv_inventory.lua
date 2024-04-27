@@ -264,6 +264,7 @@ local function BackwardsEnums(enumname)
     return backenums
 end
 
+--[[
 hook.Add(
     "EntityTakeDamage",
     "EntityDamageExample",
@@ -290,8 +291,7 @@ hook.Add(
             end
         end
     end
-)
-
+)]]
 --inventory.AddItem( "Rock", "models/weapons/darky_m/rust/c_rock2.mdl", "rust_rock", "none", ply )
 --[[ for k, v in pairs( GetInvItems( ply ) ) do
         ply:Give( v.class )
