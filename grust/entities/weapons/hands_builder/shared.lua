@@ -146,8 +146,8 @@ if CLIENT then
     end
 
     local function IsStandingOn(ent, what)
-        for k, v in pairs(ents.FindInSphere(ent:GetPos(), 5)) do
-            if v:GetClass() == what then return v end --print( v )
+        for k, v in pairs(ents.FindInSphere(ent:GetPos(),1000)) do
+            if v:GetPos():Distance(ent:GetPos()) <= 50 and v:GetClass() == what then return v end --print( v )
         end
         return nil
     end
@@ -193,26 +193,28 @@ if CLIENT then
                 -- print(entOnGround:GetClass() )
                 local tr = util.TraceLine(
                     {
-                        start = own:EyePos() + EyeAngles():Forward() * 100,
+                        start = own:EyePos() + EyeAngles():Forward() * 180,
                         endpos = own:EyePos() + EyeAngles():Forward() * 200,
                     }
                 )
 
-                if entOnGround ~= NULL and entOnGround:GetClass() ~= "sent_foundation" then
-                    if EyeAngles():Up().z <= 0.98 then
-                        Pos = tr.HitPos * tr.HitPos:Angle():Up().z * -50
+                --end
+                local StandingOnFD = IsStandingOn(own, "sent_foundation")
+                if not IsValid(StandingOnFD) then
+                    if entOnGround ~= NULL and entOnGround:GetClass() ~= "sent_foundation" then
+                        if EyeAngles():Up().z <= 0.98 then
+                            Pos = tr.HitPos * tr.HitPos:Angle():Up().z * -50
+                            Angl = own:GetAngles()
+                            return Pos, Angl
+                        end
+
+                        Pos = tr.HitPos
                         Angl = own:GetAngles()
                         return Pos, Angl
                     end
-
-                    Pos = tr.HitPos
-                    Angl = own:GetAngles()
-                    return Pos, Angl
+                    return
                 end
 
-                --end
-                local StandingOnFD = IsStandingOn(own, "sent_foundation")
-                if not IsValid(StandingOnFD) then return end
                 local Position = math.Round(360 - own:GetAngles().y % 360)
                 if not IsValid(entOnGround) then return end
                 local owne = own:GetEyeTrace()

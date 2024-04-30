@@ -129,6 +129,7 @@ local function Translation(txt)
             name = "Hammer",
             Class = "hands_hammer",
             Mdl = "items/tools/hammer.png",
+            amount = 50,
             ammo = "none",
             timer = 20,
         }
@@ -140,6 +141,7 @@ local function Translation(txt)
             Class = "hands_builder",
             Mdl = "items/tools/building_plan.png",
             ammo = "none",
+            amount = 40,
             timer = 25,
         }
     end
@@ -162,9 +164,12 @@ net.Receive(
     function(len, ply)
         local rs = net.ReadString()
         local trans = Translation(rs)
+        if not ply:HasEnoughVood(trans.amount) then return end
+        ply:DeductVood( trans.amount )
         net.Start("gRust_Queue_Crafting_Timer")
         net.WriteFloat(trans.timer)
         net.Send(ply)
+        
         timer.Simple(
             trans.timer,
             function()

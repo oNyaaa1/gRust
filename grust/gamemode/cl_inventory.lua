@@ -239,15 +239,57 @@ hook.Add(
     end
 )
 
+local tone_butn = 0
+local cd = 0
 hook.Add(
     "PlayerButtonDown",
     "Buttondown",
     function(ply, button)
         if button == 27 then inv() end
-        local but = input.GetKeyName(button)
-        if GetSlot_Slots(tonumber(but)) then
+        local butg = input.GetKeyName(button)
+        if butg == "MWHEELUP" and cd <= CurTime() then
+            if tone_butn < 0 then tone_butn = 6 end
+            if tone_butn > 6 then tone_butn = 0 end
+            tone_butn = tone_butn + 1
+            if GetSlot_Slots(tonumber(tone_butn)) == nil then
+                net.Start("inv_give")
+                net.WriteString(GetSlot_Slots(1))
+                net.SendToServer()
+                return
+            end
+
+            if GetSlot_Slots(tonumber(tone_butn)) ~= nil then
+                net.Start("inv_give")
+                net.WriteString(GetSlot_Slots(tonumber(tone_butn)))
+                net.SendToServer()
+            end
+
+            cd = CurTime() + 0.1
+        end
+
+        if butg == "MWHEELDOWN" and cd <= CurTime() then
+            if tone_butn < 0 then tone_butn = 6 end
+            if tone_butn > 6 then tone_butn = 0 end
+            tone_butn = tone_butn - 1
+            if GetSlot_Slots(tonumber(tone_butn)) == nil then
+                net.Start("inv_give")
+                net.WriteString(GetSlot_Slots(3))
+                net.SendToServer()
+                return
+            end
+
+            if GetSlot_Slots(tonumber(tone_butn)) ~= nil then
+                net.Start("inv_give")
+                net.WriteString(GetSlot_Slots(tonumber(tone_butn)))
+                net.SendToServer()
+            end
+
+            cd = CurTime() + 0.1
+        end
+
+        if GetSlot_Slots(tonumber(butg)) then
             net.Start("inv_give")
-            net.WriteString(GetSlot_Slots(tonumber(but)))
+            net.WriteString(GetSlot_Slots(tonumber(butg)))
             net.SendToServer()
         end
     end
