@@ -119,7 +119,7 @@ function SWEP:PrimaryAttack()
             ply:EmitSound("building/hammer_saw_1.wav")
             -- end
             ply:DeductVood(25)
-            ply:EmitSound("zohart/building/hammer-saw-1.wav")
+            //ply:EmitSound("zohart/building/hammer-saw-1.wav")
         end
     end
 

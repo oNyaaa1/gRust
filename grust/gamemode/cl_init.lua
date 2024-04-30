@@ -485,7 +485,7 @@ Crafting.Table = {
         need = {
             txt = "Wood",
             amt = 50,
-            yours = tostring(LocalPlayer():GetNWFloat("wood", 0)),
+            yours = IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
         },
         timers = 20,
         img = "items/tools/hammer.png",
@@ -504,7 +504,7 @@ Crafting.Table = {
         need = {
             txt = "Wood",
             amt = 40,
-            yours = tostring(LocalPlayer():GetNWFloat("wood", 0)),
+            yours = IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
         },
         timers = 25,
         img = "items/tools/building_plan.png",
@@ -569,10 +569,11 @@ function AddItemPanel_2(txt, Craft, CancelCraft, where, img, num, newpnl, timers
         local AppList = vgui.Create("DListView", Crafting.Panel2bcc)
         AppList:Dock(FILL)
         AppList:SetMultiSelect(false)
-        AppList:AddColumn("Amount")
+        AppList:AddColumn("Need")
         AppList:AddColumn("Item Type")
-        AppList:AddColumn("Have")
-        AppList:AddLine(inf, amt, your_amt)
+        AppList:AddColumn("Your Wood/Amount")
+        AppList:AddColumn("Your Amount")
+        AppList:AddLine(amt, inf, your_amt .. "/" .. amt,your_amt)
         AppList.OnRowSelected = function(lst, index, pnl) print("Selected " .. pnl:GetColumnText(1) .. " ( " .. pnl:GetColumnText(2) .. " ) at index " .. index) end
         Crafting.Panel2bcn = vgui.Create("XeninUI.Panel", rightpnl)
         Crafting.Panel2bcn:Dock(BOTTOM)
@@ -615,38 +616,6 @@ function AddItemPanel_2(txt, Craft, CancelCraft, where, img, num, newpnl, timers
                 Timer = timers,
             }
         end
-        --Paneln_Craft.Paint = function(s, w, h)
-        --Panelnb[num].Timer = timers
-        --draw.RoundedBox(0, 0, 0, w, h - 10, Color(100, 100, 100, 255))
-        -- d-raw.DrawText(txt .. " Timeleft: " .. math.Round(CurTime() - Panelnb[num].Timer), "Default", Panelnb[num]:GetWide() * 0.05, 70, Color(255, 255, 255), TEXT_ALIGN_LEFT)
-        -- if math.Round(CurTime() - Panelnb[num].Timer) >= 0 then Panelnb[num]:Remove() end
-        --end
-        --rightpnl
-        --AddQueueItem("items/tools/building_plan.png", 10, 6, 1)
-        --Craft(Panelnb[num].Text)
-        --[[Crafting.Panel2b = vgui.Create("XeninUI.Panel", newpnl)
-        Crafting.Panel2b:Dock(LEFT)
-        Crafting.Panel2b:SetSize(150, newpnl:GetTall())
-        Crafting.Panel2bc = vgui.Create("XeninUI.Panel", Crafting.Panel2b)
-        Crafting.Panel2bc:SetSize(150, 150)
-        Crafting.Panel2bc:SetSize(150, newpnl:GetTall())
-        local Paneln_Craft = vgui.Create("DImageButton", Crafting.Panel2bc)
-        Paneln_Craft:SetImage(img)
-        Paneln_Craft:SetPos(0, 0)
-        Paneln_Craft:SetSize(150, Crafting.Panel2bc:GetTall() - 10)
-        Paneln_Craft.Paint = function(s, w, h)
-            Panelnb[num].Timer = timers
-            draw.RoundedBox(0, 0, 0, w, h - 10, Color(100, 100, 100, 100))
-            draw.DrawText(txt .. " Timeleft: " .. math.Round(CurTime() - Panelnb[num].Timer), "Default", Panelnb[num]:GetWide() * 0.05, 70, Color(255, 255, 255), TEXT_ALIGN_LEFT)
-            if math.Round(CurTime() - Panelnb[num].Timer) >= 0 then Panelnb[num]:Remove() end
-        end
-
-        Paneln_Crafttb[num] = {
-            pnl = Paneln_Craft,
-            Image = img,
-            Text = txt,
-            Timer = timers,
-        }]]
     end
 
     Panelnb[num].DoRightClick = function() CancelCraft(Panelnb[num].Text) end
