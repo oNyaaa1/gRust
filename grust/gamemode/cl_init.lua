@@ -141,25 +141,19 @@ function AZN_RadialMenu.utils.cacheArc(x0, y0, r, start_angle, end_angle, thickn
         local inner_yt = y0 + yt0 * innerRadius
         local outer_xt = x0 + xt0 * r
         local outer_yt = y0 + yt0 * r
-        insert(
-            inner,
-            {
-                x = inner_xt,
-                y = inner_yt,
-                u = (inner_xt - x0) / r + 0.5,
-                v = (inner_yt - y0) / r + 0.5
-            }
-        )
+        insert(inner, {
+            x = inner_xt,
+            y = inner_yt,
+            u = (inner_xt - x0) / r + 0.5,
+            v = (inner_yt - y0) / r + 0.5
+        })
 
-        insert(
-            outer,
-            {
-                x = outer_xt,
-                y = outer_yt,
-                u = (outer_xt - x0) / r + 0.5,
-                v = (outer_yt - y0) / r + 0.5
-            }
-        )
+        insert(outer, {
+            x = outer_xt,
+            y = outer_yt,
+            u = (outer_xt - x0) / r + 0.5,
+            v = (outer_yt - y0) / r + 0.5
+        })
     end
 
     triangles = AZN_RadialMenu.utils.math.triangulate(inner, outer)
@@ -215,84 +209,33 @@ for i = 1, #arcs2 do
     insert(centers2, {p.x, p.y})
 end
 
-surface.CreateFont(
-    "RadialMenu_Big",
-    {
-        font = "Roboto Condensed Light",
-        size = 42
-    }
-)
+surface.CreateFont("RadialMenu_Big", {
+    font = "Roboto Condensed Light",
+    size = 42
+})
 
-surface.CreateFont(
-    "RadialMenu_Normal",
-    {
-        font = "Roboto Condensed Light",
-        size = 28
-    }
-)
+surface.CreateFont("RadialMenu_Normal", {
+    font = "Roboto Condensed Light",
+    size = 28
+})
 
 local fontHeight = 14
 local animStart = SysTime()
 local animTime = 0.25
 local mouseEnabled
 local showMenu = false
+local foundation = Material("icons/build/foundation.png", "noclamp smooth")
+local wall = Material("icons/build/wall.png", "noclamp smooth")
+local ceiling = Material("icons/build/roof.png", "noclamp smooth")
+local doorway = Material("icons/build/doorframe.png", "noclamp smooth")
+local door = Material("icons/open_door.png", "noclamp smooth")
 concommand.Add("+azrm_showmenu", function() showMenu = true end)
 concommand.Add("-azrm_showmenu", function() showMenu = false end)
-hook.Add(
-    "HUDPaint",
-    "AZRM::Render2D",
-    function()
-        if not LocalPlayer():Alive() then return end
-        local wep = LocalPlayer():GetActiveWeapon()
-        if IsValid(wep) then
-            if wep:GetClass() == "hands_hammer" then
-                if showMenu then
-                    if not mouseEnabled then
-                        gui.EnableScreenClicker(true)
-                        mouseEnabled = true
-                    end
-
-                    noTexture()
-                    for i = 1, #arcs2 do
-                        local withinPoly = AZN_RadialMenu.utils.math.inPolygon(arcs[i], gui.MouseX(), gui.MouseY())
-                        if withinPoly and input.IsMouseDown(MOUSE_LEFT) then
-                            Map.Str2 = AZN_RadialMenu.emotes2[i]
-                            net.Start("gRust_ServerModel_new")
-                            net.WriteString(AZN_RadialMenu.emotes2[i])
-                            net.SendToServer()
-                            showMenu = false
-                            return
-                        end
-
-                        if withinPoly then
-                            setDrawColor(AZN_RadialMenu.utils.math.easedLerpColor((SysTime() - animStart) / animTime, Color(56, 58, 64, 200), Color(103, 112, 218, 200)))
-                            drawText(AZN_RadialMenu.emotes2[i], "RadialMenu_Big", ScrW() / 2, ScrH() / 2 - 21, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
-                        else
-                            setDrawColor(56, 58, 64, 200)
-                        end
-
-                        AZN_RadialMenu.utils.drawArc(arcs2[i])
-                    end
-
-                    setDrawColor(56, 58, 64, 200)
-                    AZN_RadialMenu.utils.drawArc(innerCircle2)
-                    --drawText( "Selection", "RadialMenu_Big", ScrW() / 2, ScrH() / 2 - 21, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER )
-                    for i = 1, #centers2 do
-                        if i > 1 then
-                            drawText(tostring(AZN_RadialMenu.emotes2[i]), "RadialMenu_Normal", centers2[i][1], centers2[i][2] - fontHeight, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
-                        else
-                            drawText(tostring(AZN_RadialMenu.emotes2[i]), "RadialMenu_Normal", centers2[i][1], centers2[i][2] - fontHeight, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
-                        end
-                    end
-                else
-                    if mouseEnabled then
-                        gui.EnableScreenClicker(false)
-                        mouseEnabled = false
-                    end
-                end
-                return
-            end
-
+hook.Add("HUDPaint", "AZRM::Render2D", function()
+    if not LocalPlayer():Alive() then return end
+    local wep = LocalPlayer():GetActiveWeapon()
+    if IsValid(wep) then
+        if wep:GetClass() == "hands_hammer" then
             if showMenu then
                 if not mouseEnabled then
                     gui.EnableScreenClicker(true)
@@ -300,35 +243,35 @@ hook.Add(
                 end
 
                 noTexture()
-                for i = 1, #arcs do
+                for i = 1, #arcs2 do
                     local withinPoly = AZN_RadialMenu.utils.math.inPolygon(arcs[i], gui.MouseX(), gui.MouseY())
                     if withinPoly and input.IsMouseDown(MOUSE_LEFT) then
-                        Map.Str = AZN_RadialMenu.emotes[i]
-                        net.Start("gRust_ServerModel")
-                        net.WriteString(AZN_RadialMenu.emotes[i])
+                        Map.Str2 = AZN_RadialMenu.emotes2[i]
+                        net.Start("gRust_ServerModel_new")
+                        net.WriteString(AZN_RadialMenu.emotes2[i])
                         net.SendToServer()
                         showMenu = false
                         return
                     end
 
                     if withinPoly then
-                        setDrawColor(AZN_RadialMenu.utils.math.easedLerpColor((SysTime() - animStart) / animTime, Color(56, 58, 64, 200), Color(103, 112, 218, 200)))
-                        drawText(AZN_RadialMenu.emotes[i], "RadialMenu_Big", ScrW() / 2, ScrH() / 2 - 21, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
+                        setDrawColor(AZN_RadialMenu.utils.math.easedLerpColor((SysTime() - animStart) / animTime, Color(255, 255, 255, 100), Color(103, 112, 218, 200)))
+                        drawText(AZN_RadialMenu.emotes2[i], "RadialMenu_Big", ScrW() / 2, ScrH() / 2 - 21, Color(255, 255, 255, 100), TEXT_ALIGN_CENTER)
                     else
-                        setDrawColor(56, 58, 64, 200)
+                        setDrawColor(255, 255, 255, 100)
                     end
 
-                    AZN_RadialMenu.utils.drawArc(arcs[i])
+                    AZN_RadialMenu.utils.drawArc(arcs2[i])
                 end
 
-                setDrawColor(56, 58, 64, 200)
-                AZN_RadialMenu.utils.drawArc(innerCircle)
-                --drawText( "Selection", "RadialMenu_Big", ScrW() / 2, ScrH() / 2 - 21, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER )
-                for i = 1, #centers do
+                setDrawColor(255, 255, 255, 100)
+                AZN_RadialMenu.utils.drawArc(innerCircle2)
+                -- drawText( "Selection", "RadialMenu_Big", ScrW() / 2, ScrH() / 2 - 21, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER )
+                for i = 1, #centers2 do
                     if i > 1 then
-                        drawText(tostring(scripted_ents.Get(AZN_RadialMenu.emotes[i]).PrintName), "RadialMenu_Normal", centers[i][1], centers[i][2] - fontHeight, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
+                        drawText(tostring(AZN_RadialMenu.emotes2[i]), "RadialMenu_Normal", centers2[i][1], centers2[i][2] - fontHeight, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
                     else
-                        drawText(tostring(scripted_ents.Get(AZN_RadialMenu.emotes[i]).PrintName), "RadialMenu_Normal", centers[i][1], centers[i][2] - fontHeight, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
+                        drawText(tostring(AZN_RadialMenu.emotes2[i]), "RadialMenu_Normal", centers2[i][1], centers2[i][2] - fontHeight, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
                     end
                 end
             else
@@ -337,18 +280,111 @@ hook.Add(
                     mouseEnabled = false
                 end
             end
+            return
+        end
+
+        if showMenu then
+            if not mouseEnabled then
+                gui.EnableScreenClicker(true)
+                mouseEnabled = true
+            end
+
+            noTexture()
+            for i = 1, #arcs do
+                local withinPoly = AZN_RadialMenu.utils.math.inPolygon(arcs[i], gui.MouseX(), gui.MouseY())
+                if withinPoly and input.IsMouseDown(MOUSE_LEFT) then
+                    Map.Str = AZN_RadialMenu.emotes[i]
+                    net.Start("gRust_ServerModel")
+                    net.WriteString(AZN_RadialMenu.emotes[i])
+                    net.SendToServer()
+                    showMenu = false
+                    return
+                end
+
+                if withinPoly then
+                    setDrawColor(AZN_RadialMenu.utils.math.easedLerpColor((SysTime() - animStart) / animTime, Color(255, 255, 255, 255), Color(255, 0, 0, 255)))
+                    --drawText(AZN_RadialMenu.emotes[i], "RadialMenu_Big", ScrW() / 2, ScrH() / 2 - 21, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
+                else
+                    setDrawColor(255, 255, 255, 255)
+                end
+
+                AZN_RadialMenu.utils.drawArc(arcs[i])
+            end
+
+            setDrawColor(255, 255, 255, 255)
+            AZN_RadialMenu.utils.drawArc(innerCircle)
+            -- drawText("Selection", "RadialMenu_Big", ScrW() / 2, ScrH() / 2 - 21, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
+            for i = 1, #centers do
+                local withinPoly = AZN_RadialMenu.utils.math.inPolygon(arcs[i], gui.MouseX(), gui.MouseY())
+                if AZN_RadialMenu.emotes[i] == "sent_foundation" then
+                    local txt = scripted_ents.Get(AZN_RadialMenu.emotes[i]).PrintName .. "\n"
+                    local txt2 = "This is a foundation\n to build before placing a wall!\n\n\n\n\n"
+                    local txt3 = "25 x Wood (" .. LocalPlayer():GetEnoughVood() .. ")"
+                    local txt_n = txt .. txt2 .. txt3
+                    if withinPoly then drawText(txt_n, "Default", ScrW() / 2, ScrH() / 2 - 21, Color(0, 0, 0, 255), TEXT_ALIGN_CENTER) end
+                    surface.SetMaterial(foundation)
+                    surface.SetDrawColor(0, 0, 0, 255)
+                    surface.DrawTexturedRect(centers[i][1], centers[i][2] - fontHeight, 50, 50)
+                end
+
+                if AZN_RadialMenu.emotes[i] == "sent_wall" then
+                    local txt = scripted_ents.Get(AZN_RadialMenu.emotes[i]).PrintName .. "\n"
+                    local txt2 = "This is a Wall\nto build after placing a foundation!\n\n\n\n\n"
+                    local txt3 = "25 x Wood (" .. LocalPlayer():GetEnoughVood() .. ")"
+                    local txt_n = txt .. txt2 .. txt3
+                    if withinPoly then drawText(txt_n, "Default", ScrW() / 2, ScrH() / 2 - 21, Color(0, 0, 0, 255), TEXT_ALIGN_CENTER) end
+                    surface.SetMaterial(wall)
+                    surface.SetDrawColor(0, 0, 0, 255)
+                    surface.DrawTexturedRect(centers[i][1], centers[i][2] - fontHeight, 50, 50)
+                end
+
+                if AZN_RadialMenu.emotes[i] == "sent_ceiling" then
+                    local txt = scripted_ents.Get(AZN_RadialMenu.emotes[i]).PrintName .. "\n"
+                    local txt2 = "This is a Ceiling\nto build after placing a foundation!\n\n\n\n\n"
+                    local txt3 = "25 x Wood (" .. LocalPlayer():GetEnoughVood() .. ")"
+                    local txt_n = txt .. txt2 .. txt3
+                    if withinPoly then drawText(txt_n, "Default", ScrW() / 2, ScrH() / 2 - 21, Color(0, 0, 0, 255), TEXT_ALIGN_CENTER) end
+                    surface.SetMaterial(ceiling)
+                    surface.SetDrawColor(0, 0, 0, 255)
+                    surface.DrawTexturedRect(centers[i][1], centers[i][2] - fontHeight, 50, 50)
+                end
+
+                if AZN_RadialMenu.emotes[i] == "sent_doorway" then
+                    local txt = scripted_ents.Get(AZN_RadialMenu.emotes[i]).PrintName .. "\n"
+                    local txt2 = "This is a Doorway\nto build after placing a foundation!\n\n\n\n\n"
+                    local txt3 = "25 x Wood (" .. LocalPlayer():GetEnoughVood() .. ")"
+                    local txt_n = txt .. txt2 .. txt3
+                    if withinPoly then drawText(txt_n, "Default", ScrW() / 2, ScrH() / 2 - 21, Color(0, 0, 0, 255), TEXT_ALIGN_CENTER) end
+                    surface.SetMaterial(doorway)
+                    surface.SetDrawColor(0, 0, 0, 255)
+                    surface.DrawTexturedRect(centers[i][1], centers[i][2] - fontHeight, 50, 50)
+                end
+
+                if AZN_RadialMenu.emotes[i] == "sent_door" then
+                    local txt = scripted_ents.Get(AZN_RadialMenu.emotes[i]).PrintName .. "\n"
+                    local txt2 = "This is a Door\nto build after placing a doorway!\n\n\n\n\n"
+                    local txt3 = "25 x Wood (" .. LocalPlayer():GetEnoughVood() .. ")"
+                    local txt_n = txt .. txt2 .. txt3
+                    if withinPoly then drawText(txt_n, "Default", ScrW() / 2, ScrH() / 2 - 21, Color(0, 0, 0, 255), TEXT_ALIGN_CENTER) end
+                    surface.SetMaterial(door)
+                    surface.SetDrawColor(0, 0, 0, 255)
+                    surface.DrawTexturedRect(centers[i][1], centers[i][2] - fontHeight, 50, 50)
+                end
+            end
+        else
+            if mouseEnabled then
+                gui.EnableScreenClicker(false)
+                mouseEnabled = false
+            end
         end
     end
-)
+end)
 
-surface.CreateFont(
-    "StringFont",
-    {
-        font = "Roboto",
-        size = 23,
-        weight = 700
-    }
-)
+surface.CreateFont("StringFont", {
+    font = "Roboto",
+    size = 23,
+    weight = 700
+})
 
 local function HUDHide(myhud)
     for k, v in pairs{'CHudHealth', 'CHudBattery', 'CHudAmmo', 'CHudDeathNotice', 'CHUDQuickInfo', 'CHudHintDisplay'} do
@@ -364,22 +400,19 @@ local startar, oldar, newar = 0, -1, -1
 local VoodStn = {}
 VoodStn[1] = {false, "", 0}
 local BarMove = 0
-net.Receive(
-    "Sent_Vood",
-    function()
-        local sent = net.ReadBool()
-        local what_then = net.ReadString()
-        local seed = net.ReadFloat()
-        local seeds = net.ReadFloat()
-        VoodStn[1] = {
-            bool = sent or false,
-            str = what_then,
-            amt = seed
-        }
+net.Receive("Sent_Vood", function()
+    local sent = net.ReadBool()
+    local what_then = net.ReadString()
+    local seed = net.ReadFloat()
+    local seeds = net.ReadFloat()
+    VoodStn[1] = {
+        bool = sent or false,
+        str = what_then,
+        amt = seed
+    }
 
-        BarMove = seeds
-    end
-)
+    BarMove = seeds
+end)
 
 local function hud()
     local ply = LocalPlayer()
@@ -462,15 +495,12 @@ local text_to_glow = ""
 local Paneln_Crafttb = {}
 local Panelnb = {}
 local DLabel = nil
-surface.CreateFont(
-    "MyFont",
-    {
-        font = "Arial",
-        extended = false,
-        size = 23,
-        weight = 500,
-    }
-)
+surface.CreateFont("MyFont", {
+    font = "Arial",
+    extended = false,
+    size = 23,
+    weight = 500,
+})
 
 Crafting.Table = {
     {
@@ -573,7 +603,7 @@ function AddItemPanel_2(txt, Craft, CancelCraft, where, img, num, newpnl, timers
         AppList:AddColumn("Item Type")
         AppList:AddColumn("Your Wood/Amount")
         AppList:AddColumn("Your Amount")
-        AppList:AddLine(amt, inf, your_amt .. "/" .. amt,your_amt)
+        AppList:AddLine(amt, inf, your_amt .. "/" .. amt, your_amt)
         AppList.OnRowSelected = function(lst, index, pnl) print("Selected " .. pnl:GetColumnText(1) .. " ( " .. pnl:GetColumnText(2) .. " ) at index " .. index) end
         Crafting.Panel2bcn = vgui.Create("XeninUI.Panel", rightpnl)
         Crafting.Panel2bcn:Dock(BOTTOM)
@@ -586,7 +616,7 @@ function AddItemPanel_2(txt, Craft, CancelCraft, where, img, num, newpnl, timers
         Paneln_Craft:SetWide(100)
         Paneln_Craft:SetTall(50)
         Paneln_Craft.DoClick = function()
-            if not LocalPlayer():HasEnoughVood(amt) then
+            if not LocalPlayer():HasEnoughVood(amt) and GetConVar("grust_debug") == 0 then
                 LocalPlayer():PrintMessage(HUD_PRINTCENTER, "Cannot afford")
                 return
             end

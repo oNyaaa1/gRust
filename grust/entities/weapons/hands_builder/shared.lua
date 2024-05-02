@@ -45,28 +45,22 @@ end
 
 local ModelFN = "sent_foundation"
 if SERVER then
-    net.Receive(
-        "EntSndToServer_By_Foundation",
-        function(l, ply)
-            local RdVec = net.ReadVector()
-            local RdAng = net.ReadFloat()
-            local models = net.ReadString()
-            ply.ReadVec = RdVec
-            --print(ply.ReadVec)
-            ply.ReadAng = RdAng
-            ply.ReadAngx = RdAngx
-            ply.ReadModel = models
-        end
-    )
+    net.Receive("EntSndToServer_By_Foundation", function(l, ply)
+        local RdVec = net.ReadVector()
+        local RdAng = net.ReadFloat()
+        local models = net.ReadString()
+        ply.ReadVec = RdVec
+        --print(ply.ReadVec)
+        ply.ReadAng = RdAng
+        ply.ReadAngx = RdAngx
+        ply.ReadModel = models
+    end)
 
     --print( ply.ReadAng )
-    net.Receive(
-        "gRust_ServerModel",
-        function(l, pl)
-            local rs = net.ReadString()
-            ModelFN = rs
-        end
-    )
+    net.Receive("gRust_ServerModel", function(l, pl)
+        local rs = net.ReadString()
+        ModelFN = rs
+    end)
 end
 
 local SlotTaken = {}
@@ -100,7 +94,9 @@ function SWEP:PrimaryAttack()
     if SERVER then
         local ply = self:GetOwner()
         if not IsValid(ply) then return end
-        if not ply:HasEnoughVood(25) then return end
+        local debugb = 0
+        if GetConVar("grust_debug"):GetFloat() == 0 then debugb = 1 end
+        if not ply:HasEnoughVood(25) and debugb == 1 then return end
         if SERVER then
             local Pos, Angl
             local Position = math.Round(360 - ply:GetAngles().y % 360)
@@ -119,7 +115,7 @@ function SWEP:PrimaryAttack()
             ply:EmitSound("building/hammer_saw_1.wav")
             -- end
             ply:DeductVood(25)
-            //ply:EmitSound("zohart/building/hammer-saw-1.wav")
+            --ply:EmitSound("zohart/building/hammer-saw-1.wav")
         end
     end
 
@@ -146,41 +142,35 @@ if CLIENT then
     end
 
     local function IsStandingOn(ent, what)
-        for k, v in pairs(ents.FindInSphere(ent:GetPos(),1000)) do
-            if v:GetPos():Distance(ent:GetPos()) <= 50 and v:GetClass() == what then return v end --print( v )
+        for k, v in pairs(ents.FindInSphere(ent:GetPos(), 1000)) do
+            if v:GetPos():Distance(ent:GetPos()) <= 50 and v:GetClass() == what then --print( v )
+                return v
+            end
         end
         return nil
     end
 
     local hooks_key = -120
-    hook.Add(
-        "Think",
-        "TestyBoobyTest",
-        function()
-            local eye_trace = LocalPlayer():GetEyeTrace()
-            if not eye_trace then return end
-            --local posz = math.Round(4 - eye_trace.HitPos.z % 4)
-            --hooks_key = posz
-        end
-    )
+    hook.Add("Think", "TestyBoobyTest", function()
+        local eye_trace = LocalPlayer():GetEyeTrace()
+        if not eye_trace then return end
+        --local posz = math.Round(4 - eye_trace.HitPos.z % 4)
+        --hooks_key = posz
+    end)
 
     local up = 0
     local Timer_s_grust = 0
-    hook.Add(
-        "PlayerButtonDown",
-        "hands_builder",
-        function(ply, key)
-            local wep = ply:GetActiveWeapon()
-            if not wep:IsValid() then return end
-            if wep:GetClass() ~= "hands_builder" then return end
-            if key == 15 and Timer_s_grust < CurTime() then
-                Timer_s_grust = CurTime() + 0.5
-                if up >= -80 then up = 0 end
-                up = up + 10
-                hooks_key = up
-            end
+    hook.Add("PlayerButtonDown", "hands_builder", function(ply, key)
+        local wep = ply:GetActiveWeapon()
+        if not wep:IsValid() then return end
+        if wep:GetClass() ~= "hands_builder" then return end
+        if key == 15 and Timer_s_grust < CurTime() then
+            Timer_s_grust = CurTime() + 0.5
+            if up >= -80 then up = 0 end
+            up = up + 10
+            hooks_key = up
         end
-    )
+    end)
 
     local Nests = {
         ["sent_foundation"] = {
@@ -191,12 +181,10 @@ if CLIENT then
                 local Pos, Angl = nil, nil
                 --if IsValid( entOnGround ) then
                 -- print(entOnGround:GetClass() )
-                local tr = util.TraceLine(
-                    {
-                        start = own:EyePos() + EyeAngles():Forward() * 180,
-                        endpos = own:EyePos() + EyeAngles():Forward() * 200,
-                    }
-                )
+                local tr = util.TraceLine({
+                    start = own:EyePos() + EyeAngles():Forward() * 180,
+                    endpos = own:EyePos() + EyeAngles():Forward() * 200,
+                })
 
                 --end
                 local StandingOnFD = IsStandingOn(own, "sent_foundation")
@@ -357,19 +345,15 @@ if CLIENT then
     }
 
     local GhostEntity = nil
-    hook.Add(
-        "Think",
-        "whatamidoing",
-        function()
-            local wep = LocalPlayer():GetActiveWeapon()
-            if not IsValid(wep) then return end
-            if wep:GetClass() ~= "hands_builder" then
-                if IsValid(GhostEntity) then GhostEntity:Remove() end
-                GhostEntity = nil
-                return
-            end
+    hook.Add("Think", "whatamidoing", function()
+        local wep = LocalPlayer():GetActiveWeapon()
+        if not IsValid(wep) then return end
+        if wep:GetClass() ~= "hands_builder" then
+            if IsValid(GhostEntity) then GhostEntity:Remove() end
+            GhostEntity = nil
+            return
         end
-    )
+    end)
 
     function SWEP:DrawHUD()
         local ply = self:GetOwner()
