@@ -1,11 +1,10 @@
 local frame = nil
 local lastwep = {}
 local class = ""
-local framen = nil
 local but = {}
 local right
 local inventory = inventory or {}
-inventory.Test = {}
+inventory.Test = inventory.Test or {}
 if not Panel2 then Panel2 = {} end
 local invw = {}
 invw.SlotPos = 60
@@ -33,15 +32,12 @@ function GetSlot_Slots(slots)
     end
 end
 
-net.Receive(
-    "inventory_Test",
-    function()
-        inventory.Test = net.ReadTable()
-        for k, v in pairs(inventory.Test) do
-            SlotShy(v.class)
-        end
+net.Receive("inventory_Test", function()
+    inventory.Test = net.ReadTable()
+    for k, v in pairs(inventory.Test) do
+        SlotShy(v.class)
     end
-)
+end)
 
 local function DoOne(inv)
     for i = 1, 5 do
@@ -55,47 +51,26 @@ local function DoOne(inv)
             modelPanel:SetSize(100, 100)
             modelPanel:SetImage(v.Mdl)
             modelPanel.ColumnNumber = k
-            --[[local modelPanel = vgui.Create("DModelPanel", Panel2[k])
-            modelPanel.ColumnNumber = k
-            modelPanel:SetSize(100, 100)
-            modelPanel:SetModel(weapons.Get(v.WepClass).WorldModel)
-            function modelPanel:LayoutEntity(Entity)
-                return
-            end
-
-            local PrevMins, PrevMaxs = modelPanel.Entity:GetRenderBounds()
-            modelPanel:SetCamPos(PrevMins:Distance(PrevMaxs) * Vector(0.50, 0.50, 0.15) + Vector(0, 0, 5))
-            modelPanel:SetLookAt((PrevMaxs + PrevMins) / 2)]]
         end
     end
 end
 
-net.Receive(
-    "grust_SendItOVa",
-    function()
-        local inv = net.ReadTable()
-        if InitPostEntity == false then return end
-        timer.Simple(0.5, function() DoOne(inv) end)
-    end
-)
+local framen = nil
+net.Receive("grust_SendItOVa", function()
+    local inv = net.ReadTable()
+    if InitPostEntity == false then return end
+    timer.Simple(0.5, function() DoOne(inv) end)
+end)
 
 local inv = function()
     if IsValid(frame) then return end
     local pnl = {}
     local scrw, scrh = ScrW(), ScrH()
     frame = vgui.Create("DPanel")
-    frame:SetSize(517, 415)
-    frame:SetPos(scrw * 0.145, scrh * 0.40)
+    frame:SetSize(580, 415)
+    frame:SetPos(scrw * 0.286, scrh * 0.40)
     frame.Paint = function(self, w, h)
-        surface.SetDrawColor(80, 76, 70, 121)
-        surface.DrawRect(0, 0, w, h)
-    end
-
-    framen = vgui.Create("DPanel")
-    framen:SetSize(517, 415)
-    framen:SetPos(frame:GetWide() * 1.45, scrh * 0.40)
-    framen.Paint = function(self, w, h)
-        surface.SetDrawColor(80, 76, 70, 121)
+        surface.SetDrawColor(80, 76, 70, 0)
         surface.DrawRect(0, 0, w, h)
     end
 
@@ -106,45 +81,74 @@ local inv = function()
     grid:SetColumns(6)
     grid:SetHorizontalMargin(2)
     grid:SetVerticalMargin(2)
+    local pnl = {}
+    for i = 1, 24 do
+        pnl[i] = vgui.Create("DPanel")
+        pnl[i]:SetTall(100)
+        pnl[i].Paint = function(s, w, h)
+            surface.SetDrawColor(80, 76, 70, 121)
+            surface.DrawRect(0, 0, w, h)
+            for i = 1, 24 do
+                surface.SetDrawColor(0, 0, 0, 128)
+                surface.DrawOutlinedRect(0, 0, w, h, 3)
+            end
+        end
+
+        grid:AddCell(pnl[i])
+    end
+
     for k, v in pairs(inventory.Test) do
-        local pnl = vgui.Create("DTileLayout")
-        pnl:SetTall(105)
-        grid:AddCell(pnl)
-        local modelPanel = vgui.Create("DImageButton", pnl)
-        modelPanel:SetSize(pnl:GetWide(), pnl:GetTall())
+        local modelPanel = vgui.Create("DImageButton", pnl[k])
+        modelPanel:SetSize(pnl[k]:GetWide(), pnl[k]:GetTall())
         modelPanel:SetImage(v.Mdl)
         modelPanel.DoClick = function()
-            if v.WepClass ~= "none" then
+            if IsValid(framen) then framen:Remove() end
+            --[[if v.WepClass ~= "none" then
                 if GetSlot_Slots(tonumber(k)) == nil then return end
                 net.Start("inv_give")
                 net.WriteString(GetSlot_Slots(tonumber(k)))
                 net.SendToServer()
+            end]]
+            framen = vgui.Create("DPanel")
+            framen:SetSize(580, 315)
+            framen:SetPos(scrw * 0.286, scrh * 0.05)
+            framen.Paint = function(self, w, h)
+                surface.SetDrawColor(80, 76, 70, 121)
+                surface.DrawRect(0, 0, w, h)
             end
+
+            local DLabel = vgui.Create("DLabel", framen)
+            DLabel:SetPos(10, 10)
+            DLabel:SetFont("MyFont")
+            DLabel:SetText("Name: "..tostring(v.Name))
+            DLabel:SizeToContents()
+            local DLabel = vgui.Create("DLabel", framen)
+            DLabel:SetPos(10, 40)
+            DLabel:SetFont("MyFont")
+            DLabel:SetText("Amount: "..tostring(v.Amount))
+            DLabel:SizeToContents()
         end
 
         modelPanel.DoRightClick = function()
             if v.WepClass ~= "none" then
                 local menu = DermaMenu()
                 for i = 1, 5 do
-                    menu:AddOption(
-                        "Slot " .. i .. " " .. v.WepClass,
-                        function()
-                            SlotShutterSlot(tonumber(i), tostring(v.WepClass))
-                            Panel2[i]:Clear()
-                            local modelPanel = vgui.Create("DImageButton", Panel2[i])
-                            modelPanel:SetSize(100, 100)
-                            modelPanel:SetImage(v.Mdl)
-                            modelPanel.ColumnNumber = k
-                            modelPanel.DoClick = function()
-                                if v.WepClass ~= "none" then
-                                    if GetSlot_Slots(tonumber(k)) == nil then return end
-                                    net.Start("inv_give")
-                                    net.WriteString(GetSlot_Slots(tonumber(i)))
-                                    net.SendToServer()
-                                end
+                    menu:AddOption("Slot " .. i .. " " .. v.WepClass, function()
+                        SlotShutterSlot(tonumber(i), tostring(v.WepClass))
+                        Panel2[i]:Clear()
+                        local modelPanel = vgui.Create("DImageButton", Panel2[i])
+                        modelPanel:SetSize(100, 100)
+                        modelPanel:SetImage(v.Mdl)
+                        modelPanel.ColumnNumber = k
+                        modelPanel.DoClick = function()
+                            if v.WepClass ~= "none" then
+                                if GetSlot_Slots(tonumber(k)) == nil then return end
+                                net.Start("inv_give")
+                                net.WriteString(GetSlot_Slots(tonumber(i)))
+                                net.SendToServer()
                             end
                         end
-                    )
+                    end)
                 end
 
                 menu:AddOption("Close", function() end)
@@ -152,32 +156,20 @@ local inv = function()
             end
         end
 
-        local DLabel = vgui.Create("DLabel", modelPanel)
-        DLabel:SetPos(1, 80)
-        DLabel:SetWrap(true)
-        DLabel:SetText(v.Name .. " Amt: " .. v.Amount)
     end
 end
 
-hook.Add(
-    "OnSpawnMenuOpen",
-    "Context",
-    function()
-        gui.EnableScreenClicker(true)
-        inv()
-    end
-)
+hook.Add("OnSpawnMenuOpen", "Context", function()
+    gui.EnableScreenClicker(true)
+    inv()
+end)
 
 -- inventory.Open()
-hook.Add(
-    "OnSpawnMenuClose",
-    "Context",
-    function()
-        gui.EnableScreenClicker(false)
-        if IsValid(frame) then frame:Remove() end
-        if IsValid(framen) then framen:Remove() end
-    end
-)
+hook.Add("OnSpawnMenuClose", "Context", function()
+    gui.EnableScreenClicker(false)
+    if IsValid(frame) then frame:Remove() end
+    if IsValid(framen) then framen:Remove() end
+end)
 
 local hide = {
     ["CHudHealth"] = true,
@@ -204,93 +196,85 @@ function Rememeber(self, panels, bDoDrop, Command, x, y)
     end
 end
 
-hook.Add(
-    "InitPostEntity",
-    "RustInv",
-    function()
-        for i = 1, 6 do
-            frame = vgui.Create("DPanel")
-            frame:SetSize(100, 100)
-            frame:SetPos(ScrW() / 2 * 0.5 + invw.SlotPos, ScrH() / 2 * 1.75)
-            frame.Paint = function(self, w, h)
-                surface.SetDrawColor(80, 76, 70, 121)
-                surface.DrawRect(0, 0, w, h)
-            end
-
-            Panel2[i] = vgui.Create("DPanel", frame)
-            Panel2[i]:SetText("")
-            Panel2[i]:SetSize(200, 200)
-            Panel2[i]:Droppable("gDrop")
-            Panel2[i].Paint = function(self, w, h)
-                surface.SetDrawColor(80, 76, 70, 180)
-                surface.DrawRect(0, 0, w, h)
-            end
-
-            Panel2[i].nClass = {
-                Class = "",
-                Slotx = invw.SlotPos
-            }
-
-            invw.Storage = invw.Storage + 1
-            if invw.Storage <= 5 then invw.SlotPos = invw.SlotPos + 120 end
-            DoOne(inventory.Test)
-            InitPostEntity = true
+hook.Add("InitPostEntity", "RustInv", function()
+    for i = 1, 6 do
+        frame = vgui.Create("DPanel")
+        frame:SetSize(100, 100)
+        frame:SetPos(ScrW() / 2 * 0.5 + invw.SlotPos, ScrH() / 2 * 1.75)
+        frame.Paint = function(self, w, h)
+            surface.SetDrawColor(80, 76, 70, 121)
+            surface.DrawRect(0, 0, w, h)
         end
+
+        Panel2[i] = vgui.Create("DPanel", frame)
+        Panel2[i]:SetText("")
+        Panel2[i]:SetSize(200, 200)
+        Panel2[i]:Droppable("gDrop")
+        Panel2[i].Paint = function(self, w, h)
+            surface.SetDrawColor(80, 76, 70, 180)
+            surface.DrawRect(0, 0, w, h)
+        end
+
+        Panel2[i].nClass = {
+            Class = "",
+            Slotx = invw.SlotPos
+        }
+
+        invw.Storage = invw.Storage + 1
+        if invw.Storage <= 5 then invw.SlotPos = invw.SlotPos + 120 end
+        DoOne(inventory.Test)
+        InitPostEntity = true
     end
-)
+end)
 
 local tone_butn = 0
 local cd = 0
-hook.Add(
-    "PlayerButtonDown",
-    "Buttondown",
-    function(ply, button)
-        if button == 27 then inv() end
-        local butg = input.GetKeyName(button)
-        if butg == "MWHEELUP" and cd <= CurTime() then
-            if tone_butn < 0 then tone_butn = 6 end
-            if tone_butn > 6 then tone_butn = 0 end
-            tone_butn = tone_butn + 1
-            if GetSlot_Slots(tonumber(tone_butn)) == nil then
-                net.Start("inv_give")
-                net.WriteString(GetSlot_Slots(1))
-                net.SendToServer()
-                return
-            end
-
-            if GetSlot_Slots(tonumber(tone_butn)) ~= nil then
-                net.Start("inv_give")
-                net.WriteString(GetSlot_Slots(tonumber(tone_butn)))
-                net.SendToServer()
-            end
-
-            cd = CurTime() + 0.1
-        end
-
-        if butg == "MWHEELDOWN" and cd <= CurTime() then
-            if tone_butn < 0 then tone_butn = 6 end
-            if tone_butn > 6 then tone_butn = 0 end
-            tone_butn = tone_butn - 1
-            if GetSlot_Slots(tonumber(tone_butn)) == nil then
-                net.Start("inv_give")
-                net.WriteString(GetSlot_Slots(3))
-                net.SendToServer()
-                return
-            end
-
-            if GetSlot_Slots(tonumber(tone_butn)) ~= nil then
-                net.Start("inv_give")
-                net.WriteString(GetSlot_Slots(tonumber(tone_butn)))
-                net.SendToServer()
-            end
-
-            cd = CurTime() + 0.1
-        end
-
-        if GetSlot_Slots(tonumber(butg)) then
+hook.Add("PlayerButtonDown", "Buttondown", function(ply, button)
+    if button == 27 then inv() end
+    local butg = input.GetKeyName(button)
+    if butg == "MWHEELUP" and cd <= CurTime() then
+        if tone_butn < 0 then tone_butn = 6 end
+        if tone_butn > 6 then tone_butn = 0 end
+        tone_butn = tone_butn + 1
+        if GetSlot_Slots(tonumber(tone_butn)) == nil then
             net.Start("inv_give")
-            net.WriteString(GetSlot_Slots(tonumber(butg)))
+            net.WriteString(GetSlot_Slots(1))
+            net.SendToServer()
+            return
+        end
+
+        if GetSlot_Slots(tonumber(tone_butn)) ~= nil then
+            net.Start("inv_give")
+            net.WriteString(GetSlot_Slots(tonumber(tone_butn)))
             net.SendToServer()
         end
+
+        cd = CurTime() + 0.1
     end
-)
+
+    if butg == "MWHEELDOWN" and cd <= CurTime() then
+        if tone_butn < 0 then tone_butn = 6 end
+        if tone_butn > 6 then tone_butn = 0 end
+        tone_butn = tone_butn - 1
+        if GetSlot_Slots(tonumber(tone_butn)) == nil then
+            net.Start("inv_give")
+            net.WriteString(GetSlot_Slots(3))
+            net.SendToServer()
+            return
+        end
+
+        if GetSlot_Slots(tonumber(tone_butn)) ~= nil then
+            net.Start("inv_give")
+            net.WriteString(GetSlot_Slots(tonumber(tone_butn)))
+            net.SendToServer()
+        end
+
+        cd = CurTime() + 0.1
+    end
+
+    if GetSlot_Slots(tonumber(butg)) then
+        net.Start("inv_give")
+        net.WriteString(GetSlot_Slots(tonumber(butg)))
+        net.SendToServer()
+    end
+end)

@@ -69,7 +69,7 @@ end ]]
 		if self.DoorOpen == false then
 			self.DoorPos = self:GetAngles()
 			self.DoorPosa = self:GetPos()
-			self:SetPos(self:GetPos() + self:GetForward() + Vector(28, 25, 7))
+			self:SetPos(self:GetPos() + ply:GetForward() + Vector(28, 25, 7))
 			self:SetAngles(self:GetAngles() + Angle(0, 90, 0))
 			self.DoorOpen = true
 		elseif self.DoorOpen == true then

@@ -277,13 +277,13 @@ if CLIENT then
                     Pos = Vector(entOnGround:GetPos().x + 60, entOnGround:GetPos().y, entOnGround:GetPos().z + ups)
                     Angl = 270
                 elseif Position > 50 and Position < 120 then
-                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y - 80, entOnGround:GetPos().z + ups)
+                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y - 70, entOnGround:GetPos().z + ups)
                     Angl = 0
                 elseif Position > 146 and Position < 217 then
                     Pos = Vector(entOnGround:GetPos().x - 60, entOnGround:GetPos().y, entOnGround:GetPos().z + ups)
                     Angl = 270
                 elseif Position > 234 and Position < 310 then
-                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y + 80, entOnGround:GetPos().z + ups)
+                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y + 70, entOnGround:GetPos().z + ups)
                     Angl = 0
                 end
                 return Pos, Angl
@@ -300,17 +300,18 @@ if CLIENT then
                 if not IsValid(StandingOnFD) then return end
                 local Position = math.Round(360 - own:GetAngles().y % 360)
                 if not IsValid(entOnGround) then return end
+                local ups = 0
                 if Position >= 1 and Position <= 40 or Position >= 320 and Position <= 360 then
-                    Pos = Vector(entOnGround:GetPos().x + 60, entOnGround:GetPos().y, entOnGround:GetPos().z + 0)
+                    Pos = Vector(entOnGround:GetPos().x + 60, entOnGround:GetPos().y, entOnGround:GetPos().z + ups)
                     Angl = 0
                 elseif Position > 50 and Position < 120 then
-                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y - 80, entOnGround:GetPos().z + 0)
+                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y - 70, entOnGround:GetPos().z + ups)
                     Angl = 270
                 elseif Position > 146 and Position < 217 then
-                    Pos = Vector(entOnGround:GetPos().x - 60, entOnGround:GetPos().y, entOnGround:GetPos().z + 0)
+                    Pos = Vector(entOnGround:GetPos().x - 60, entOnGround:GetPos().y, entOnGround:GetPos().z + ups)
                     Angl = 0
                 elseif Position > 234 and Position < 310 then
-                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y + 80, entOnGround:GetPos().z + 0)
+                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y + 70, entOnGround:GetPos().z + ups)
                     Angl = 270
                 end
                 return Pos, Angl
