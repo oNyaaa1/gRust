@@ -173,6 +173,41 @@ local DLabel2 = nil
 Crafting.Panel2b = nil
 Crafting.Panel2bc = nil
 Crafting.Panel2bcc = nil
+net.Receive("gRust_Queue_Crafting_Timer", function()
+    local timerz = net.ReadFloat()
+    local img = net.ReadString()
+    local txt = net.ReadString()
+    local num = net.ReadFloat()
+    local fndnum = net.ReadFloat()
+    Paneln_Crafttb[#Paneln_Crafttb + 1] = {
+        pnl = Paneln_Craft,
+        Image = img,
+        Text = txt,
+        Timer = timerz,
+    }
+
+    if table.Count(Paneln_Crafttb) > 0 then
+        for k, v in pairs(Paneln_Crafttb) do
+            local Panel2basdsad = vgui.Create("XeninUI.Panel", Crafting.Panel5)
+            Panel2basdsad:Dock(LEFT)
+            Panel2basdsad:SetSize(150, Crafting.Panel5:GetTall())
+            local Panel2bc = vgui.Create("XeninUI.Panel", Panel2basdsad)
+            Panel2bc:SetSize(150, 150)
+            Panel2bc:SetSize(150, Panel2basdsad:GetTall())
+            local Paneln_Craftasd = vgui.Create("DImageButton", Panel2bc)
+            Paneln_Craftasd:SetImage(v.Image)
+            Paneln_Craftasd:SetPos(0, 0)
+            Paneln_Craftasd:SetSize(150, Panel2bc:GetTall() - 10)
+            Paneln_Craftasd.Paint = function(s, w, h)
+                print(math.Round(CurTime() - v.Timer))
+                draw.RoundedBox(0, 0, 0, w, h - 10, Color(74, 74, 74, 100))
+                draw.DrawText(v.Text .. " Timeleft: " .. tostring(math.Round(CurTime() - v.Timer)), "Default", Panel2bc:GetWide() * 0.05, 70, Color(255, 255, 255), TEXT_ALIGN_LEFT)
+                if math.Round(CurTime() - v.Timer) >= 0 then Panel2basdsad:Remove() end
+            end
+        end
+    end
+end)
+
 function AddItemPanel_2(txt, Craft, CancelCraft, where, img, num, newpnl, timers, rightpnl, info, inf, amt, your_amt)
     local pass = false
     for k, v in pairs(Crafting.Table) do
@@ -234,7 +269,7 @@ function AddItemPanel_2(txt, Craft, CancelCraft, where, img, num, newpnl, timers
         Crafting.Panel2bcn:Dock(BOTTOM)
         Crafting.Panel2bcn:SetSize(150, 100)
         Crafting.Panel2bcn.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h - 10, Color(0, 255, 0, 0)) end
-        local Paneln_Craft = vgui.Create("DButton", Crafting.Panel2bcn)
+        Paneln_Craft = vgui.Create("DButton", Crafting.Panel2bcn)
         Paneln_Craft:SetText("Craft")
         Paneln_Craft:SetFont("MyFont")
         Paneln_Craft:SetPos(Crafting.Panel2bcn:GetWide() * 2.8, Crafting.Panel2bcn:GetTall() * 0.2)
@@ -246,30 +281,7 @@ function AddItemPanel_2(txt, Craft, CancelCraft, where, img, num, newpnl, timers
                 return
             end
 
-            Craft(Panelnb[num].Text)
-            Crafting.Panel2b = vgui.Create("XeninUI.Panel", newpnl)
-            Crafting.Panel2b:Dock(LEFT)
-            Crafting.Panel2b:SetSize(150, newpnl:GetTall())
-            Crafting.Panel2bc = vgui.Create("XeninUI.Panel", Crafting.Panel2b)
-            Crafting.Panel2bc:SetSize(150, 150)
-            Crafting.Panel2bc:SetSize(150, newpnl:GetTall())
-            local Paneln_Craft = vgui.Create("DImageButton", Crafting.Panel2bc)
-            Paneln_Craft:SetImage(img)
-            Paneln_Craft:SetPos(0, 0)
-            Paneln_Craft:SetSize(150, Crafting.Panel2bc:GetTall() - 10)
-            Paneln_Craft.Paint = function(s, w, h)
-                Panelnb[num].Timer = timers
-                draw.RoundedBox(0, 0, 0, w, h - 10, Color(100, 100, 100, 100))
-                draw.DrawText(txt .. " Timeleft: " .. math.Round(CurTime() - Panelnb[num].Timer), "Default", Panelnb[num]:GetWide() * 0.05, 70, Color(255, 255, 255), TEXT_ALIGN_LEFT)
-                if math.Round(CurTime() - Panelnb[num].Timer) >= 0 then Panelnb[num]:Remove() end
-            end
-
-            Paneln_Crafttb[num] = {
-                pnl = Paneln_Craft,
-                Image = img,
-                Text = txt,
-                Timer = timers,
-            }
+            Craft(Panelnb[num].Text, num)
         end
     end
 
@@ -315,20 +327,21 @@ function GM:ScoreboardShow()
     local Paneln = {}
     if table.Count(Paneln_Crafttb) > 0 then
         for k, v in pairs(Paneln_Crafttb) do
-            local Panel2b = vgui.Create("XeninUI.Panel", Crafting.Panel5)
-            Panel2b:Dock(LEFT)
-            Panel2b:SetSize(150, Crafting.Panel5:GetTall())
-            local Panel2bc = vgui.Create("XeninUI.Panel", Panel2b)
+            local Panel2basdsad = vgui.Create("XeninUI.Panel", Crafting.Panel5)
+            Panel2basdsad:Dock(LEFT)
+            Panel2basdsad:SetSize(150, Crafting.Panel5:GetTall())
+            local Panel2bc = vgui.Create("XeninUI.Panel", Panel2basdsad)
             Panel2bc:SetSize(150, 150)
-            Panel2bc:SetSize(150, Panel2b:GetTall())
-            local Paneln_Craft = vgui.Create("DImageButton", Panel2bc)
-            Paneln_Craft:SetImage(v.Image)
-            Paneln_Craft:SetPos(0, 0)
-            Paneln_Craft:SetSize(150, Panel2bc:GetTall() - 10)
-            Paneln_Craft.Paint = function(s, w, h)
+            Panel2bc:SetSize(150, Panel2basdsad:GetTall())
+            local Paneln_Craftasd = vgui.Create("DImageButton", Panel2bc)
+            Paneln_Craftasd:SetImage(v.Image)
+            Paneln_Craftasd:SetPos(0, 0)
+            Paneln_Craftasd:SetSize(150, Panel2bc:GetTall() - 10)
+            Paneln_Craftasd.Paint = function(s, w, h)
+                print(math.Round(CurTime() - v.Timer))
                 draw.RoundedBox(0, 0, 0, w, h - 10, Color(74, 74, 74, 100))
                 draw.DrawText(v.Text .. " Timeleft: " .. tostring(math.Round(CurTime() - v.Timer)), "Default", Panel2bc:GetWide() * 0.05, 70, Color(255, 255, 255), TEXT_ALIGN_LEFT)
-                if math.Round(CurTime() - v.Timer) >= 0 then Panel2b:Remove() end
+                if math.Round(CurTime() - v.Timer) >= 0 then Panel2basdsad:Remove() end
             end
         end
     end
@@ -348,10 +361,11 @@ function GM:ScoreboardShow()
         Crafting.Table = {
             {
                 Textation = "Hammer",
-                func = function(txt)
+                func = function(txt, num)
                     print(txt)
                     net.Start("gRust_Queue_Crafting")
                     net.WriteString(txt)
+                    net.WriteFloat(num)
                     net.SendToServer()
                 end,
                 gotob = function(txt) print(txt, "cancelled") end,
@@ -368,9 +382,11 @@ function GM:ScoreboardShow()
             },
             {
                 Textation = "BluePrint",
-                func = function(txt)
+                func = function(txt, num)
+                    print(txt)
                     net.Start("gRust_Queue_Crafting")
                     net.WriteString(txt)
+                    net.WriteFloat(num)
                     net.SendToServer()
                 end,
                 gotob = function(txt) print(txt, "cancelled") end,

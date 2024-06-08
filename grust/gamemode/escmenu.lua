@@ -22,7 +22,7 @@ local function LeftPnl(pnl)
 
     local GetList_Button = {
         {
-            Menu = "By oNyaaa & Bezdar",
+            Menu = "By oNyaaa",
             func = function(self) gRust.ClosePauseMenu() end,
         },
         {

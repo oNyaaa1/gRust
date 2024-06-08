@@ -47,9 +47,16 @@ local function DoOne(inv)
     for k, v in pairs(inv) do
         if IsValid(Panel2[k]) then
             SlotShutterSlot(tonumber(k), tostring(v.WepClass))
-            local modelPanel = vgui.Create("DImageButton", Panel2[k])
+            local modelPanel = vgui.Create("DModelPanel", Panel2[k])
             modelPanel:SetSize(100, 100)
-            modelPanel:SetImage(v.Mdl)
+            modelPanel:SetModel(weapons.Get(v.WepClass).WorldModel)
+            function modelPanel:LayoutEntity(Entity)
+                return
+            end
+
+            local PrevMins, PrevMaxs = modelPanel.Entity:GetRenderBounds()
+            modelPanel:SetCamPos(PrevMins:Distance(PrevMaxs) * Vector(0.50, 0.50, 0.15) + Vector(0, 0, 5))
+            modelPanel:SetLookAt((PrevMaxs + PrevMins) / 2)
             modelPanel.ColumnNumber = k
         end
     end
@@ -98,9 +105,23 @@ local inv = function()
     end
 
     for k, v in pairs(inventory.Test) do
-        local modelPanel = vgui.Create("DImageButton", pnl[k])
+        local modelPanel = vgui.Create("DModelPanel", pnl[k])
         modelPanel:SetSize(pnl[k]:GetWide(), pnl[k]:GetTall())
-        modelPanel:SetImage(v.Mdl)
+        local fnd = string.find(v.Mdl, ".mdl")
+        print(fnd)
+        if fnd ~= nil then
+            modelPanel:SetModel(v.Mdl)
+        else
+            modelPanel:SetModel(weapons.Get(v.WepClass).WorldModel)
+        end
+
+        function modelPanel:LayoutEntity(Entity)
+            return
+        end
+
+        local PrevMins, PrevMaxs = modelPanel.Entity:GetRenderBounds()
+        modelPanel:SetCamPos(PrevMins:Distance(PrevMaxs) * Vector(0.50, 0.50, 0.15) + Vector(0, 0, 5))
+        modelPanel:SetLookAt((PrevMaxs + PrevMins) / 2)
         modelPanel.DoClick = function()
             if IsValid(framen) then framen:Remove() end
             --[[if v.WepClass ~= "none" then
@@ -120,12 +141,12 @@ local inv = function()
             local DLabel = vgui.Create("DLabel", framen)
             DLabel:SetPos(10, 10)
             DLabel:SetFont("MyFont")
-            DLabel:SetText("Name: "..tostring(v.Name))
+            DLabel:SetText("Name: " .. tostring(v.Name))
             DLabel:SizeToContents()
             local DLabel = vgui.Create("DLabel", framen)
             DLabel:SetPos(10, 40)
             DLabel:SetFont("MyFont")
-            DLabel:SetText("Amount: "..tostring(v.Amount))
+            DLabel:SetText("Amount: " .. tostring(v.Amount))
             DLabel:SizeToContents()
         end
 
@@ -136,9 +157,22 @@ local inv = function()
                     menu:AddOption("Slot " .. i .. " " .. v.WepClass, function()
                         SlotShutterSlot(tonumber(i), tostring(v.WepClass))
                         Panel2[i]:Clear()
-                        local modelPanel = vgui.Create("DImageButton", Panel2[i])
-                        modelPanel:SetSize(100, 100)
-                        modelPanel:SetImage(v.Mdl)
+                        local modelPanel = vgui.Create("DModelPanel", Panel2[i])
+                        modelPanel:SetSize(Panel2[i]:GetWide() - 100, Panel2[i]:GetTall() - 100)
+                        local fnd = string.find(v.Mdl, ".mdl")
+                        if fnd then
+                            modelPanel:SetModel(v.Mdl)
+                        else
+                            modelPanel:SetModel(weapons.Get(v.WepClass).WorldModel)
+                        end
+
+                        function modelPanel:LayoutEntity(Entity)
+                            return
+                        end
+
+                        local PrevMins, PrevMaxs = modelPanel.Entity:GetRenderBounds()
+                        modelPanel:SetCamPos(PrevMins:Distance(PrevMaxs) * Vector(0.50, 0.50, 0.15) + Vector(0, 0, 5))
+                        modelPanel:SetLookAt((PrevMaxs + PrevMins) / 2)
                         modelPanel.ColumnNumber = k
                         modelPanel.DoClick = function()
                             if v.WepClass ~= "none" then
@@ -148,6 +182,10 @@ local inv = function()
                                 net.SendToServer()
                             end
                         end
+                        --local modelPanelnm = vgui.Create("DImageButton", Panel2[i])
+                        -- modelPanelnm:SetSize(100, 100)
+                        --modelPanelnm:SetImage(v.Mdl)
+                        --
                     end)
                 end
 
@@ -155,7 +193,6 @@ local inv = function()
                 menu:Open()
             end
         end
-
     end
 end
 
@@ -222,9 +259,10 @@ hook.Add("InitPostEntity", "RustInv", function()
 
         invw.Storage = invw.Storage + 1
         if invw.Storage <= 5 then invw.SlotPos = invw.SlotPos + 120 end
-        DoOne(inventory.Test)
         InitPostEntity = true
     end
+
+    DoOne(inventory.Test)
 end)
 
 local tone_butn = 0

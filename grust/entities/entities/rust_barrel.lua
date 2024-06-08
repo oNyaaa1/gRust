@@ -1,6 +1,7 @@
 AddCSLuaFile()
 ENT.Type = "anim"
 ENT.Base = "base_anim"
+if SERVER then util.AddNetworkString("GibBreak") end
 local BarrelTypes = {
 	{
 		Health = 35,
@@ -61,15 +62,12 @@ function ENT:RecoveryTime(pos)
 	if self.Time == nil then self.Time = 0 end
 	if CurTime() <= self.Time then return end
 	self.Time = CurTime() + 5
-	timer.Simple(
-		60 * math.random(28,32),
-		function()
-			local ent = ents.Create("rust_barrel")
-			ent:SetPos(pos)
-			ent:Spawn()
-			ent:Activate()
-		end
-	)
+	timer.Simple(60 * math.random(28, 32), function()
+		local ent = ents.Create("rust_barrel")
+		ent:SetPos(pos)
+		ent:Spawn()
+		ent:Activate()
+	end)
 end
 
 function ENT:SpawnLoot()
@@ -90,7 +88,7 @@ function ENT:OnTakeDamage(dmg)
 	if SERVER then
 		self:SpawnLoot()
 		self:RecoveryTime(self:GetPos())
-		self:GibBreakServer(dmg:GetDamageForce())
+		self:GibBreakClient(VectorRand() * 100)
 		self:Remove()
 	end
 end

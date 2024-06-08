@@ -43,15 +43,13 @@ if SERVER then
     end
 
     function ENT:RecoveryTime(pos)
-        timer.Simple(
-            3, --60 * math.random(28,32),
+        timer.Simple(3, --60 * math.random(28,32),
             function()
-                local ent = ents.Create("sent_rocks")
-                ent:SetPos(pos)
-                ent:Spawn()
-                ent:Activate()
-            end
-        )
+            local ent = ents.Create("sent_rocks")
+            ent:SetPos(pos)
+            ent:Spawn()
+            ent:Activate()
+        end)
     end
 
     function ENT:OnTakeDamage(dmg)
@@ -59,23 +57,19 @@ if SERVER then
         local wep = ply:GetActiveWeapon()
         if not IsValid(ply) then return end
         if not IsValid(self) then return end
-        if IsValid(ply) and IsValid(wep) and string.find(wep:GetClass(), "pickaxe") then
+        if IsValid(ply) and IsValid(wep) and string.find(wep:GetClass(), "pickaxe") or string.find(wep:GetClass(), "rock") then
             -- 1 metal, 2 sulfur, 3 Rock
             if self.AttacksRock == nil then self.AttacksRock = 0 end
             if self:GetSkin() == 1 then
                 ply.Counter_Metal = math.random(5, 9)
                 ply:SetEnoughMetal(ply.Counter_Metal)
-                AddToInventory(
-                    ply,
-                    {
-                        Name = "Metal Ore",
-                        WepClass = "none",
-                        Mdl = "materials/items/resources/metal_ore.png",
-                        Ammo_New = "none",
-                        Amount = ply:GetEnoughMetal(),
-                    },
-                    true
-                )
+                AddToInventory(ply, {
+                    Name = "Metal Ore",
+                    WepClass = "none",
+                    Mdl = "models/galaxy/rust/rockore1.mdl",
+                    Ammo_New = "none",
+                    Amount = ply:GetEnoughMetal(),
+                }, true)
 
                 net.Start("Sent_Vood")
                 net.WriteBool(true)
@@ -87,17 +81,13 @@ if SERVER then
             elseif self:GetSkin() == 2 then
                 ply.Counter_Sulfur = math.random(5, 9)
                 ply:SetEnoughSulfur(ply.Counter_Sulfur)
-                AddToInventory(
-                    ply,
-                    {
-                        Name = "Sulfur Ore",
-                        WepClass = "none",
-                        Mdl = "materials/items/resources/sulfur_ore.png",
-                        Ammo_New = "none",
-                        Amount = ply:GetEnoughSulfur(),
-                    },
-                    true
-                )
+                AddToInventory(ply, {
+                    Name = "Sulfur Ore",
+                    WepClass = "none",
+                    Mdl = "models/items/sulfur_ore.mdl",
+                    Ammo_New = "none",
+                    Amount = ply:GetEnoughSulfur(),
+                }, true)
 
                 net.Start("Sent_Vood")
                 net.WriteBool(true)
@@ -109,17 +99,13 @@ if SERVER then
             elseif self:GetSkin() == 3 then
                 ply.Counter_Stone = math.random(5, 9)
                 ply:SetEnoughStone(ply.Counter_Stone)
-                AddToInventory(
-                    ply,
-                    {
-                        Name = "Stone",
-                        WepClass = "none",
-                        Mdl = "materials/items/resources/stone.png",
-                        Ammo_New = "none",
-                        Amount = ply:GetEnoughStone(),
-                    },
-                    true
-                )
+                AddToInventory(ply, {
+                    Name = "Stone",
+                    WepClass = "none",
+                    Mdl = "models/environment/ores/ore_node_stage4.mdl",
+                    Ammo_New = "none",
+                    Amount = ply:GetEnoughStone(),
+                }, true)
 
                 net.Start("Sent_Vood")
                 net.WriteBool(true)

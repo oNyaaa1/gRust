@@ -65,9 +65,9 @@ hook.Add("EntityTakeDamage", "EntityDamageExample", function(v, dmginfo)
         local ent = ply:GetEyeTrace().Entity
         if ent.StackWood == nil then ent.StackWood = 0 end
         if ent.StackWood >= 100 and ent.StackWood >= 100 then timer.Simple(60, function() ent.StackWood = 0 end) end
-        if IsValid(ply) and IsValid(wep) and IsValid(ent) and string.find(wep:GetClass(), "hatchet") and ent.StackWood <= 100 then
-            local str, str2 = string.find(ply:GetEyeTrace().Entity:GetClass(), "sent_"), string.find(ply:GetEyeTrace().Entity:GetClass(), "rust_")
-            if str or str2 then return end
+        if IsValid(ply) and IsValid(wep) and IsValid(ent) and string.find(wep:GetClass(), "hatchet") or string.find(wep:GetClass(), "rock") and ent.StackWood <= 100 then
+            --local str, str2 = string.find(ply:GetEyeTrace().Entity:GetClass(), "sent_"), string.find(ply:GetEyeTrace().Entity:GetClass(), "rust_")
+            --if str or str2 then return end
             ent.StackWood = ent.StackWood + math.random(1, 5)
             ply.Counter_Vood = math.random(5, 9)
             ply:SetEnoughVood(ply.Counter_Vood)
@@ -93,7 +93,7 @@ hook.Add("EntityTakeDamage", "EntityDamageExample", function(v, dmginfo)
             AddToInventory(ply, {
                 Name = "Wood",
                 WepClass = "none",
-                Mdl = "materials/items/resources/wood.png",
+                Mdl = "models/galaxy/rust/woodpile1.mdl",
                 Ammo_New = "none",
                 Amount = ply:GetEnoughVood(),
             }, true)
@@ -106,10 +106,10 @@ local function Translation(txt)
         return {
             name = "Hammer",
             Class = "hands_hammer",
-            Mdl = "items/tools/hammer.png",
+            Mdl = "models/weapons/darky_m/rust/w_hammer.mdl",
             amount = 50,
             ammo = "none",
-            timer = 20,
+            timer = CurTime() + 20,
         }
     end
 
@@ -117,10 +117,10 @@ local function Translation(txt)
         return {
             name = "Building Plan",
             Class = "hands_builder",
-            Mdl = "items/tools/building_plan.png",
+            Mdl = "models/darky_m/rust/w_buildingplan.mdl",
             ammo = "none",
             amount = 40,
-            timer = 25,
+            timer = CurTime() + 25,
         }
     end
 end
@@ -139,6 +139,7 @@ Tbl[11] = {"Fun", "icons/servers.png"}
 Tbl[12] = {"Other", "icons/electric.png"}
 net.Receive("gRust_Queue_Crafting", function(len, ply)
     local rs = net.ReadString()
+    local timerz = net.ReadFloat()
     local trans = Translation(rs)
     if GetConVar("grust_debug"):GetFloat() == 1 then
         AddToInventory(ply, {
@@ -155,6 +156,10 @@ net.Receive("gRust_Queue_Crafting", function(len, ply)
     ply:DeductVood(trans.amount)
     net.Start("gRust_Queue_Crafting_Timer")
     net.WriteFloat(trans.timer)
+    net.WriteString(trans.Mdl)
+    net.WriteString(trans.name)
+    net.WriteFloat(trans.timer)
+    net.WriteFloat(timerz)
     net.Send(ply)
     timer.Simple(trans.timer, function()
         AddToInventory(ply, {
