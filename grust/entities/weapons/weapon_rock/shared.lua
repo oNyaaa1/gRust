@@ -27,37 +27,30 @@ SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
 SWEP.Secondary.Automatic = true
 SWEP.Secondary.Ammo = "none"
-
-if SERVER then
-    AddCSLuaFile( "shared.lua" )
-end
-
+if SERVER then AddCSLuaFile("shared.lua") end
 if CLIENT then
     SWEP.Slot = 1
     SWEP.SlotPos = 1
     SWEP.ViewModelFOV = 62
     SWEP.IconLetter = "Rock"
-    killicon.AddFont( "weapon_rock", "CSKillIcons", SWEP.IconLetter, Color( 255, 245, 10, 255 ) )
+    killicon.AddFont("weapon_rock", "CSKillIcons", SWEP.IconLetter, Color(255, 245, 10, 255))
 end
 
-function SWEP:DrawWeaponSelection( x, y, wide, tall, alpha )
-    draw.SimpleText( self.IconLetter, "Default", x + wide / 2, y + tall * 0.2, Color( 255, 245, 10, 255 ), 1 )
-    draw.SimpleText( self.IconLetter, "Default", x + wide / 2 + math.Rand( -4, 4 ), y + tall * 0.2 + math.Rand( -14, 14 ), Color( 255, 245, 10, math.Rand( 10, 120 ) ), 1 )
-    draw.SimpleText( self.IconLetter, "Default", x + wide / 2 + math.Rand( -4, 4 ), y + tall * 0.2 + math.Rand( -9, 9 ), Color( 255, 245, 10, math.Rand( 10, 120 ) ), 1 )
+function SWEP:DrawWeaponSelection(x, y, wide, tall, alpha)
+    draw.SimpleText(self.IconLetter, "Default", x + wide / 2, y + tall * 0.2, Color(255, 245, 10, 255), 1)
+    draw.SimpleText(self.IconLetter, "Default", x + wide / 2 + math.Rand(-4, 4), y + tall * 0.2 + math.Rand(-14, 14), Color(255, 245, 10, math.Rand(10, 120)), 1)
+    draw.SimpleText(self.IconLetter, "Default", x + wide / 2 + math.Rand(-4, 4), y + tall * 0.2 + math.Rand(-9, 9), Color(255, 245, 10, math.Rand(10, 120)), 1)
 end
 
 function SWEP:Initialize()
-    util.PrecacheSound( "weapons/fireaxe/fireaxe_impact1.wav" )
-    util.PrecacheSound( "weapons/fireaxe/fireaxe_impact2.wav" )
-    util.PrecacheSound( "weapons/iceaxe/iceaxe_swing1.wav" )
-    self:SetHoldType( self.HoldType )
+    util.PrecacheSound("weapons/fireaxe/fireaxe_impact1.wav")
+    util.PrecacheSound("weapons/fireaxe/fireaxe_impact2.wav")
+    util.PrecacheSound("weapons/iceaxe/iceaxe_swing1.wav")
+    self:SetHoldType(self.HoldType)
 end
 
 function SWEP:Deploy()
-    if SERVER then
-        self.Weapon:SetWeaponHoldType( self.HoldType )
-    end
-
+    if SERVER then self.Weapon:SetWeaponHoldType(self.HoldType) end
     return true
 end
 
@@ -69,24 +62,23 @@ function SWEP:PrimaryAttack()
     tr.endpos = userid:GetShootPos() + userid:GetAimVector() * 50
     tr.filter = userid
     tr.mask = MASK_SHOT
-    local trace = util.TraceLine( tr )
-    weapon:SetNextPrimaryFire( CurTime() + 1.4 )
-
+    local trace = util.TraceLine(tr)
+    weapon:SetNextPrimaryFire(CurTime() + 1.4)
     if trace.Hit then
-        //userid:SetAnimation( PLAYER_ATTACK1 )
-        weapon:SendWeaponAnim( ACT_VM_SWINGHIT )
+        --userid:SetAnimation( PLAYER_ATTACK1 )
+        weapon:SendWeaponAnim(ACT_VM_SWINGHIT)
         bullet = {}
         bullet.Num = 1
         bullet.Src = self.Owner:GetShootPos()
         bullet.Dir = self.Owner:GetAimVector()
-        bullet.Spread = Vector( 0, 0, 0 )
+        bullet.Spread = Vector(0, 0, 0)
         bullet.Tracer = 0
         bullet.Force = 10
-        bullet.Damage = math.random( 10, 20 )
-        userid:FireBullets( bullet )
-        weapon:EmitSound( "weapons/fireaxe/fireaxe_impact1.wav" )
+        bullet.Damage = math.random(10, 20)
+        userid:FireBullets(bullet)
+        weapon:EmitSound("weapons/fireaxe/fireaxe_impact1.wav")
     else
-        weapon:EmitSound( "weapons/iceaxe/iceaxe_swing1.wav" )
-        weapon:SendWeaponAnim( ACT_VM_SWINGMISS )
+        weapon:EmitSound("weapons/iceaxe/iceaxe_swing1.wav")
+        weapon:SendWeaponAnim(ACT_VM_SWINGMISS)
     end
 end

@@ -6,7 +6,16 @@ util.AddNetworkString("hands_builder_map")
 util.AddNetworkString("Sent_Vood")
 inventory = {}
 inventory.Test = {}
+function HasItem(ply, item)
+    local items = false
+    for k, v in pairs(ply.Inventory) do
+        if v.WepClass == item.WepClass then items = true end
+    end
+    return items
+end
+
 function AddToInventory(ply, item, alter)
+    --if HasItem(ply, item) then return end
     if ply.Inv == nil then ply.Inv = {} end
     alter = alter or false
     --if table.HasValue( ply.Inv, item ) then return end
@@ -29,6 +38,23 @@ function AddToInventory(ply, item, alter)
     --table.RemoveByValue( ply.Inv, item )
     --end
 end
+
+hook.Add("PlayerUse", "WeaponEquipExample", function(ply, ent)
+     /*if IsValid(ent) and ent ~= NULL then
+        AddToInventory(ply, {
+            Name = ent.PrintName,
+            WepClass = ent:GetClass(),
+            Mdl = ent.WorldModel,
+            Ammo_New = "none", -- ent.Primary and ent.Primary.Ammo or 
+            Amount = 1,
+        })
+
+        net.Start("inventory_Test")
+        net.WriteTable(ply.Inventory)
+        net.Send(ply)
+        --return false
+    end*/
+end)
 
 hook.Remove("PlayerButtonDown", "KeyDown_Minimap")
 hook.Add("PlayerInitialSpawn", "MiniMap", function(ply)
@@ -61,7 +87,7 @@ function InitializeInventory(ply)
 
     AddToInventory(ply, {
         Name = "Rock",
-        WepClass = "rust_rock",
+        WepClass = "weapon_rock",
         Mdl = "models/blacksnow/rust_rock.mdl",
         Ammo_New = "ar2",
         Amount = 1,
@@ -244,20 +270,6 @@ hook.Add("Tick", "checkinv", function()
         -- end
         -- end
     end
-end)
-
-hook.Add("WeaponEquip", "WeaponEquipExample", function(wep, ply)
-    if ply.CoolDown == nil then ply.CoolDown = 0 end
-    if ply.CoolDown >= CurTime() then return end
-    ply.CoolDown = CurTime() + 1
-    --[[
-
-AddToInventory(ply, {
-        Name = wep.PrintName or "",
-        WepClass = wep:GetClass() or "",
-        Mdl = weapons.Get(wep:GetClass()).WorldModel or "",
-        Ammo_New = wep.Primary.Ammo or "none",
-    })]]
 end)
 
 hook.Add("PlayerDroppedWeapon", "dropwep", function(ply, wep)

@@ -49,7 +49,13 @@ local function DoOne(inv)
             SlotShutterSlot(tonumber(k), tostring(v.WepClass))
             local modelPanel = vgui.Create("DModelPanel", Panel2[k])
             modelPanel:SetSize(100, 100)
-            modelPanel:SetModel(weapons.Get(v.WepClass).WorldModel)
+            local fnd = string.find(v.Mdl, ".mdl")
+            if fnd ~= nil then
+                modelPanel:SetModel(v.Mdl)
+            else
+                modelPanel:SetModel(weapons.Get(v.WepClass).WorldModel)
+            end
+
             function modelPanel:LayoutEntity(Entity)
                 return
             end
@@ -105,10 +111,10 @@ local inv = function()
     end
 
     for k, v in pairs(inventory.Test) do
+        print(v.Amount)
         local modelPanel = vgui.Create("DModelPanel", pnl[k])
         modelPanel:SetSize(pnl[k]:GetWide(), pnl[k]:GetTall())
         local fnd = string.find(v.Mdl, ".mdl")
-        print(fnd)
         if fnd ~= nil then
             modelPanel:SetModel(v.Mdl)
         else
@@ -137,7 +143,7 @@ local inv = function()
                 surface.SetDrawColor(80, 76, 70, 121)
                 surface.DrawRect(0, 0, w, h)
             end
-
+            
             local DLabel = vgui.Create("DLabel", framen)
             DLabel:SetPos(10, 10)
             DLabel:SetFont("MyFont")
