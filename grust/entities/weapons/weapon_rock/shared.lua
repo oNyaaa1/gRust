@@ -1,84 +1,79 @@
-SWEP.Author = "God"
-SWEP.PrintName = "Rock" --name
-SWEP.Purpose = "" --your swep's description
-SWEP.Instructions = "" --How to use your Swep
-SWEP.Spawnable = true --if it is for everyone to use
-SWEP.AdminSpawnable = true --if it is admin only
-SWEP.Base = "weapon_base" ---the base of the swep
-SWEP.HoldType = "slam" --holdtype
-SWEP.ViewModel = "models/weapons/darky_m/rust/c_rock2.mdl"
+SWEP.Base = "tfa_rustalpha_meleebase"
+
+SWEP.Category = "TFA Rust Legacy"
+SWEP.Spawnable = (TFA_BASE_VERSION and TFA_BASE_VERSION >= 4.5) and (TFA and TFA.RUSTALPHA ~= nil)
+SWEP.AdminOnly = false
+
+SWEP.Author = "YuRaNnNzZZ"
+SWEP.PrintName = "Rock"
+SWEP.ViewModel = "models/weapons/yurie_rustalpha/c-vm-rock.mdl"
+SWEP.WorldModel = "models/weapons/yurie_rustalpha/wm-rock.mdl"
 SWEP.UseHands = true
-SWEP.WorldModel = "models/weapons/darky_m/rust/w_rock.mdl"
-SWEP.Primary.Delay = 0.19 --How long your swep must wait before attacking again.
-SWEP.Primary.Recoil = 0 --How much your swep will go back or kick when you attack.
-SWEP.Primary.Damage = 23 --How much damage you do on an attack
-SWEP.Primary.NumShots = 1 --How many bullets in one attack
-SWEP.Primary.Cone = 0 --If the bullet will spread or not
-SWEP.Primary.ClipSize = -1 --How much ammo you can hold in the swep
-SWEP.Primary.DefaultClip = -1 --How much ammo you get when you use the swep
-SWEP.Primary.Automatic = true --If it is SMG fire ( true) or pistol fire (false)
-SWEP.Primary.Ammo = "none"
-SWEP.Secondary.Delay = 5.2 ----Same here, except for secondary .Please refer to the above.
-SWEP.Secondary.Recoil = 13
-SWEP.Secondary.Damage = 54
-SWEP.Secondary.NumShots = 1
-SWEP.Secondary.Cone = 0
-SWEP.Secondary.ClipSize = -1
-SWEP.Secondary.DefaultClip = -1
-SWEP.Secondary.Automatic = true
-SWEP.Secondary.Ammo = "none"
-if SERVER then AddCSLuaFile("shared.lua") end
-if CLIENT then
-    SWEP.Slot = 1
-    SWEP.SlotPos = 1
-    SWEP.ViewModelFOV = 62
-    SWEP.IconLetter = "Rock"
-    killicon.AddFont("weapon_rock", "CSKillIcons", SWEP.IconLetter, Color(255, 245, 10, 255))
-end
 
-function SWEP:DrawWeaponSelection(x, y, wide, tall, alpha)
-    draw.SimpleText(self.IconLetter, "Default", x + wide / 2, y + tall * 0.2, Color(255, 245, 10, 255), 1)
-    draw.SimpleText(self.IconLetter, "Default", x + wide / 2 + math.Rand(-4, 4), y + tall * 0.2 + math.Rand(-14, 14), Color(255, 245, 10, math.Rand(10, 120)), 1)
-    draw.SimpleText(self.IconLetter, "Default", x + wide / 2 + math.Rand(-4, 4), y + tall * 0.2 + math.Rand(-9, 9), Color(255, 245, 10, math.Rand(10, 120)), 1)
-end
+SWEP.Type = "Melee Weapon"
+SWEP.Type_Displayed = "Tool"
 
-function SWEP:Initialize()
-    util.PrecacheSound("weapons/fireaxe/fireaxe_impact1.wav")
-    util.PrecacheSound("weapons/fireaxe/fireaxe_impact2.wav")
-    util.PrecacheSound("weapons/iceaxe/iceaxe_swing1.wav")
-    self:SetHoldType(self.HoldType)
-end
+SWEP.ViewModelFOV = 54
 
-function SWEP:Deploy()
-    if SERVER then self.Weapon:SetWeaponHoldType(self.HoldType) end
-    return true
-end
+SWEP.ViewModelBoneMods = {
+	-- ["fpsarms"] = { scale = Vector(1, 1, 1), pos = Vector(0, 0, 0), angle = Angle(0, 90, 90) }
+}
 
-function SWEP:PrimaryAttack()
-    local userid = self.Owner
-    local weapon = self.Weapon
-    local tr = {}
-    tr.start = userid:GetShootPos()
-    tr.endpos = userid:GetShootPos() + userid:GetAimVector() * 50
-    tr.filter = userid
-    tr.mask = MASK_SHOT
-    local trace = util.TraceLine(tr)
-    weapon:SetNextPrimaryFire(CurTime() + 1.4)
-    if trace.Hit then
-        --userid:SetAnimation( PLAYER_ATTACK1 )
-        weapon:SendWeaponAnim(ACT_VM_SWINGHIT)
-        bullet = {}
-        bullet.Num = 1
-        bullet.Src = self.Owner:GetShootPos()
-        bullet.Dir = self.Owner:GetAimVector()
-        bullet.Spread = Vector(0, 0, 0)
-        bullet.Tracer = 0
-        bullet.Force = 10
-        bullet.Damage = math.random(10, 20)
-        userid:FireBullets(bullet)
-        weapon:EmitSound("weapons/fireaxe/fireaxe_impact1.wav")
-    else
-        weapon:EmitSound("weapons/iceaxe/iceaxe_swing1.wav")
-        weapon:SendWeaponAnim(ACT_VM_SWINGMISS)
-    end
-end
+SWEP.Primary.Damage = 20
+
+SWEP.EventTable = {
+	[ACT_VM_DRAW] = {
+		{time = 0, type = "sound", value = Sound("YURIE_RUSTALPHA.Draw")}
+	},
+}
+
+SWEP.StatusLengthOverride = {
+	[ACT_VM_DRAW] = 0.75,
+}
+
+SWEP.Primary.MaxCombo = -1
+SWEP.Primary.Attacks = {
+	{
+		["act"] = ACT_VM_PRIMARYATTACK, -- Animation; ACT_VM_THINGY, ideally something unique per-sequence
+		["len"] = 16 * 3, -- Trace distance
+		["dir"] = Vector(0, 0, 0), -- Trace arc cast
+		["dmg"] = SWEP.Primary.Damage, --Damage
+		["dmgtype"] = DMG_CRUSH, --DMG_SLASH,DMG_CRUSH, etc.
+		["delay"] = 1.25, --Delay
+		["spr"] = false, --Allow attack while sprinting?
+		["snd"] = Sound("YURIE_RUSTALPHA.Melee.Swing"),
+		["snd_delay"] = 1.15,
+		["viewpunch"] = Angle(0, 0, 0), --viewpunch angle
+		["end"] = 1.95, --time before next attack
+		["hull"] = 16, --Hullsize
+		["direction"] = "F", --Swing dir,
+		["hitflesh"] = "",
+		["hitworld"] = "",
+		["combotime"] = 0
+	}
+}
+
+SWEP.SecondaryAttack = function() end
+
+SWEP.AllowSprintAttack = false
+SWEP.RunSightsPos = Vector(0, 0, 0)
+SWEP.RunSightsAng = Vector(-15, 0, 0)
+
+SWEP.InspectPos = Vector(0, 0, 0)
+SWEP.InspectAng = Vector(0, 0, 0)
+
+SWEP.HoldType = "melee2"
+
+SWEP.Offset = {
+	Pos = {
+		Up = 2,
+		Right = 2,
+		Forward = 1.5
+	},
+	Ang = {
+		Up = 0,
+		Right = 0,
+		Forward = 90
+	},
+	Scale = 1
+}

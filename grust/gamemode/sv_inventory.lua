@@ -40,7 +40,7 @@ function AddToInventory(ply, item, alter)
 end
 
 hook.Add("PlayerUse", "WeaponEquipExample", function(ply, ent)
-     /*if IsValid(ent) and ent ~= NULL then
+    --[[if IsValid(ent) and ent ~= NULL then
         AddToInventory(ply, {
             Name = ent.PrintName,
             WepClass = ent:GetClass(),
@@ -53,7 +53,7 @@ hook.Add("PlayerUse", "WeaponEquipExample", function(ply, ent)
         net.WriteTable(ply.Inventory)
         net.Send(ply)
         --return false
-    end*/
+    end]]
 end)
 
 hook.Remove("PlayerButtonDown", "KeyDown_Minimap")
@@ -95,7 +95,7 @@ function InitializeInventory(ply)
 
     AddToInventory(ply, {
         Name = "Torch",
-        WepClass = "tfa_rustalpha_torch",
+        WepClass = "weapon_torch",
         Mdl = "models/weapons/yurie_rustalpha/wm-torch-irp.mdl",
         Ammo_New = "ar2",
         Amount = 1,

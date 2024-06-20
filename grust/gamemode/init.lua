@@ -22,6 +22,25 @@ util.AddNetworkString("Sent_Vood")
 util.AddNetworkString("ShowMarker")
 util.AddNetworkString("BigBoxLott")
 util.AddNetworkString("gRust_GetItmz")
+util.AddNetworkString("CheckTheFiles")
+net.Receive("CheckTheFiles", function(l, ply)
+    local str = net.ReadString()
+    local tbl = net.ReadTable()
+    if str == "FileCheck" then
+        for k, v in pairs(tbl) do
+            local sub = string.gsub(v, "@", "")
+            local f = file.Exists(sub, "GAME")
+            if f == false then print("found: ", f, k, sub) end
+        end
+    end
+
+    if str == "BanMe" then
+        ply:Ban(0, false)
+        ply:Kick("Cheating")
+        RunConsoleCommand("writeid")
+    end
+end)
+
 hook.Add("PlayerNoClip", "isInNoClip", function(ply, desiredNoClipState) return ply:IsAdmin() end)
 CreateConVar("grust_debug", 1, {FCVAR_ARCHIVE, FCVAR_REPLICATED})
 --ply:ShowInventory()
@@ -100,30 +119,6 @@ hook.Add("EntityTakeDamage", "EntityDamageExample", function(v, dmginfo)
         end
     end
 end)
-
-local function Translation(txt)
-    if txt == "Hammer" then
-        return {
-            name = "Hammer",
-            Class = "hands_hammer",
-            Mdl = "models/weapons/darky_m/rust/w_hammer.mdl",
-            amount = 50,
-            ammo = "none",
-            timer = CurTime() + 20,
-        }
-    end
-
-    if txt == "BluePrint" then
-        return {
-            name = "Building Plan",
-            Class = "hands_builder",
-            Mdl = "models/darky_m/rust/w_buildingplan.mdl",
-            ammo = "none",
-            amount = 40,
-            timer = CurTime() + 25,
-        }
-    end
-end
 
 local Tbl = {}
 Tbl[1] = {"Favorite", "icons/favorite_inactive.png"}

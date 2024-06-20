@@ -302,7 +302,7 @@ hook.Add("PlayerButtonDown", "Buttondown", function(ply, button)
         tone_butn = tone_butn - 1
         if GetSlot_Slots(tonumber(tone_butn)) == nil then
             net.Start("inv_give")
-            net.WriteString(GetSlot_Slots(3))
+            net.WriteString(GetSlot_Slots(2))
             net.SendToServer()
             return
         end

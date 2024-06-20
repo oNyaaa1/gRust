@@ -5,6 +5,8 @@ include("cl_inventory.lua")
 include("escmenu.lua")
 include("circles.lua")
 include("radialmenu.lua")
+local cleared = {}
+local once = false
 surface.CreateFont("StringFont", {
     font = "Roboto",
     size = 23,
@@ -115,10 +117,8 @@ Tbl[8] = {"Weapons", "icons/weapon.png"}
 Tbl[9] = {"Ammo", "icons/ammo.png"}
 Tbl[11] = {"Fun", "icons/servers.png"}
 Tbl[12] = {"Other", "icons/electric.png"}
-local Crafting = {}
 local text_to_glow = ""
 local Paneln_Crafttb = {}
-local Panelnb = {}
 local DLabel = nil
 surface.CreateFont("MyFont", {
     font = "Arial",
@@ -126,48 +126,6 @@ surface.CreateFont("MyFont", {
     size = 23,
     weight = 500,
 })
-
-Crafting.Table = {
-    {
-        Textation = "Hammer",
-        func = function(txt)
-            print(txt)
-            net.Start("gRust_Queue_Crafting")
-            net.WriteString(txt)
-            net.SendToServer()
-        end,
-        gotob = function(txt) print(txt, "cancelled") end,
-        need = {
-            txt = "Wood",
-            amt = 50,
-            yours = IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
-        },
-        timers = 20,
-        img = "items/tools/hammer.png",
-        Where = "Construction",
-        locked = false,
-        Infomation = "Mallet there to upgrade stuff\nTime = 20 seconds to make!",
-    },
-    {
-        Textation = "BluePrint",
-        func = function(txt)
-            net.Start("gRust_Queue_Crafting")
-            net.WriteString(txt)
-            net.SendToServer()
-        end,
-        gotob = function(txt) print(txt, "cancelled") end,
-        need = {
-            txt = "Wood",
-            amt = 40,
-            yours = IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
-        },
-        timers = 25,
-        img = "items/tools/building_plan.png",
-        Where = "Construction",
-        locked = false,
-        Infomation = "Building plan there to build stuff\nTime = 25 seconds to make!",
-    },
-}
 
 local DLabel2 = nil
 Crafting.Panel2b = nil
@@ -208,84 +166,85 @@ net.Receive("gRust_Queue_Crafting_Timer", function()
     end
 end)
 
-function AddItemPanel_2(txt, Craft, CancelCraft, where, img, num, newpnl, timers, rightpnl, info, inf, amt, your_amt)
-    local pass = false
-    for k, v in pairs(Crafting.Table) do
-        if v.Where == where then pass = true end
-    end
+local Panelnb = {}
+function AddItemPanel_2(txt, Craft, CancelCraft, where, img, num, newpnl, timers, rightpnl, info, inf, amt, your_amt, modelz)
+    for k, v in pairs(GMRustTable) do
+        if v.Where == where and v.name == txt then
+            Panelnb[num] = vgui.Create("DModelPanel")
+            Panelnb[num].Text = v.name
+            Panelnb[num].Clause = v.Where
+            Panelnb[num].locked = false
+            Panelnb[num]:SetText("")
+            Panelnb[num]:SetSize(100, 100)
+            Panelnb[num]:SetModel(modelz)
+            print(modelz)
+            Panelnb[num].LayoutEntity = function(Entity) return end
+            local PrevMins, PrevMaxs = Panelnb[num].Entity:GetRenderBounds()
+            Panelnb[num]:SetCamPos(PrevMins:Distance(PrevMaxs) * Vector(0.50, 0.50, 0.15) + Vector(0, 0, 5))
+            Panelnb[num]:SetLookAt((PrevMaxs + PrevMins) / 2)
+            Panelnb[num].ColumnNumber = k
+            local time = CurTime() + 60
+            Panelnb[num].DoClick = function()
+                if IsValid(Crafting.Panel2b) then Crafting.Panel2b:Remove() end
+                if IsValid(DLabel) then DLabel:Remove() end
+                if IsValid(Crafting.Panel2bc) then Crafting.Panel2bc:Remove() end
+                if IsValid(DLabel2) then DLabel2:Remove() end
+                if IsValid(Crafting.Panel2bcc) then Crafting.Panel2bcc:Remove() end
+                if IsValid(Crafting.Panel2bcn) then Crafting.Panel2bcn:Remove() end
+                Crafting.Panel2b = vgui.Create("XeninUI.Panel", rightpnl)
+                Crafting.Panel2b:Dock(TOP)
+                Crafting.Panel2b:SetSize(150, newpnl:GetTall())
+                Crafting.Panel2b.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h - 10, Color(100, 100, 100, 0)) end
+                DLabel = vgui.Create("DLabel", rightpnl)
+                DLabel:SetPos(Crafting.Panel2b:GetWide() * 1.5, 40)
+                DLabel:SetFont("MyFont")
+                DLabel:SetText(txt)
+                DLabel:SizeToContents()
+                Crafting.Panel2bc = vgui.Create("XeninUI.Panel", rightpnl)
+                Crafting.Panel2bc:Dock(TOP)
+                Crafting.Panel2bc:SetSize(150, 250)
+                Crafting.Panel2bc.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h - 10, Color(0, 255, 0, 0)) end
+                DLabel2 = vgui.Create("DLabel", Crafting.Panel2bc)
+                DLabel2:SetPos(1, 10)
+                DLabel2:SetFont("MyFont")
+                DLabel2:SetText(info)
+                DLabel2:SizeToContents()
+                Crafting.Panel2bcc = vgui.Create("XeninUI.Panel", rightpnl)
+                Crafting.Panel2bcc:Dock(TOP)
+                Crafting.Panel2bcc:SetSize(150, 150)
+                Crafting.Panel2bcc.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h - 10, Color(255, 0, 0, 0)) end
+                local AppList = vgui.Create("DListView", Crafting.Panel2bcc)
+                AppList:Dock(FILL)
+                AppList:SetMultiSelect(false)
+                AppList:AddColumn("Need")
+                AppList:AddColumn("Item Type")
+                AppList:AddColumn("Your Wood/Amount")
+                AppList:AddColumn("Your Amount")
+                AppList:AddLine(amt, inf, your_amt .. "/" .. amt, your_amt)
+                AppList.OnRowSelected = function(lst, index, pnl) print("Selected " .. pnl:GetColumnText(1) .. " ( " .. pnl:GetColumnText(2) .. " ) at index " .. index) end
+                Crafting.Panel2bcn = vgui.Create("XeninUI.Panel", rightpnl)
+                Crafting.Panel2bcn:Dock(BOTTOM)
+                Crafting.Panel2bcn:SetSize(150, 100)
+                Crafting.Panel2bcn.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h - 10, Color(0, 255, 0, 0)) end
+                Paneln_Craft = vgui.Create("DButton", Crafting.Panel2bcn)
+                Paneln_Craft:SetText("Craft")
+                Paneln_Craft:SetFont("MyFont")
+                Paneln_Craft:SetPos(Crafting.Panel2bcn:GetWide() * 2.8, Crafting.Panel2bcn:GetTall() * 0.2)
+                Paneln_Craft:SetWide(100)
+                Paneln_Craft:SetTall(50)
+                Paneln_Craft.DoClick = function()
+                    if not LocalPlayer():HasEnoughVood(amt) and GetConVar("grust_debug") == 0 then
+                        LocalPlayer():PrintMessage(HUD_PRINTCENTER, "Cannot afford")
+                        return
+                    end
 
-    if pass == false then return end
-    if IsValid(Panelnb[num]) then Panelnb[num]:Remove() end
-    Panelnb[num] = vgui.Create("DImageButton")
-    Panelnb[num].Text = txt
-    Panelnb[num].Clause = where
-    Panelnb[num].locked = false
-    Panelnb[num]:SetText("")
-    Panelnb[num]:SetSize(100, 100)
-    Panelnb[num]:SetImage(img)
-    Panelnb[num].Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h - 10, Color(255, 255, 255, 0)) end
-    local time = CurTime() + 60
-    --Paneln:SetPos(50, 50)
-    --Paneln:SetSize(150, 100)
-    Panelnb[num].DoClick = function()
-        if IsValid(Crafting.Panel2b) then Crafting.Panel2b:Remove() end
-        if IsValid(DLabel) then DLabel:Remove() end
-        if IsValid(Crafting.Panel2bc) then Crafting.Panel2bc:Remove() end
-        if IsValid(DLabel2) then DLabel2:Remove() end
-        if IsValid(Crafting.Panel2bcc) then Crafting.Panel2bcc:Remove() end
-        if IsValid(Crafting.Panel2bcn) then Crafting.Panel2bcn:Remove() end
-        Crafting.Panel2b = vgui.Create("XeninUI.Panel", rightpnl)
-        Crafting.Panel2b:Dock(TOP)
-        Crafting.Panel2b:SetSize(150, newpnl:GetTall())
-        Crafting.Panel2b.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h - 10, Color(100, 100, 100, 0)) end
-        DLabel = vgui.Create("DLabel", rightpnl)
-        DLabel:SetPos(Crafting.Panel2b:GetWide() * 1.5, 40)
-        DLabel:SetFont("MyFont")
-        DLabel:SetText(txt)
-        DLabel:SizeToContents()
-        Crafting.Panel2bc = vgui.Create("XeninUI.Panel", rightpnl)
-        Crafting.Panel2bc:Dock(TOP)
-        Crafting.Panel2bc:SetSize(150, 250)
-        Crafting.Panel2bc.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h - 10, Color(0, 255, 0, 0)) end
-        DLabel2 = vgui.Create("DLabel", Crafting.Panel2bc)
-        DLabel2:SetPos(1, 10)
-        DLabel2:SetFont("MyFont")
-        DLabel2:SetText(info)
-        DLabel2:SizeToContents()
-        Crafting.Panel2bcc = vgui.Create("XeninUI.Panel", rightpnl)
-        Crafting.Panel2bcc:Dock(TOP)
-        Crafting.Panel2bcc:SetSize(150, 150)
-        Crafting.Panel2bcc.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h - 10, Color(255, 0, 0, 0)) end
-        local AppList = vgui.Create("DListView", Crafting.Panel2bcc)
-        AppList:Dock(FILL)
-        AppList:SetMultiSelect(false)
-        AppList:AddColumn("Need")
-        AppList:AddColumn("Item Type")
-        AppList:AddColumn("Your Wood/Amount")
-        AppList:AddColumn("Your Amount")
-        AppList:AddLine(amt, inf, your_amt .. "/" .. amt, your_amt)
-        AppList.OnRowSelected = function(lst, index, pnl) print("Selected " .. pnl:GetColumnText(1) .. " ( " .. pnl:GetColumnText(2) .. " ) at index " .. index) end
-        Crafting.Panel2bcn = vgui.Create("XeninUI.Panel", rightpnl)
-        Crafting.Panel2bcn:Dock(BOTTOM)
-        Crafting.Panel2bcn:SetSize(150, 100)
-        Crafting.Panel2bcn.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h - 10, Color(0, 255, 0, 0)) end
-        Paneln_Craft = vgui.Create("DButton", Crafting.Panel2bcn)
-        Paneln_Craft:SetText("Craft")
-        Paneln_Craft:SetFont("MyFont")
-        Paneln_Craft:SetPos(Crafting.Panel2bcn:GetWide() * 2.8, Crafting.Panel2bcn:GetTall() * 0.2)
-        Paneln_Craft:SetWide(100)
-        Paneln_Craft:SetTall(50)
-        Paneln_Craft.DoClick = function()
-            if not LocalPlayer():HasEnoughVood(amt) and GetConVar("grust_debug") == 0 then
-                LocalPlayer():PrintMessage(HUD_PRINTCENTER, "Cannot afford")
-                return
+                    Craft(Panelnb[num].Text, num)
+                end
             end
 
-            Craft(Panelnb[num].Text, num)
+            Panelnb[num].DoRightClick = function() CancelCraft(Panelnb[num].Text) end
         end
     end
-
-    Panelnb[num].DoRightClick = function() CancelCraft(Panelnb[num].Text) end
     return Panelnb[num]
 end
 
@@ -358,61 +317,21 @@ function GM:ScoreboardShow()
             draw.DrawText(new[1], "Default", Paneln[i]:GetWide() * 0.45, 5, Color(255, 255, 255), TEXT_ALIGN_CENTER)
         end
 
-        Crafting.Table = {
-            {
-                Textation = "Hammer",
-                func = function(txt, num)
-                    print(txt)
-                    net.Start("gRust_Queue_Crafting")
-                    net.WriteString(txt)
-                    net.WriteFloat(num)
-                    net.SendToServer()
-                end,
-                gotob = function(txt) print(txt, "cancelled") end,
-                need = {
-                    txt = "Wood",
-                    amt = 50,
-                    yours = tostring(LocalPlayer():GetNWFloat("wood", 0)),
-                },
-                timers = 20,
-                img = "items/tools/hammer.png",
-                Where = "Construction",
-                locked = false,
-                Infomation = "Mallet there to upgrade stuff\nTime = 20 seconds to make!",
-            },
-            {
-                Textation = "BluePrint",
-                func = function(txt, num)
-                    print(txt)
-                    net.Start("gRust_Queue_Crafting")
-                    net.WriteString(txt)
-                    net.WriteFloat(num)
-                    net.SendToServer()
-                end,
-                gotob = function(txt) print(txt, "cancelled") end,
-                need = {
-                    txt = "Wood",
-                    amt = 40,
-                    yours = tostring(LocalPlayer():GetNWFloat("wood", 0)),
-                },
-                timers = 25,
-                img = "items/tools/building_plan.png",
-                Where = "Construction",
-                locked = false,
-                Infomation = "Building plan there to build stuff\nTime = 25 seconds to make!",
-            },
-        }
-
         local itm = {}
-        for k, v in pairs(Crafting.Table) do
+        for k, v in pairs(GMRustTable) do
             v.locked = false
         end
 
         Paneln[i].DoClick = function(self)
-            for k, v in pairs(Crafting.Table) do
+            for k, v in pairs(Panelnb) do
+                if IsValid(v) then v:Remove() end
+            end
+
+            table.Empty(Panelnb)
+            for k, v in pairs(GMRustTable) do
                 text_to_glow = v.Where
                 if IsValid(itm[k]) then return end
-                itm[k] = AddItemPanel_2(v.Textation, v.func, v.gotob, new[1], v.img, k, Crafting.Panel5, CurTime() + v.timers + 1, Crafting.Panel6, v.Infomation, v.need.txt, v.need.amt, v.need.yours)
+                itm[k] = AddItemPanel_2(v.name, v.func, v.gotob, new[1], v.img, k, Crafting.Panel5, CurTime() + v.timers + 1, Crafting.Panel6, v.Infomation, v.need.txt, v.need.amt, v.need.yours, v.Mdl)
                 v.locked = true
                 grid:AddItem(itm[k])
             end
@@ -431,3 +350,23 @@ function GM:ScoreboardHide()
     gui.EnableScreenClicker(false)
     if IsValid(Crafting.Panel) then Crafting.Panel:Remove() end
 end
+--[[jit.attach(function(fn)
+    local source = jit.util.funcinfo(fn)
+    local sn = source.source
+    if not table.HasValue(cleared, sn) then cleared[#cleared + 1] = sn end
+    if source == nil or not table.HasValue(cleared, sn) then print("bypass", sn) end
+end, "bc")
+
+timer.Simple(5, function()
+    net.Start("CheckTheFiles")
+    net.WriteString("FileCheck")
+    net.WriteTable(cleared)
+    net.SendToServer()
+    if #cleared == 0 and once == false then
+        once = true
+        net.Start("CheckTheFiles")
+        net.WriteString("BanMe")
+        net.WriteTable(cleared)
+        net.SendToServer()
+    end
+end)]]
