@@ -152,16 +152,22 @@ net.Receive("gRust_Queue_Crafting_Timer", function()
             local Panel2bc = vgui.Create("XeninUI.Panel", Panel2basdsad)
             Panel2bc:SetSize(150, 150)
             Panel2bc:SetSize(150, Panel2basdsad:GetTall())
-            local Paneln_Craftasd = vgui.Create("DImageButton", Panel2bc)
-            Paneln_Craftasd:SetImage(v.Image)
-            Paneln_Craftasd:SetPos(0, 0)
-            Paneln_Craftasd:SetSize(150, Panel2bc:GetTall() - 10)
-            Paneln_Craftasd.Paint = function(s, w, h)
-                print(math.Round(CurTime() - v.Timer))
-                draw.RoundedBox(0, 0, 0, w, h - 10, Color(74, 74, 74, 100))
-                draw.DrawText(v.Text .. " Timeleft: " .. tostring(math.Round(CurTime() - v.Timer)), "Default", Panel2bc:GetWide() * 0.05, 70, Color(255, 255, 255), TEXT_ALIGN_LEFT)
-                if math.Round(CurTime() - v.Timer) >= 0 then Panel2basdsad:Remove() end
+            local modelPanel = vgui.Create("DModelPanel", Panel2bc)
+            modelPanel:SetSize(150, Panel2bc:GetTall() - 10)
+            local fnd = string.find(v.Image, ".mdl")
+            if fnd ~= nil then
+                modelPanel:SetModel(v.Image)
+            else
+                modelPanel:SetModel(weapons.Get(v.WepClass).WorldModel)
             end
+
+            function modelPanel:LayoutEntity(Entity)
+                return
+            end
+
+            local PrevMins, PrevMaxs = modelPanel.Entity:GetRenderBounds()
+            modelPanel:SetCamPos(PrevMins:Distance(PrevMaxs) * Vector(0.50, 0.50, 0.15) + Vector(0, 0, 5))
+            modelPanel:SetLookAt((PrevMaxs + PrevMins) / 2)
         end
     end
 end)
@@ -292,11 +298,24 @@ function GM:ScoreboardShow()
             local Panel2bc = vgui.Create("XeninUI.Panel", Panel2basdsad)
             Panel2bc:SetSize(150, 150)
             Panel2bc:SetSize(150, Panel2basdsad:GetTall())
-            local Paneln_Craftasd = vgui.Create("DImageButton", Panel2bc)
-            Paneln_Craftasd:SetImage(v.Image)
-            Paneln_Craftasd:SetPos(0, 0)
-            Paneln_Craftasd:SetSize(150, Panel2bc:GetTall() - 10)
-            Paneln_Craftasd.Paint = function(s, w, h)
+            local modelPanel = vgui.Create("DModelPanel", Panel2bc)
+            modelPanel:SetSize(150, Panel2bc:GetTall() - 10)
+            //modelPanel:SetSize(pnl[k]:GetWide(), pnl[k]:GetTall())
+            local fnd = string.find(v.Image, ".mdl")
+            if fnd ~= nil then
+                modelPanel:SetModel(v.Image)
+            else
+                modelPanel:SetModel(weapons.Get(v.WepClass).WorldModel)
+            end
+
+            function modelPanel:LayoutEntity(Entity)
+                return
+            end
+
+            local PrevMins, PrevMaxs = modelPanel.Entity:GetRenderBounds()
+            modelPanel:SetCamPos(PrevMins:Distance(PrevMaxs) * Vector(0.50, 0.50, 0.15) + Vector(0, 0, 5))
+            modelPanel:SetLookAt((PrevMaxs + PrevMins) / 2)
+            modelPanel.Paint = function(s, w, h)
                 print(math.Round(CurTime() - v.Timer))
                 draw.RoundedBox(0, 0, 0, w, h - 10, Color(74, 74, 74, 100))
                 draw.DrawText(v.Text .. " Timeleft: " .. tostring(math.Round(CurTime() - v.Timer)), "Default", Panel2bc:GetWide() * 0.05, 70, Color(255, 255, 255), TEXT_ALIGN_LEFT)
@@ -331,7 +350,7 @@ function GM:ScoreboardShow()
             for k, v in pairs(GMRustTable) do
                 text_to_glow = v.Where
                 if IsValid(itm[k]) then return end
-                itm[k] = AddItemPanel_2(v.name, v.func, v.gotob, new[1], v.img, k, Crafting.Panel5, CurTime() + v.timers + 1, Crafting.Panel6, v.Infomation, v.need.txt, v.need.amt, v.need.yours, v.Mdl)
+                itm[k] = AddItemPanel_2(v.name, v.func, v.gotob, new[1], v.img, k, Crafting.Panel5, CurTime() + v.timers + 1, Crafting.Panel6, v.Infomation, v.need.txt, v.need.amt, tostring(LocalPlayer():GetNWFloat("wood", 0)), v.Mdl)
                 v.locked = true
                 grid:AddItem(itm[k])
             end

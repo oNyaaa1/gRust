@@ -135,7 +135,7 @@ Tbl[12] = {"Other", "icons/electric.png"}
 net.Receive("gRust_Queue_Crafting", function(len, ply)
     local rs = net.ReadString()
     local timerz = net.ReadFloat()
-    local trans = Translation(rs)
+    local trans = BluePrint_Get(rs)
     if GetConVar("grust_debug"):GetFloat() == 1 then
         AddToInventory(ply, {
             Name = trans.name,
@@ -146,17 +146,17 @@ net.Receive("gRust_Queue_Crafting", function(len, ply)
         })
         return
     end
-
+    
     if not ply:HasEnoughVood(trans.amount) then return end
     ply:DeductVood(trans.amount)
     net.Start("gRust_Queue_Crafting_Timer")
-    net.WriteFloat(trans.timer)
+    net.WriteFloat(trans.timers)
     net.WriteString(trans.Mdl)
     net.WriteString(trans.name)
-    net.WriteFloat(trans.timer)
+    net.WriteFloat(trans.timers)
     net.WriteFloat(timerz)
     net.Send(ply)
-    timer.Simple(trans.timer, function()
+    timer.Simple(trans.timers, function()
         AddToInventory(ply, {
             Name = trans.name,
             WepClass = trans.Class,

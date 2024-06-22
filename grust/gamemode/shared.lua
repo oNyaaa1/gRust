@@ -1,10 +1,18 @@
 DeriveGamemode("base")
 GM.Name = "gRust | Modded"
-GMRustTable = {}
-Crafting = {}
+GMRustTable = GMRustTable or {}
+Crafting = Crafting or {}
 Translation = function(txt) return GMRustTable[txt] or {} end
 function BluePrint_Make(txt, tbl)
     GMRustTable[txt] = tbl
+end
+
+function BluePrint_Get(txt)
+    local data = {}
+    for k, v in pairs(GMRustTable) do
+        if v.name == txt then data = v end
+    end
+    return data
 end
 
 BluePrint_Make("Hammer", {

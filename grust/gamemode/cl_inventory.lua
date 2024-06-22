@@ -111,7 +111,6 @@ local inv = function()
     end
 
     for k, v in pairs(inventory.Test) do
-        print(v.Amount)
         local modelPanel = vgui.Create("DModelPanel", pnl[k])
         modelPanel:SetSize(pnl[k]:GetWide(), pnl[k]:GetTall())
         local fnd = string.find(v.Mdl, ".mdl")
