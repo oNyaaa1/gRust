@@ -1,7 +1,6 @@
 local meta = FindMetaTable("Player")
 function meta:HasEnoughVood(amt)
-    local wood = tonumber(self:GetNWFloat("wood", 0)) >= tonumber(amt) or 0
-    return wood
+    return tonumber(self:GetNWFloat("wood", 0)) >= tonumber(amt)
 end
 
 function meta:GetEnoughVood()
@@ -26,6 +25,11 @@ end
 
 function meta:DeductMetal(amt)
     return self:SetNWFloat("metal", self:GetNWFloat("metal", 0) - amt)
+end
+
+function meta:HasEnoughStone(amt)
+    local wood = tonumber(self:GetNWFloat("stone", 0)) >= tonumber(amt)
+    return wood
 end
 
 function meta:GetEnoughStone()

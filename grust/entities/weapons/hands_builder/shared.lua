@@ -94,10 +94,7 @@ function SWEP:PrimaryAttack()
     if SERVER then
         local ply = self:GetOwner()
         if not IsValid(ply) then return end
-        local debugb = 0
-        if GetConVar("grust_debug"):GetFloat() == 0 then debugb = 1 end
-        if not ply:HasEnoughVood(25) and debugb == 1 then return end
-        if SERVER then
+        if ply:HasEnoughVood(25) then
             local Pos, Angl
             local Position = math.Round(360 - ply:GetAngles().y % 360)
             local twig = ents.Create(ModelFN)
@@ -115,8 +112,8 @@ function SWEP:PrimaryAttack()
             ply:EmitSound("building/hammer_saw_1.wav")
             -- end
             ply:DeductVood(25)
-            --ply:EmitSound("zohart/building/hammer-saw-1.wav")
         end
+        --ply:EmitSound("zohart/building/hammer-saw-1.wav")
     end
 
     if self:GetOwner():IsPlayer() then self:GetOwner():LagCompensation(false) end

@@ -87,7 +87,15 @@ hook.Add("EntityTakeDamage", "EntityDamageExample", function(v, dmginfo)
         if IsValid(ply) and IsValid(wep) and IsValid(ent) and string.find(wep:GetClass(), "hatchet") or string.find(wep:GetClass(), "rock") and ent.StackWood <= 100 then
             --local str, str2 = string.find(ply:GetEyeTrace().Entity:GetClass(), "sent_"), string.find(ply:GetEyeTrace().Entity:GetClass(), "rust_")
             --if str or str2 then return end
-            ent.StackWood = ent.StackWood + math.random(1, 5)
+            if wep:GetClass() == "metal_hatchet" then
+                ent.StackWood = ent.StackWood + mah.random(15, 20)
+            elseif wep:GetClass() == "tfa_rustalpha_stone_hatchet" then
+                ent.StackWood = ent.StackWood + math.random(10, 15)
+            else
+                ent.StackWood = ent.StackWood + math.random(1, 5)
+            end
+
+            print(ent.StackWood)
             ply.Counter_Vood = math.random(5, 9)
             ply:SetEnoughVood(ply.Counter_Vood)
             net.Start("Sent_Vood")
@@ -146,9 +154,12 @@ net.Receive("gRust_Queue_Crafting", function(len, ply)
         })
         return
     end
-    
-    if not ply:HasEnoughVood(trans.amount) then return end
-    ply:DeductVood(trans.amount)
+
+    --PrintTable(trans)                                          .amt)
+    if not ply:HasEnoughVood(trans.need.amt or 0) then return end
+    if not ply:HasEnoughStone(trans.need2.amt or 0) then return end
+    ply:DeductVood(trans.need.amt or 0)
+    ply:DeductStone(trans.need2.amt or 0)
     net.Start("gRust_Queue_Crafting_Timer")
     net.WriteFloat(trans.timers)
     net.WriteString(trans.Mdl)
@@ -156,15 +167,15 @@ net.Receive("gRust_Queue_Crafting", function(len, ply)
     net.WriteFloat(trans.timers)
     net.WriteFloat(timerz)
     net.Send(ply)
-    timer.Simple(trans.timers, function()
-        AddToInventory(ply, {
-            Name = trans.name,
-            WepClass = trans.Class,
-            Mdl = trans.Mdl,
-            Ammo_New = trans.ammo,
-            Amount = 1,
-        })
-    end)
+    -- timer.Simple(trans.timers, function()
+    AddToInventory(ply, {
+        Name = trans.name,
+        WepClass = trans.Class,
+        Mdl = trans.Mdl,
+        Ammo_New = trans.ammo,
+        Amount = 1,
+    })
+    -- end)
 end)
 
 function GM:GetFallDamage()

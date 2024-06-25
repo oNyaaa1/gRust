@@ -173,7 +173,7 @@ net.Receive("gRust_Queue_Crafting_Timer", function()
 end)
 
 local Panelnb = {}
-function AddItemPanel_2(txt, Craft, CancelCraft, where, img, num, newpnl, timers, rightpnl, info, inf, amt, your_amt, modelz)
+function AddItemPanel_2(txt, Craft, CancelCraft, where, img, num, newpnl, timers, rightpnl, info, inf, amt, inf2, amt2, your_amt, modelz)
     for k, v in pairs(GMRustTable) do
         if v.Where == where and v.name == txt then
             Panelnb[num] = vgui.Create("DModelPanel")
@@ -226,7 +226,13 @@ function AddItemPanel_2(txt, Craft, CancelCraft, where, img, num, newpnl, timers
                 AppList:AddColumn("Item Type")
                 AppList:AddColumn("Your Wood/Amount")
                 AppList:AddColumn("Your Amount")
-                AppList:AddLine(amt, inf, your_amt .. "/" .. amt, your_amt)
+                if inf2 ~= "" then
+                    AppList:AddLine(amt, inf, your_amt .. "/" .. amt, your_amt)
+                    AppList:AddLine(amt, inf2, your_amt .. "/" .. amt2, your_amt)
+                else
+                    AppList:AddLine(amt, inf, your_amt .. "/" .. amt, your_amt)
+                end
+
                 AppList.OnRowSelected = function(lst, index, pnl) print("Selected " .. pnl:GetColumnText(1) .. " ( " .. pnl:GetColumnText(2) .. " ) at index " .. index) end
                 Crafting.Panel2bcn = vgui.Create("XeninUI.Panel", rightpnl)
                 Crafting.Panel2bcn:Dock(BOTTOM)
@@ -300,7 +306,7 @@ function GM:ScoreboardShow()
             Panel2bc:SetSize(150, Panel2basdsad:GetTall())
             local modelPanel = vgui.Create("DModelPanel", Panel2bc)
             modelPanel:SetSize(150, Panel2bc:GetTall() - 10)
-            //modelPanel:SetSize(pnl[k]:GetWide(), pnl[k]:GetTall())
+            --modelPanel:SetSize(pnl[k]:GetWide(), pnl[k]:GetTall())
             local fnd = string.find(v.Image, ".mdl")
             if fnd ~= nil then
                 modelPanel:SetModel(v.Image)
@@ -350,7 +356,12 @@ function GM:ScoreboardShow()
             for k, v in pairs(GMRustTable) do
                 text_to_glow = v.Where
                 if IsValid(itm[k]) then return end
-                itm[k] = AddItemPanel_2(v.name, v.func, v.gotob, new[1], v.img, k, Crafting.Panel5, CurTime() + v.timers + 1, Crafting.Panel6, v.Infomation, v.need.txt, v.need.amt, tostring(LocalPlayer():GetNWFloat("wood", 0)), v.Mdl)
+                if v.need2 == nil then
+                    itm[k] = AddItemPanel_2(v.name, v.func, v.gotob, new[1], v.img, k, Crafting.Panel5, CurTime() + v.timers + 1, Crafting.Panel6, v.Infomation, v.need.txt, v.need.amt, "", "", tostring(LocalPlayer():GetNWFloat("wood", 0)), v.Mdl)
+                else
+                    itm[k] = AddItemPanel_2(v.name, v.func, v.gotob, new[1], v.img, k, Crafting.Panel5, CurTime() + v.timers + 1, Crafting.Panel6, v.Infomation, v.need.txt, v.need.amt, v.need2.txt, v.need2.amt, tostring(LocalPlayer():GetNWFloat("wood", 0)), v.Mdl)
+                end
+
                 v.locked = true
                 grid:AddItem(itm[k])
             end
