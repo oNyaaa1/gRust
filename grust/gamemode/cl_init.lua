@@ -41,6 +41,9 @@ net.Receive("Sent_Vood", function()
     BarMove = seeds
 end)
 
+local testmterial = Material("icons/health.png")
+local armor = Material("icons/cup.png")
+local hungr = Material("icons/medical.png")
 local function hud()
     local ply = LocalPlayer()
     local hp = LocalPlayer():Health()
@@ -52,9 +55,6 @@ local function hud()
     local ar = LocalPlayer():Armor()
     local scrw = ScrW()
     local scrh = ScrH()
-    local testmterial = Material("icons/health.png")
-    local armor = Material("icons/cup.png")
-    local hungr = Material("icons/medical.png")
     local smoothHP = Lerp((SysTime() - start) / animationTime, oldhp, newhp)
     local smoothAR = Lerp((SysTime() - startar) / animationTime, oldar, newar)
     if hp <= 0 then return end
@@ -95,6 +95,15 @@ local function hud()
     surface.SetDrawColor(255, 255, 255, 255)
     surface.SetMaterial(armor)
     surface.DrawTexturedRect(ScrW() - 303, scrh - 125, 30, 30)
+    local tr = LocalPlayer():GetEyeTrace().Entity
+    if not tr and tr:GetPos():Distance2DSqr(LocalPlayer():GetPos()) <= 50 then return end
+    if string.find(tr:GetClass(), "sent") then
+        local posying = tr:GetPos():ToScreen()
+        surface.SetDrawColor(255, 255, 255, 255)
+        surface.SetMaterial(testmterial)
+        surface.DrawTexturedRect(posying.x - 103, posying.y - 160, 25, 25)
+        draw.DrawText(tostring(math.Round(tr:GetNWInt("health_" .. tr:GetClass()))), "StringFont", posying.x - 63, posying.y - 160, Color(255, 255, 255))
+    end
     --[[local wep = ply:GetActiveWeapon()
     if !IsValid(wep) or !ply:Alive() or !wep:IsWeapon() then 
         return 

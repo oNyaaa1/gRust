@@ -156,10 +156,10 @@ net.Receive("gRust_Queue_Crafting", function(len, ply)
     end
 
     --PrintTable(trans)                                          .amt)
-    if not ply:HasEnoughVood(trans.need.amt or 0) then return end
-    if not ply:HasEnoughStone(trans.need2.amt or 0) then return end
-    ply:DeductVood(trans.need.amt or 0)
-    ply:DeductStone(trans.need2.amt or 0)
+    if trans.need ~= nil and not ply:HasEnoughVood(trans.need.amt or 0) then return end
+    if trans.need2 ~= nil and not ply:HasEnoughStone(trans.need2.amt or 0) then return end
+    if trans.need ~= nil then ply:DeductVood(trans.need.amt or 0) end
+    if trans.need2 ~= nil then ply:DeductStone(trans.need2.amt or 0) end
     net.Start("gRust_Queue_Crafting_Timer")
     net.WriteFloat(trans.timers)
     net.WriteString(trans.Mdl)
