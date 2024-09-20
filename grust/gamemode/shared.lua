@@ -1,5 +1,5 @@
 DeriveGamemode("base")
-GM.Name = "gRust | Modded"
+GM.Name = "gRust | By oNyaaaa"
 GMRustTable = GMRustTable or {}
 Crafting = Crafting or {}
 Translation = function(txt) return GMRustTable[txt] or {} end

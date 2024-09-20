@@ -114,7 +114,7 @@ if CLIENT then
 			local Panelnb = {}
 			local pnl = {}
 			if IsValid(frame) then frame:Remove() end
-			frame = vgui.Create("XeninUI.Frame")
+			frame = vgui.Create("DFrame")
 			frame:SetSize(600, 550)
 			frame:Center()
 			frame:MakePopup()
@@ -125,7 +125,7 @@ if CLIENT then
 			grid:SetColWide(140)
 			grid:SetRowHeight(160)
 			for i = 1, 12 do
-				pnl[i] = vgui.Create("XeninUI.Panel")
+				pnl[i] = vgui.Create("DPanel")
 				pnl[i]:SetSize(130, 150)
 				pnl[i].Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h, Color(255, 255, 255)) end
 				grid:AddItem(pnl[i])

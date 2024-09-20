@@ -18,7 +18,7 @@ if SERVER then
 			{
 				Name = "Scrap",
 				WepClass = "none",
-				Mdl = "materials/items/resources/scrap.png",
+				Mdl = "models/environment/misc/loot_bag.mdl",
 				Ammo_New = "none",
 				Amount = math.random(5, 8),
 			},

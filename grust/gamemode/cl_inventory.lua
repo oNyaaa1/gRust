@@ -114,10 +114,10 @@ local inv = function()
         local modelPanel = vgui.Create("DModelPanel", pnl[k])
         modelPanel:SetSize(pnl[k]:GetWide(), pnl[k]:GetTall())
         local fnd = string.find(v.Mdl, ".mdl")
-        if fnd ~= nil then
-            modelPanel:SetModel(v.Mdl)
+        if fnd == nil then
+            modelPanel:SetModel("models/environment/misc/loot_bag.mdl")
         else
-            modelPanel:SetModel(weapons.Get(v.WepClass).WorldModel)
+            modelPanel:SetModel(v.Mdl) //weapons.Get(v.WepClass).WorldModel or "")
         end
 
         function modelPanel:LayoutEntity(Entity)
@@ -142,7 +142,7 @@ local inv = function()
                 surface.SetDrawColor(80, 76, 70, 121)
                 surface.DrawRect(0, 0, w, h)
             end
-            
+
             local DLabel = vgui.Create("DLabel", framen)
             DLabel:SetPos(10, 10)
             DLabel:SetFont("MyFont")
@@ -165,6 +165,7 @@ local inv = function()
                         local modelPanel = vgui.Create("DModelPanel", Panel2[i])
                         modelPanel:SetSize(Panel2[i]:GetWide() - 100, Panel2[i]:GetTall() - 100)
                         local fnd = string.find(v.Mdl, ".mdl")
+                        
                         if fnd then
                             modelPanel:SetModel(v.Mdl)
                         else

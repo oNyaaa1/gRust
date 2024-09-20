@@ -23,6 +23,7 @@ util.AddNetworkString("ShowMarker")
 util.AddNetworkString("BigBoxLott")
 util.AddNetworkString("gRust_GetItmz")
 util.AddNetworkString("CheckTheFiles")
+/*
 net.Receive("CheckTheFiles", function(l, ply)
     local str = net.ReadString()
     local tbl = net.ReadTable()
@@ -40,6 +41,8 @@ net.Receive("CheckTheFiles", function(l, ply)
         RunConsoleCommand("writeid")
     end
 end)
+
+*/
 
 hook.Add("PlayerNoClip", "isInNoClip", function(ply, desiredNoClipState) return ply:IsAdmin() end)
 CreateConVar("grust_debug", 1, {FCVAR_ARCHIVE, FCVAR_REPLICATED})
@@ -59,6 +62,7 @@ hook.Add("PlayerSpawn", "SetUpModel", function(ply)
 
     ply:DropToFloor()
     ply:SetModel("models/player/darky_m/rust/hazmat.mdl")
+    ply:SetHealth(math.random(45,73))
 end)
 
 hook.Add("PlayerInitialSpawn", "changemap", function(ply)

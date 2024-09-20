@@ -97,7 +97,7 @@ local function hud()
     surface.DrawTexturedRect(ScrW() - 303, scrh - 125, 30, 30)
     local tr = LocalPlayer():GetEyeTrace().Entity
     if not tr and tr:GetPos():Distance2DSqr(LocalPlayer():GetPos()) <= 50 then return end
-    if string.find(tr:GetClass(), "sent") then
+    if string.find(tr:GetClass(), "sent") and not string.find(tr:GetClass(), "sent_rock") then
         local posying = tr:GetPos():ToScreen()
         surface.SetDrawColor(255, 255, 255, 255)
         surface.SetMaterial(testmterial)
@@ -140,6 +140,7 @@ local DLabel2 = nil
 Crafting.Panel2b = nil
 Crafting.Panel2bc = nil
 Crafting.Panel2bcc = nil
+Crafting.Panel5 = nil
 net.Receive("gRust_Queue_Crafting_Timer", function()
     local timerz = net.ReadFloat()
     local img = net.ReadString()
@@ -155,10 +156,10 @@ net.Receive("gRust_Queue_Crafting_Timer", function()
 
     if table.Count(Paneln_Crafttb) > 0 then
         for k, v in pairs(Paneln_Crafttb) do
-            local Panel2basdsad = vgui.Create("XeninUI.Panel", Crafting.Panel5)
+            local Panel2basdsad = vgui.Create("DPanel", Crafting.Panel5)
             Panel2basdsad:Dock(LEFT)
             Panel2basdsad:SetSize(150, Crafting.Panel5:GetTall())
-            local Panel2bc = vgui.Create("XeninUI.Panel", Panel2basdsad)
+            local Panel2bc = vgui.Create("DPanel", Panel2basdsad)
             Panel2bc:SetSize(150, 150)
             Panel2bc:SetSize(150, Panel2basdsad:GetTall())
             local modelPanel = vgui.Create("DModelPanel", Panel2bc)
@@ -206,7 +207,7 @@ function AddItemPanel_2(txt, Craft, CancelCraft, where, img, num, newpnl, timers
                 if IsValid(DLabel2) then DLabel2:Remove() end
                 if IsValid(Crafting.Panel2bcc) then Crafting.Panel2bcc:Remove() end
                 if IsValid(Crafting.Panel2bcn) then Crafting.Panel2bcn:Remove() end
-                Crafting.Panel2b = vgui.Create("XeninUI.Panel", rightpnl)
+                Crafting.Panel2b = vgui.Create("DPanel", rightpnl)
                 Crafting.Panel2b:Dock(TOP)
                 Crafting.Panel2b:SetSize(150, newpnl:GetTall())
                 Crafting.Panel2b.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h - 10, Color(100, 100, 100, 0)) end
@@ -215,7 +216,7 @@ function AddItemPanel_2(txt, Craft, CancelCraft, where, img, num, newpnl, timers
                 DLabel:SetFont("MyFont")
                 DLabel:SetText(txt)
                 DLabel:SizeToContents()
-                Crafting.Panel2bc = vgui.Create("XeninUI.Panel", rightpnl)
+                Crafting.Panel2bc = vgui.Create("DPanel", rightpnl)
                 Crafting.Panel2bc:Dock(TOP)
                 Crafting.Panel2bc:SetSize(150, 250)
                 Crafting.Panel2bc.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h - 10, Color(0, 255, 0, 0)) end
@@ -224,7 +225,7 @@ function AddItemPanel_2(txt, Craft, CancelCraft, where, img, num, newpnl, timers
                 DLabel2:SetFont("MyFont")
                 DLabel2:SetText(info)
                 DLabel2:SizeToContents()
-                Crafting.Panel2bcc = vgui.Create("XeninUI.Panel", rightpnl)
+                Crafting.Panel2bcc = vgui.Create("DPanel", rightpnl)
                 Crafting.Panel2bcc:Dock(TOP)
                 Crafting.Panel2bcc:SetSize(150, 150)
                 Crafting.Panel2bcc.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h - 10, Color(255, 0, 0, 0)) end
@@ -243,7 +244,7 @@ function AddItemPanel_2(txt, Craft, CancelCraft, where, img, num, newpnl, timers
                 end
 
                 AppList.OnRowSelected = function(lst, index, pnl) print("Selected " .. pnl:GetColumnText(1) .. " ( " .. pnl:GetColumnText(2) .. " ) at index " .. index) end
-                Crafting.Panel2bcn = vgui.Create("XeninUI.Panel", rightpnl)
+                Crafting.Panel2bcn = vgui.Create("DPanel", rightpnl)
                 Crafting.Panel2bcn:Dock(BOTTOM)
                 Crafting.Panel2bcn:SetSize(150, 100)
                 Crafting.Panel2bcn.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h - 10, Color(0, 255, 0, 0)) end
@@ -271,7 +272,7 @@ end
 
 function GM:ScoreboardShow()
     gui.EnableScreenClicker(true)
-    Crafting.Panel = vgui.Create("XeninUI.Panel")
+    Crafting.Panel = vgui.Create("DPanel")
     Crafting.Panel:SetPos(50, 50)
     Crafting.Panel:SetSize(ScrW() - 100, ScrH() - 300)
     Crafting.Panel.Paint = function(s, w, h)
@@ -280,22 +281,23 @@ function GM:ScoreboardShow()
     end
 
     Crafting.Panel:Center()
-    Crafting.Panel2 = vgui.Create("XeninUI.Panel", Crafting.Panel)
+    Crafting.Panel2 = vgui.Create("DPanel", Crafting.Panel)
     Crafting.Panel2:SetPos(0, 1)
     Crafting.Panel2:SetSize(Crafting.Panel:GetWide() / 2 + 200, Crafting.Panel:GetTall())
-    Crafting.Panel3 = vgui.Create("XeninUI.Panel", Crafting.Panel2)
+    Crafting.Panel2.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h, Color(74, 74, 74, 0)) end
+    Crafting.Panel3 = vgui.Create("DPanel", Crafting.Panel2)
     Crafting.Panel3:SetPos(0, 1)
     Crafting.Panel3:SetSize(Crafting.Panel2:GetWide() / 2 - 150, Crafting.Panel2:GetTall() - 100)
     Crafting.Panel3.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h, Color(74, 74, 74, 0)) end
-    Crafting.Panel4 = vgui.Create("XeninUI.Panel", Crafting.Panel2)
+    Crafting.Panel4 = vgui.Create("DPanel", Crafting.Panel2)
     Crafting.Panel4:SetPos(Crafting.Panel3:GetWide() + 10, 1)
     Crafting.Panel4:SetSize(Crafting.Panel2:GetWide(), Crafting.Panel2:GetTall() - 100)
     Crafting.Panel4.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h, Color(74, 74, 74, 100)) end
-    Crafting.Panel5 = vgui.Create("XeninUI.Panel", Crafting.Panel2)
+    Crafting.Panel5 = vgui.Create("DPanel", Crafting.Panel2)
     Crafting.Panel5:Dock(BOTTOM)
     Crafting.Panel5:SetSize(Crafting.Panel2:GetWide(), Crafting.Panel2:GetTall() - 510)
     Crafting.Panel5.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h, Color(74, 74, 74, 100)) end
-    Crafting.Panel6 = vgui.Create("XeninUI.Panel", Crafting.Panel)
+    Crafting.Panel6 = vgui.Create("DPanel", Crafting.Panel)
     Crafting.Panel6:Dock(RIGHT)
     Crafting.Panel6:SetSize(Crafting.Panel2:GetWide() / 2 + 60, Crafting.Panel2:GetTall() - 510)
     Crafting.Panel6.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h, Color(74, 74, 74, 100)) end
@@ -307,10 +309,10 @@ function GM:ScoreboardShow()
     local Paneln = {}
     if table.Count(Paneln_Crafttb) > 0 then
         for k, v in pairs(Paneln_Crafttb) do
-            local Panel2basdsad = vgui.Create("XeninUI.Panel", Crafting.Panel5)
+            local Panel2basdsad = vgui.Create("DPanel", Crafting.Panel5)
             Panel2basdsad:Dock(LEFT)
             Panel2basdsad:SetSize(150, Crafting.Panel5:GetTall())
-            local Panel2bc = vgui.Create("XeninUI.Panel", Panel2basdsad)
+            local Panel2bc = vgui.Create("DPanel", Panel2basdsad)
             Panel2bc:SetSize(150, 150)
             Panel2bc:SetSize(150, Panel2basdsad:GetTall())
             local modelPanel = vgui.Create("DModelPanel", Panel2bc)
