@@ -32,7 +32,7 @@ function meta:AddToInventory(item)
     local ammo1 = GetAmmoForCurrentWeapon(self)
     for k, v in pairs(inv) do
         if v.Class == item:GetClass() then
-            amount = v.Amount + 1
+            amount = v.Amount + math.random(3,5)
             tbl.Name = item.Name
             tbl.Class = item:GetClass() or ""
             tbl.WepClass = item:GetClass() or ""
@@ -45,8 +45,8 @@ function meta:AddToInventory(item)
     end
 
     if altered == false then
-        amount = 1
-        tbl.Name = item:GetName()
+        amount = math.random(3,5)
+        tbl.Name = item.Name
         tbl.Class = item:GetClass() or ""
         tbl.WepClass = item:GetClass() or ""
         tbl.Mdl = item:GetModel() or ""
@@ -70,7 +70,7 @@ function meta:AddToInventoryWood()
     local ammo1 = GetAmmoForCurrentWeapon(self)
     for k, v in pairs(inv) do
         if v.Class == "rust_wood" then
-            amount = v.Amount + 1
+            amount = v.Amount + 25
             tbl.Name = "Wood"
             tbl.Class = "rust_wood" or ""
             tbl.WepClass = "rust_wood" or ""
@@ -83,7 +83,7 @@ function meta:AddToInventoryWood()
     end
 
     if altered == false then
-        amount = 1
+        amount = 25
         tbl.Name = "Wood"
         tbl.Class = "rust_wood" or ""
         tbl.WepClass = "rust_wood" or ""
@@ -102,7 +102,7 @@ end
 
 local function WhatRock(ply, inv, skins)
     local tbl = {}
-    local amount = 1
+    local amount = math.random(25,30)
     local ammo1 = GetAmmoForCurrentWeapon(ply)
     -- 1 metal, 2 sulfur, 3 Rock
     local gRust_Rocks = ""
@@ -133,7 +133,7 @@ function meta:AddToInventoryRocks(skins)
     local ammo1 = GetAmmoForCurrentWeapon(self)
     for k, v in pairs(inv) do
         if v.Class == "sent_rocks" and v.Skins == skins then
-            amount = v.Amount + 1
+            amount = v.Amount + math.random(25,30)
             local gRust_Rocks = "Metal"
             if skins == 2 then
                 gRust_Rocks = "Sulfur"

@@ -72,7 +72,7 @@ function PANEL:AddButton(text, imgn, func)
     img:SetImage(imgn)
     img:SetPos(self.button:GetWide() * 0.1, self.button:GetTall() * 0.2)
     img:SetSize(24, 24)
-    func(self.PanelLeftr, nil, "Inventory")
+    if text == "Inventory" then func(self.PanelLeftr, nil, "Inventory") end
 end
 
 vgui.Register("gRust_Panel", PANEL, "DPanel")
