@@ -1,5 +1,6 @@
 util.AddNetworkString("SendInventory")
 util.AddNetworkString("ForgiveMeInventory")
+util.AddNetworkString("Craft_BP")
 local MaxInventory = 42
 function IsInventoryFull(ply)
     local yup = 0
@@ -23,6 +24,11 @@ function GetAmmoForCurrentWeapon(ply)
     if not IsValid(wep) then return -1 end
     return ply:GetAmmoCount(wep:GetPrimaryAmmoType())
 end
+
+net.Receive("Craft_BP", function(l,ply)
+    local str = net.ReadString()
+    print(str)
+end)
 
 function meta:AddToInventory(item)
     local inv = self.inv or {}

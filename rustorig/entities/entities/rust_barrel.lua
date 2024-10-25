@@ -30,11 +30,11 @@ function ENT:Initialize()
 	self:SetMaxHealth(50)
 	self:SetBodygroup(1, math.random(0, 1))
 	self:PrecacheGibs()
-	local Type = BarrelTypes[math.random(#BarrelTypes)]
-	self:SetHealth(Type.Health)
-	self:SetMaxHealth(Type.Health)
-	self:SetColor(Type.Color)
-	self:SetBodygroup(1, Type.Bodygroup)
+	self.Type = BarrelTypes[math.random(#BarrelTypes)]
+	self:SetHealth(self.Type.Health)
+	self:SetMaxHealth(self.Type.Health)
+	self:SetColor(self.Type.Color)
+	self:SetBodygroup(1, self.Type.Bodygroup)
 	self.Time = 0
 end
 
@@ -87,9 +87,12 @@ end
 
 function ENT:OnTakeDamage(dmg)
 	if SERVER then
-		self:SpawnLoot()
-		self:RecoveryTime(self:GetPos())
-		self:GibBreakClient(VectorRand() * 100)
-		self:Remove()
+		self.Type.Health = self.Type.Health - dmg:GetDamage()
+		if self.Type.Health <= 0 then
+			self:SpawnLoot()
+			self:RecoveryTime(self:GetPos())
+			self:GibBreakClient(VectorRand() * 100)
+			self:Remove()
+		end
 	end
 end

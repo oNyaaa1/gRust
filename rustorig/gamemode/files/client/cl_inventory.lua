@@ -19,9 +19,11 @@ Tbl[8] = {"Weapons", "icons/weapon.png"}
 Tbl[9] = {"Ammo", "icons/ammo.png"}
 Tbl[11] = {"Fun", "icons/servers.png"}
 Tbl[12] = {"Other", "icons/electric.png"}
+local vgui_New
 net.Receive("ForgiveMeInventory", function()
     local tbln = net.ReadTable()
-    local vgui_New = vgui.Create("gRust_Panel")
+    if vgui_New then vgui_New:Remove() end
+    vgui_New = vgui.Create("gRust_Panel")
     vgui_New:SetSize(Scr_W / 2 + 135, Scr_H / 2 + 240)
     vgui_New:Center()
     vgui_New:AddButton("Inventory", "grustorig/inventory.png", function(self, val, text)
@@ -80,6 +82,9 @@ net.Receive("ForgiveMeInventory", function()
                 draw.DrawText(v[1], "Trebuchet24", w * 0.2, h * 0.2, Color(255, 255, 255), TEXT_ALIGN_LEFT)
             end
 
+            local modelPanelnm = vgui.Create("DImageButton", self.button)
+            modelPanelnm:SetSize(32, 32)
+            modelPanelnm:SetImage(v[2])
             self.button.DoClick = function(val)
                 if not DPanel2 then DPanel2 = {} end
                 for a, b in pairs(GMRustTable) do
@@ -99,15 +104,39 @@ net.Receive("ForgiveMeInventory", function()
                         self.button2:SetText("")
                         self.button2:SetTall(98)
                         self.button2.Paint = function(s, w, h)
-                            if not s:IsHovered() then
-                                draw.RoundedBox(0, 0, 0, w, h, Color(52, 152, 219))
-                            else
-                                draw.RoundedBox(0, 0, 0, w, h, Color(41, 128, 185))
-                            end
-
+                            draw.RoundedBox(0, 0, 0, w, h, Color(41, 128, 185))
                             draw.DrawText(tostring(bp.name), "StringFont2", 0, h - 15, Color(255, 255, 255), TEXT_ALIGN_LEFT)
                         end
 
+                        self.button2.DoClick = function()
+                            net.Start("Craft_BP")
+                            net.WriteString(b.name)
+                            net.SendToServer()
+                        end
+
+                        local modelPanel = vgui.Create("DModelPanel", self.button2)
+                        modelPanel:SetSize(self.button2:GetWide(), self.button2:GetTall())
+                        print(b.Mdl)
+                        local fnd = string.find(b.Mdl, ".mdl")
+                        if fnd == nil then
+                            modelPanel:SetModel("models/environment/misc/loot_bag.mdl")
+                        else
+                            modelPanel:SetModel(b.Mdl) --weapons.Get(v.WepClass).WorldModel or "")
+                        end
+
+                        function modelPanel:LayoutEntity(Entity)
+                            return
+                        end
+
+                        modelPanel.DoClick = function()
+                            net.Start("Craft_BP")
+                            net.WriteString(b.name)
+                            net.SendToServer()
+                        end
+
+                        local PrevMins, PrevMaxs = modelPanel.Entity:GetRenderBounds()
+                        modelPanel:SetCamPos(PrevMins:Distance(PrevMaxs) * Vector(0.50, 0.50, 0.15) + Vector(0, 0, 5))
+                        modelPanel:SetLookAt((PrevMaxs + PrevMins) / 2)
                         grid:AddItem(DPanel2[a])
                     end
                 end
