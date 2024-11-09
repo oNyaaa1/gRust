@@ -25,9 +25,27 @@ function GetAmmoForCurrentWeapon(ply)
     return ply:GetAmmoCount(wep:GetPrimaryAmmoType())
 end
 
-net.Receive("Craft_BP", function(l,ply)
+function meta:GetInventory()
+    return util.JSONToTable(file.Read("ginv/inventory_" .. self:SteamID64() .. ".txt", "DATA"))
+end
+
+function meta:GetItem(item)
+    local inv = self:GetInventory()
+    for k, v in pairs(inv) do
+        if v.Name == item then return v end
+    end
+end
+
+net.Receive("Craft_BP", function(l, ply)
     local str = net.ReadString()
-    print(str)
+    local plymeta = ply:GetItem("Wood")
+    ply.bp = BluePrint_Get(str)
+    if plymeta.Amount >= ply.bp.need.amt then
+        timer.Create("Create" .. tostring(str), ply.bp.timers, 1, function()
+            ply:Give(ply.bp.Class)
+            timer.Remove("Create" .. tostring(str))
+        end)
+    end
 end)
 
 function meta:AddToInventory(item)
@@ -38,7 +56,7 @@ function meta:AddToInventory(item)
     local ammo1 = GetAmmoForCurrentWeapon(self)
     for k, v in pairs(inv) do
         if v.Class == item:GetClass() then
-            amount = v.Amount + math.random(3,5)
+            amount = v.Amount + math.random(3, 5)
             tbl.Name = item.Name
             tbl.Class = item:GetClass() or ""
             tbl.WepClass = item:GetClass() or ""
@@ -51,7 +69,7 @@ function meta:AddToInventory(item)
     end
 
     if altered == false then
-        amount = math.random(3,5)
+        amount = math.random(3, 5)
         tbl.Name = item.Name
         tbl.Class = item:GetClass() or ""
         tbl.WepClass = item:GetClass() or ""
@@ -83,6 +101,7 @@ function meta:AddToInventoryWood()
             tbl.Mdl = "models/props_debris/wood_board04a.mdl" or ""
             tbl.Ammo_New = ammo1 or 0
             tbl.Amount = amount or 0
+            self:SetNWFloat("wood", amount)
             inv[k] = tbl
             altered = true
         end
@@ -96,6 +115,7 @@ function meta:AddToInventoryWood()
         tbl.Mdl = "models/props_debris/wood_board04a.mdl" or ""
         tbl.Ammo_New = ammo1 or 0
         tbl.Amount = amount or 0
+        self:SetNWFloat("wood", amount)
         inv[#inv + 1] = tbl
     end
 
@@ -108,7 +128,7 @@ end
 
 local function WhatRock(ply, inv, skins)
     local tbl = {}
-    local amount = math.random(25,30)
+    local amount = math.random(25, 30)
     local ammo1 = GetAmmoForCurrentWeapon(ply)
     -- 1 metal, 2 sulfur, 3 Rock
     local gRust_Rocks = ""
@@ -139,7 +159,7 @@ function meta:AddToInventoryRocks(skins)
     local ammo1 = GetAmmoForCurrentWeapon(self)
     for k, v in pairs(inv) do
         if v.Class == "sent_rocks" and v.Skins == skins then
-            amount = v.Amount + math.random(25,30)
+            amount = v.Amount + math.random(25, 30)
             local gRust_Rocks = "Metal"
             if skins == 2 then
                 gRust_Rocks = "Sulfur"
@@ -192,6 +212,8 @@ end)
 hook.Add("PlayerInitialSpawn", "InventoryLoadout", function(ply) ply.inv = ply:FirstCreateInv() end)
 hook.Add("PlayerSpawn", "GiveITems", function(ply)
     ply.inv = ply:FirstCreateInv()
+    local plymeta = ply:GetItem("Wood")
+    ply:GetNWFloat("wood", plymeta.Amount)
     ply:Give("weapon_rock")
     ply:Give("weapon_torch")
     for k, v in pairs(ents.FindInSphere(ply:GetPos(), 10)) do

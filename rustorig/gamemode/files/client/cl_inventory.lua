@@ -109,14 +109,15 @@ net.Receive("ForgiveMeInventory", function()
                         end
 
                         self.button2.DoClick = function()
-                            net.Start("Craft_BP")
-                            net.WriteString(b.name)
-                            net.SendToServer()
+                            Derma_Query("Craft?", "Craft:", "Yes", function()
+                                net.Start("Craft_BP")
+                                net.WriteString(b.name)
+                                net.SendToServer()
+                            end, "No", function() end)
                         end
 
                         local modelPanel = vgui.Create("DModelPanel", self.button2)
                         modelPanel:SetSize(self.button2:GetWide(), self.button2:GetTall())
-                        print(b.Mdl)
                         local fnd = string.find(b.Mdl, ".mdl")
                         if fnd == nil then
                             modelPanel:SetModel("models/environment/misc/loot_bag.mdl")
@@ -129,9 +130,11 @@ net.Receive("ForgiveMeInventory", function()
                         end
 
                         modelPanel.DoClick = function()
-                            net.Start("Craft_BP")
-                            net.WriteString(b.name)
-                            net.SendToServer()
+                            Derma_Query("Craft?", "Craft:", "Yes", function()
+                                net.Start("Craft_BP")
+                                net.WriteString(b.name)
+                                net.SendToServer()
+                            end, "No", function() end)
                         end
 
                         local PrevMins, PrevMaxs = modelPanel.Entity:GetRenderBounds()

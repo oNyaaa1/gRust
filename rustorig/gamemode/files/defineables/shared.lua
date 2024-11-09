@@ -12,6 +12,14 @@ function BluePrint_Get(txt)
     end
     return data
 end
+local meta = FindMetaTable("Player")
+function meta:GetEnoughVood()
+    return self:GetNWFloat("wood",0)
+end
+
+function meta:HasEnoughVood(amt)
+    return self:GetNWFloat("wood",0) >= amt
+end
 
 BluePrint_Make("Hammer", {
     name = "Hammer",
@@ -19,7 +27,7 @@ BluePrint_Make("Hammer", {
     Mdl = "models/weapons/darky_m/rust/w_hammer.mdl",
     amount = 50,
     ammo = "none",
-    timers = CurTime() + 20,
+    timers = 20,
     func = function(txt)
         print(txt)
         net.Start("gRust_Queue_Crafting")
@@ -44,7 +52,7 @@ BluePrint_Make("BluePrint", {
     Mdl = "models/darky_m/rust/w_buildingplan.mdl",
     ammo = "none",
     amount = 40,
-    timers = CurTime() + 25,
+    timers = 25,
     func = function(txt)
         net.Start("gRust_Queue_Crafting")
         net.WriteString(txt)
@@ -68,7 +76,7 @@ BluePrint_Make("Salvaged Cleaver", {
     Mdl = "models/weapons/darky_m/rust/w_salvaged_Cleaver.mdl",
     ammo = "none",
     amount = 40,
-    timers = CurTime() + 25,
+    timers = 25,
     func = function(txt)
         net.Start("gRust_Queue_Crafting")
         net.WriteString(txt)
@@ -92,7 +100,7 @@ BluePrint_Make("Rocket Launcher", {
     Mdl = "models/weapons/darky_m/rust/w_rocketlauncher.mdl",
     ammo = "none",
     amount = 40,
-    timers = CurTime() + 25,
+    timers = 25,
     func = function(txt)
         net.Start("gRust_Queue_Crafting")
         net.WriteString(txt)
@@ -116,7 +124,7 @@ BluePrint_Make("Stone Hatchet", {
     Mdl = "models/weapons/yurie_rustalpha/wm-stonehatchet.mdl",
     ammo = "none",
     amount = 40,
-    timers = CurTime() + 25,
+    timers = 25,
     func = function(txt)
         net.Start("gRust_Queue_Crafting")
         net.WriteString(txt)
