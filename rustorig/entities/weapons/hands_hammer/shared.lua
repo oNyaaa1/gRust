@@ -54,7 +54,7 @@ function SWEP:PrimaryAttack()
     local Build = {
         {
             sent = "sent_foundation",
-            Model = "models/building/wood_foundation.mdl"
+            Model = "models/galaxy/rust/wood_foundation.mdl", --"models/building/wood_foundation.mdl"
         },
         {
             sent = "sent_wall",
@@ -77,16 +77,26 @@ function SWEP:PrimaryAttack()
         et:SetAngles(Angle(0, rotation, 0))
     end
 
-    if et_own.What == "Wood" then
+    if et_own.What == "Wood" and self:GetOwner():GetNWFloat("wood", 0) >= 50 then
         if et and string.find(et:GetClass(), "sent_") then
-            for k, v in pairs(Build) do
-                if v.sent == et:GetClass() then et:SetModel(v.Model) end
+            for k, v in pairs(Build) do --models/galaxy/rust/wood_foundation.mdl
+                if v.sent == et:GetClass() then
+                    local spawn = ents.Create("sent_foundation")
+                    local obbmin = et:OBBMins()
+                    spawn:SetModel(v.Model)
+                    spawn:SetPos(et:GetPos() + Vector(0, 0, obbmin.z - 5))
+                    spawn:Spawn()
+                    spawn:Activate()
+                    constraint.Weld(spawn, Entity(0), 0, 0, 0, false, false)
+                    spawn.Ent_Health = 1000
+                    spawn.Ent_HealthMax = 1000
+                    spawn.PropOwned = self:GetOwner()
+                    et:Remove()
+                end
             end
 
             et_own:EmitSound("building/hammer_saw_1.wav")
-            et.Ent_Health = 1000
-            et.Ent_HealthMax = 1000
-            --ply:DeductVood(125)
+            self:GetOwner():DeductVood(50)
         end
     elseif et_own.What == "Stone" and string.find(et:GetClass(), "sent_") then
         --[[if et then

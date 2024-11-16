@@ -15,6 +15,9 @@ function meta:FirstCreateInv()
     if not file.IsDir("ginv", "DATA") then file.CreateDir("ginv") end
     if not file.Exists("ginv/inventory_" .. self:SteamID64() .. ".txt", "DATA") then file.Write("ginv/inventory_" .. self:SteamID64() .. ".txt", util.TableToJSON({})) end
     local inv = util.JSONToTable(file.Read("ginv/inventory_" .. self:SteamID64() .. ".txt", "DATA"))
+    net.Start("SendInventory")
+    net.WriteTable(inv)
+    net.Send(self)
     return inv
 end
 
@@ -126,6 +129,32 @@ function meta:AddToInventoryWood()
     file.Write("ginv/inventory_" .. self:SteamID64() .. ".txt", util.TableToJSON(inv))
 end
 
+function meta:RemoveInventoryWood(amt)
+    local inv = self.inv or {}
+    local tbl = {}
+    local amount = 0
+    local ammo1 = GetAmmoForCurrentWeapon(self)
+    for k, v in pairs(inv) do
+        if v.Class == "rust_wood" then
+            amount = v.Amount - amt
+            tbl.Name = "Wood"
+            tbl.Class = "rust_wood" or ""
+            tbl.WepClass = "rust_wood" or ""
+            tbl.Mdl = "models/props_debris/wood_board04a.mdl" or ""
+            tbl.Ammo_New = ammo1 or 0
+            tbl.Amount = amount or 0
+            self:SetNWFloat("wood", amount)
+            inv[k] = tbl
+        end
+    end
+
+    self.inv = inv
+    --net.Start("SendInventory")
+    --/net.WriteTable(inv)
+    -- n/et.Send(self)
+    file.Write("ginv/inventory_" .. self:SteamID64() .. ".txt", util.TableToJSON(inv))
+end
+
 local function WhatRock(ply, inv, skins)
     local tbl = {}
     local amount = math.random(25, 30)
@@ -201,7 +230,7 @@ hook.Add("EntityTakeDamage", "EntityDamageExample", function(ent, dmginfo)
     if not IsValid(ply) then return end
     local wep = ply:GetActiveWeapon()
     if not string.find(wep:GetClass(), "hachet") and string.find(wep:GetClass(), "pickaxe") and string.find(wep:GetClass(), "rock") then return end
-    if MAT[ent:GetMaterialType()] == "MAT_WOOD" then
+    if MAT[ent:GetMaterialType()] == "MAT_WOOD" and not string.find(ent:GetClass(), "sent_") then
         if not IsValid(ply) then return end
         ply:AddToInventoryWood()
     end
@@ -209,11 +238,11 @@ hook.Add("EntityTakeDamage", "EntityDamageExample", function(ent, dmginfo)
     if ent:GetClass() == "sent_rocks" then ply:AddToInventoryRocks(ent:GetSkin()) end
 end)
 
-hook.Add("PlayerInitialSpawn", "InventoryLoadout", function(ply) ply.inv = ply:FirstCreateInv() end)
+--hook.Add("PlayerInitialSpawn", "InventoryLoadout", function(ply) ply.inv = ply:FirstCreateInv() end)
 hook.Add("PlayerSpawn", "GiveITems", function(ply)
     ply.inv = ply:FirstCreateInv()
     local plymeta = ply:GetItem("Wood")
-    ply:GetNWFloat("wood", plymeta.Amount)
+    ply:SetNWFloat("wood", plymeta.Amount)
     ply:Give("weapon_rock")
     ply:Give("weapon_torch")
     for k, v in pairs(ents.FindInSphere(ply:GetPos(), 10)) do

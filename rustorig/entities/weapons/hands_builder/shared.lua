@@ -80,7 +80,6 @@ local function IWasHereFirst(ply)
     if not table.HasValue(SlotTaken, ply.ReadVec) then table.insert(SlotTaken, ply.ReadVec) end
     local aassda = false
     for i, jpg in pairs(ents.FindInSphere(ply.ReadVec, 0.1)) do
-        print(i, jpg)
     end
     return aassda
 end
@@ -139,8 +138,10 @@ if CLIENT then
     end
 
     local function IsStandingOn(ent, what)
-        for k, v in pairs(ents.FindInSphere(ent:GetPos(), 1000)) do
-            if v:GetPos():Distance(ent:GetPos()) <= 50 and v:GetClass() == what then --print( v )
+        for k, v in pairs(ents.FindInSphere(ent:GetPos(), 50)) do
+            --print(v:GetPos():Distance(ent:GetPos())) // v:GetPos():Distance(ent:GetPos()) <= 50 and
+            if v:GetPos():Distance(ent:GetPos()) <= 150 and v:GetClass() == what then --print( v )
+                print(v:GetClass(), what, v)
                 return v
             end
         end
@@ -163,9 +164,9 @@ if CLIENT then
         if wep:GetClass() ~= "hands_builder" then return end
         if key == 15 and Timer_s_grust < CurTime() then
             Timer_s_grust = CurTime() + 0.5
-            if up >= -80 then up = 0 end
-            up = up + 10
-            hooks_key = up
+            --if up >= -80 then up = 0 end
+            --up = up + 10
+            --hooks_key = up
         end
     end)
 
@@ -205,17 +206,19 @@ if CLIENT then
                 local owne = own:GetEyeTrace()
                 if not owne then return end
                 local edgy = 130
+                local obbmin = entOnGround:OBBMaxs()
+                local whatthen = obbmin.z - 15
                 if Position >= 1 and Position <= 40 or Position >= 320 and Position <= 360 then
-                    Pos = Vector(entOnGround:GetPos().x + edgy, entOnGround:GetPos().y, entOnGround:GetPos().z)
+                    Pos = Vector(entOnGround:GetPos().x + edgy, entOnGround:GetPos().y, entOnGround:GetPos().z + whatthen)
                     Angl = 0
                 elseif Position > 50 and Position < 120 then
-                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y - edgy, entOnGround:GetPos().z)
+                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y - edgy, entOnGround:GetPos().z + whatthen)
                     Angl = 270
                 elseif Position > 146 and Position < 217 then
-                    Pos = Vector(entOnGround:GetPos().x - edgy, entOnGround:GetPos().y, entOnGround:GetPos().z)
+                    Pos = Vector(entOnGround:GetPos().x - edgy, entOnGround:GetPos().y, entOnGround:GetPos().z + whatthen)
                     Angl = 0
                 elseif Position > 234 and Position < 310 then
-                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y + edgy, entOnGround:GetPos().z)
+                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y + edgy, entOnGround:GetPos().z + whatthen)
                     Angl = 270
                 end
                 return Pos, Angl
@@ -376,7 +379,7 @@ if CLIENT then
 
         local ply = self:GetOwner()
         local eyet = ply:GetEyeTrace()
-        if not eyet and not ply then return end
+        --if not eyet and not ply then return end
         --print( Map.Str )
         if Map.Str ~= "" then
             local model = Nests[Map.Str].Model

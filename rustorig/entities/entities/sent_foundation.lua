@@ -8,14 +8,14 @@ ENT.AdminOnly = false
 ENT.Models = "models/building_re/twig_foundation.mdl"
 if SERVER then
     function ENT:Initialize()
-        self.Entity:SetModel(self.Models) --"models/components/floor.mdl" )
+        //self.Entity:SetModel("")
         self:PhysicsInit(SOLID_VPHYSICS)
         self:SetMoveType(MOVETYPE_VPHYSICS)
         self:SetSolid(SOLID_VPHYSICS)
         local phys = self:GetPhysicsObject()
         if phys:IsValid() then
             phys:Wake()
-            phys:EnableMotion(false)
+            //phys:EnableMotion(false)
         end
 
         constraint.Weld(self, Entity(0), 0, 0, 0, true, true)
@@ -54,18 +54,6 @@ end ]]
     end
 
     function ENT:Use(btn, ply)
-    end
-
-    function ENT:StartTouch(entity)
-        return false
-    end
-
-    function ENT:EndTouch(entity)
-        return false
-    end
-
-    function ENT:Touch(entity)
-        return false
     end
 end
 
