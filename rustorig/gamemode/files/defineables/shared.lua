@@ -37,9 +37,11 @@ BluePrint_Make("Hammer", {
     end,
     gotob = function(txt) print(txt, "cancelled") end,
     need = {
-        txt = "Wood",
-        amt = 50,
-        yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
+        {
+            txt = "Wood",
+            amt = 50,
+            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
+        },
     },
     img = "items/tools/hammer.png",
     Where = "Construction",
@@ -61,9 +63,11 @@ BluePrint_Make("BluePrint", {
     end,
     gotob = function(txt) print(txt, "cancelled") end,
     need = {
-        txt = "Wood",
-        amt = 40,
-        yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
+        {
+            txt = "Wood",
+            amt = 40,
+            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
+        },
     },
     img = "items/tools/building_plan.png",
     Where = "Construction",
@@ -85,9 +89,11 @@ BluePrint_Make("Salvaged Cleaver", {
     end,
     gotob = function(txt) print(txt, "cancelled") end,
     need = {
-        txt = "Metal Fragments",
-        amt = 40,
-        yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("metal", 0)) or 0,
+        {
+            txt = "Metal Fragments",
+            amt = 40,
+            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("metal", 0)) or 0,
+        },
     },
     img = "materials/items/weapons/salvaged_cleaver.png",
     Where = "Weapons",
@@ -109,9 +115,11 @@ BluePrint_Make("Rocket Launcher", {
     end,
     gotob = function(txt) print(txt, "cancelled") end,
     need = {
-        txt = "Metal Fragments",
-        amt = 40,
-        yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("metal", 0)) or 0,
+        {
+            txt = "Metal Fragments",
+            amt = 40,
+            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("metal", 0)) or 0,
+        },
     },
     img = "materials/items/weapons/salvaged_cleaver.png",
     Where = "Weapons",
@@ -133,14 +141,16 @@ BluePrint_Make("Stone Hatchet", {
     end,
     gotob = function(txt) print(txt, "cancelled") end,
     need = {
-        txt = "Wood",
-        amt = 30,
-        yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
-    },
-    need2 = {
-        txt = "Stone",
-        amt = 20,
-        yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("stone", 0)) or 0,
+        {
+            txt = "Wood",
+            amt = 30,
+            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
+        },
+        {
+            txt = "Stone",
+            amt = 20,
+            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("stone", 0)) or 0,
+        },
     },
     img = "materials/items/weapons/salvaged_cleaver.png",
     Where = "Tools",
@@ -162,9 +172,11 @@ BluePrint_Make("Syringe", {
     end,
     gotob = function(txt) print(txt, "cancelled") end,
     need = {
+        {
         txt = "Cloth",
         amt = 30,
         yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("cloth", 0)) or 0,
+        },
     },
     need2 = {},
     img = "materials/items/weapons/salvaged_cleaver.png",

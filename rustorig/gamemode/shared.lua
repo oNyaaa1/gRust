@@ -1,4 +1,4 @@
-DeriveGamemode("sandbox")
+DeriveGamemode("base")
 GM.Name = "Rust"
 
 local meta = FindMetaTable("Player")

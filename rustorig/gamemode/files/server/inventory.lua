@@ -29,11 +29,14 @@ function GetAmmoForCurrentWeapon(ply)
 end
 
 function meta:GetInventory()
-    return util.JSONToTable(file.Read("ginv/inventory_" .. self:SteamID64() .. ".txt", "DATA"))
+    local inv = NULL
+    if file.Exists("ginv/inventory_" .. self:SteamID64() .. ".txt", "DATA") then inv = util.JSONToTable(file.Read("ginv/inventory_" .. self:SteamID64() .. ".txt", "DATA")) end
+    return inv
 end
 
 function meta:GetItem(item)
     local inv = self:GetInventory()
+    if inv == NULL then return 0 end
     for k, v in pairs(inv) do
         if v.Name == item then return v end
     end
@@ -43,8 +46,15 @@ net.Receive("Craft_BP", function(l, ply)
     local str = net.ReadString()
     local plymeta = ply:GetItem("Wood")
     ply.bp = BluePrint_Get(str)
-    if plymeta.Amount >= ply.bp.need.amt then
-        timer.Create("Create" .. tostring(str), ply.bp.timers, 1, function()
+    if type(plymeta) == "table" then
+        for k, v in pairs(ply.bp.need) do
+            if plymeta.Amount >= v.amt then
+            if v.txt == "Stone" then ply:RemoveInventoryRocks(v.amt) end
+            if v.txt == "Wood" then ply:RemoveInventoryWood(v.amt) end
+            end
+        end
+
+        timer.Create("Create" .. tostring(str), ply.bp.timers, 0, function()
             ply:Give(ply.bp.Class)
             timer.Remove("Create" .. tostring(str))
         end)
@@ -216,6 +226,35 @@ function meta:AddToInventoryRocks(skins)
     file.Write("ginv/inventory_" .. self:SteamID64() .. ".txt", util.TableToJSON(inv))
 end
 
+function meta:RemoveInventoryRocks(skins, amt)
+    local inv = self.inv or {}
+    local tbl = {}
+    local amount = 0
+    local altered = false
+    local ammo1 = GetAmmoForCurrentWeapon(self)
+    for k, v in pairs(inv) do
+        if v.Class == "sent_rocks" and v.Skins == 3 then
+            amount = v.Amount - amt -- math.random(25, 30)
+            tbl.Name = "Rock"
+            tbl.Class = "sent_rocks" or ""
+            tbl.WepClass = "sent_rocks" or ""
+            tbl.Mdl = "models/environment/ores/ore_node_stage1.mdl" or ""
+            tbl.Ammo_New = ammo1 or 0
+            tbl.Amount = amount or 0
+            tbl.Skins = v.Skins
+            inv[k] = tbl
+            altered = true
+        end
+    end
+
+    if altered == false then inv = WhatRock(self, inv, skins) end
+    self.inv = inv
+    --net.Start("SendInventory")
+    -- net.WriteTable(inv)
+    -- net.Send(self)
+    file.Write("ginv/inventory_" .. self:SteamID64() .. ".txt", util.TableToJSON(inv))
+end
+
 local function BackwardsEnums(enumname)
     local backenums = {}
     for k, v in pairs(_G) do
@@ -238,16 +277,30 @@ hook.Add("EntityTakeDamage", "EntityDamageExample", function(ent, dmginfo)
     if ent:GetClass() == "sent_rocks" then ply:AddToInventoryRocks(ent:GetSkin()) end
 end)
 
---hook.Add("PlayerInitialSpawn", "InventoryLoadout", function(ply) ply.inv = ply:FirstCreateInv() end)
-hook.Add("PlayerSpawn", "GiveITems", function(ply)
+hook.Add("PlayerInitialSpawn", "InventoryLoadout", function(ply)
     ply.inv = ply:FirstCreateInv()
     local plymeta = ply:GetItem("Wood")
-    ply:SetNWFloat("wood", plymeta.Amount)
     ply:Give("weapon_rock")
     ply:Give("weapon_torch")
     for k, v in pairs(ents.FindInSphere(ply:GetPos(), 10)) do
         if v:GetClass() == "sent_rocks" then ply:SetPos(v:GetPos() + Vector(v:OBBMins().x, v:OBBMins().y, v:OBBMins().z + 12)) end
     end
+
+    if plymeta == nil then return end
+    ply:SetNWFloat("wood", plymeta.Amount)
+end)
+
+hook.Add("PlayerSpawn", "GiveITems", function(ply)
+    ply.inv = ply:FirstCreateInv()
+    ply:Give("weapon_rock")
+    ply:Give("weapon_torch")
+    for k, v in pairs(ents.FindInSphere(ply:GetPos(), 10)) do
+        if v:GetClass() == "sent_rocks" then ply:SetPos(v:GetPos() + Vector(v:OBBMins().x, v:OBBMins().y, v:OBBMins().z + 12)) end
+    end
+
+    local plymeta = ply:GetItem("Wood")
+    if plymeta == nil then return end
+    ply:SetNWFloat("wood", plymeta.Amount)
 end)
 
 hook.Add("PlayerUse", "USeInventory", function(ply, ent)
