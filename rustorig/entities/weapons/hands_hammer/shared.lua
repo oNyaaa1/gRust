@@ -81,17 +81,21 @@ function SWEP:PrimaryAttack()
         if et and string.find(et:GetClass(), "sent_") then
             for k, v in pairs(Build) do --models/galaxy/rust/wood_foundation.mdl
                 if v.sent == et:GetClass() then
-                    local spawn = ents.Create("sent_foundation")
-                    local obbmin = et:OBBMins()
-                    spawn:SetModel(v.Model)
-                    spawn:SetPos(et:GetPos() + Vector(0, 0, obbmin.z - 5))
-                    spawn:Spawn()
-                    spawn:Activate()
-                    constraint.Weld(spawn, Entity(0), 0, 0, 0, false, false)
-                    spawn.Ent_Health = 1000
-                    spawn.Ent_HealthMax = 1000
-                    spawn.PropOwned = self:GetOwner()
-                    et:Remove()
+                    if v.sent == "sent_foundation" then
+                        local spawn = ents.Create(v.sent)
+                        local obbmin = et:OBBMins()
+                        spawn:SetModel(v.Model)
+                        spawn:SetPos(et:GetPos() + Vector(0, 0, obbmin.z))
+                        spawn:Spawn()
+                        spawn:Activate()
+                        constraint.Weld(spawn, Entity(0), 0, 0, 0, false, false)
+                        spawn.Ent_Health = 1000
+                        spawn.Ent_HealthMax = 1000
+                        spawn.PropOwned = self:GetOwner()
+                        et:Remove()
+                    else
+                        et:SetModel(v.Model)
+                    end
                 end
             end
 

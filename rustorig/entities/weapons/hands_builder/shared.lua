@@ -85,6 +85,7 @@ local function IWasHereFirst(ply)
 end
 
 function SWEP:PrimaryAttack()
+    if CLIENT then return end
     if self:GetOwner():IsPlayer() then self:GetOwner():LagCompensation(true) end
     self:SetNextPrimaryFire(CurTime() + 0.4)
     self:SendWeaponAnim(ACT_VM_SWINGHIT) --/ACT_VM_SWINGMISS)   
@@ -108,9 +109,10 @@ function SWEP:PrimaryAttack()
             end
 
             ply:EmitSound("building/hammer_saw_1.wav")
-            -- end
-            ply:DeductVood(25)
         end
+
+        ply:DeductVood(25)
+        -- end
         --ply:EmitSound("zohart/building/hammer-saw-1.wav")
     end
 
@@ -245,17 +247,18 @@ if CLIENT then
                 --Vector( entOnGround:GetPos().x + 60, entOnGround:GetPos().y, entOnGround:GetPos().z )  entOnGround:GetPos().z * 
                 local posyx = 60
                 local ups = 0
+                local obbmin = entOnGround:GetPos().z + entOnGround:OBBMaxs().z
                 if Position >= 1 and Position <= 40 or Position >= 320 and Position <= 360 then
-                    Pos = Vector(entOnGround:GetPos().x + posyx, entOnGround:GetPos().y, entOnGround:GetPos().z + ups)
+                    Pos = Vector(entOnGround:GetPos().x + posyx, entOnGround:GetPos().y, obbmin)
                     Angl = 270
                 elseif Position > 50 and Position < 120 then
-                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y - posyx, entOnGround:GetPos().z + ups)
+                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y - posyx, obbmin)
                     Angl = 0
                 elseif Position > 146 and Position < 217 then
-                    Pos = Vector(entOnGround:GetPos().x - posyx, entOnGround:GetPos().y, entOnGround:GetPos().z + ups)
+                    Pos = Vector(entOnGround:GetPos().x - posyx, entOnGround:GetPos().y, eobbmin)
                     Angl = 270
                 elseif Position > 234 and Position < 310 then
-                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y + posyx, entOnGround:GetPos().z + ups)
+                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y + posyx, obbmin)
                     Angl = 0
                 end
                 return Pos, Angl
@@ -273,17 +276,19 @@ if CLIENT then
                 local Position = math.Round(360 - own:GetAngles().y % 360)
                 if not IsValid(entOnGround) then return end
                 local ups = 0
+                local obbmin = entOnGround:GetPos().z + entOnGround:OBBMaxs().z
+                print(obbmin)
                 if Position >= 1 and Position <= 40 or Position >= 320 and Position <= 360 then
-                    Pos = Vector(entOnGround:GetPos().x + 60, entOnGround:GetPos().y, entOnGround:GetPos().z + ups)
+                    Pos = Vector(entOnGround:GetPos().x + 60, entOnGround:GetPos().y, obbmin) --entOnGround:GetPos().z +
                     Angl = 270
                 elseif Position > 50 and Position < 120 then
-                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y - 70, entOnGround:GetPos().z + ups)
+                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y - 70, obbmin)
                     Angl = 0
                 elseif Position > 146 and Position < 217 then
-                    Pos = Vector(entOnGround:GetPos().x - 60, entOnGround:GetPos().y, entOnGround:GetPos().z + ups)
+                    Pos = Vector(entOnGround:GetPos().x - 60, entOnGround:GetPos().y, obbmin)
                     Angl = 270
                 elseif Position > 234 and Position < 310 then
-                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y + 70, entOnGround:GetPos().z + ups)
+                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y + 70, obbmin)
                     Angl = 0
                 end
                 return Pos, Angl
@@ -301,17 +306,18 @@ if CLIENT then
                 local Position = math.Round(360 - own:GetAngles().y % 360)
                 if not IsValid(entOnGround) then return end
                 local ups = 0
+                local obbmin = entOnGround:GetPos().z + entOnGround:OBBMaxs().z
                 if Position >= 1 and Position <= 40 or Position >= 320 and Position <= 360 then
-                    Pos = Vector(entOnGround:GetPos().x + 60, entOnGround:GetPos().y, entOnGround:GetPos().z + ups)
+                    Pos = Vector(entOnGround:GetPos().x + 60, entOnGround:GetPos().y, obbmin)
                     Angl = 0
                 elseif Position > 50 and Position < 120 then
-                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y - 70, entOnGround:GetPos().z + ups)
+                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y - 70, obbmin)
                     Angl = 270
                 elseif Position > 146 and Position < 217 then
-                    Pos = Vector(entOnGround:GetPos().x - 60, entOnGround:GetPos().y, entOnGround:GetPos().z + ups)
+                    Pos = Vector(entOnGround:GetPos().x - 60, entOnGround:GetPos().y, obbmin)
                     Angl = 0
                 elseif Position > 234 and Position < 310 then
-                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y + 70, entOnGround:GetPos().z + ups)
+                    Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y + 70, obbmin)
                     Angl = 270
                 end
                 return Pos, Angl
@@ -338,7 +344,8 @@ if CLIENT then
                 --Vector( entOnGround:GetPos().x + 60, entOnGround:GetPos().y, entOnGround:GetPos().z )  entOnGround:GetPos().z * 
                 local posyx = 80
                 local ups = 120
-                Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y, entOnGround:GetPos().z + ups)
+                local obbmin = entOnGround:GetPos().z + entOnGround:OBBMaxs().z
+                Pos = Vector(entOnGround:GetPos().x, entOnGround:GetPos().y, obbmin + ups)
                 Angl = 0
                 return Pos, Angl
             end

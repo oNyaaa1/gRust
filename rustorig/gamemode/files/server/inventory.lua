@@ -281,8 +281,8 @@ end)
 
 hook.Add("PlayerInitialSpawn", "InventoryLoadout", function(ply)
     ply.inv = ply:FirstCreateInv()
-    local plymeta = ply:GetItem("Wood")
     ply:Give("rust_rock")
+    local plymeta = ply:GetItem("Wood")
     --ply:Give("weapon_torch")
     for k, v in pairs(ents.FindInSphere(ply:GetPos(), 10)) do
         if v:GetClass() == "sent_rocks" then ply:SetPos(v:GetPos() + Vector(v:OBBMins().x, v:OBBMins().y, v:OBBMins().z + 12)) end
