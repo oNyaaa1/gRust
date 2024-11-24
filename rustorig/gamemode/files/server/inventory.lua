@@ -295,6 +295,10 @@ end)
 
 hook.Add("PlayerSpawn", "GiveITems", function(ply)
     ply.inv = ply:FirstCreateInv()
+    for k, v in pairs(ents.FindByClass("rust_sleepingbag")) do
+        if v.Owner == ply then ply:SetPos(v.GetPosz + Vector(0, 0, 10)) end
+    end
+
     ply:Give("rust_rock")
     --ply:Give("weapon_torch")
     for k, v in pairs(ents.FindInSphere(ply:GetPos(), 10)) do
