@@ -11,9 +11,11 @@ function IsInventoryFull(ply)
 end
 
 local meta = FindMetaTable("Player")
-function meta:FirstCreateInv()
+function meta:FirstCreateInv(b_Alive)
+    b_Alive = b_Alive or ""
     if not file.IsDir("ginv", "DATA") then file.CreateDir("ginv") end
     if not file.Exists("ginv/inventory_" .. self:SteamID64() .. ".txt", "DATA") then file.Write("ginv/inventory_" .. self:SteamID64() .. ".txt", util.TableToJSON({})) end
+    if b_Alive == "b_dead" then file.Write("ginv/inventory_" .. self:SteamID64() .. ".txt", util.TableToJSON({})) end
     local inv = util.JSONToTable(file.Read("ginv/inventory_" .. self:SteamID64() .. ".txt", "DATA"))
     net.Start("SendInventory")
     net.WriteTable(inv)
@@ -49,8 +51,8 @@ net.Receive("Craft_BP", function(l, ply)
     if type(plymeta) == "table" then
         for k, v in pairs(ply.bp.need) do
             if plymeta.Amount >= v.amt then
-            if v.txt == "Stone" then ply:RemoveInventoryRocks(v.amt) end
-            if v.txt == "Wood" then ply:RemoveInventoryWood(v.amt) end
+                if v.txt == "Stone" then ply:RemoveInventoryRocks(v.amt) end
+                if v.txt == "Wood" then ply:RemoveInventoryWood(v.amt) end
             end
         end
 
@@ -99,7 +101,7 @@ function meta:AddToInventory(item)
     file.Write("ginv/inventory_" .. self:SteamID64() .. ".txt", util.TableToJSON(inv))
 end
 
-function meta:AddToInventoryWood()
+function meta:AddToInventoryWood(amt)
     local inv = self.inv or {}
     local tbl = {}
     local amount = 0
@@ -107,7 +109,7 @@ function meta:AddToInventoryWood()
     local ammo1 = GetAmmoForCurrentWeapon(self)
     for k, v in pairs(inv) do
         if v.Class == "rust_wood" then
-            amount = v.Amount + 25
+            amount = v.Amount + amt
             tbl.Name = "Wood"
             tbl.Class = "rust_wood" or ""
             tbl.WepClass = "rust_wood" or ""
@@ -121,7 +123,7 @@ function meta:AddToInventoryWood()
     end
 
     if altered == false then
-        amount = 25
+        amount = amt
         tbl.Name = "Wood"
         tbl.Class = "rust_wood" or ""
         tbl.WepClass = "rust_wood" or ""
@@ -271,7 +273,7 @@ hook.Add("EntityTakeDamage", "EntityDamageExample", function(ent, dmginfo)
     if not string.find(wep:GetClass(), "hachet") and string.find(wep:GetClass(), "pickaxe") and string.find(wep:GetClass(), "rock") then return end
     if MAT[ent:GetMaterialType()] == "MAT_WOOD" and not string.find(ent:GetClass(), "sent_") then
         if not IsValid(ply) then return end
-        ply:AddToInventoryWood()
+        if ply:GetActiveWeapon():GetClass() == "rust_rock" then ply:AddToInventoryWood(5) end
     end
 
     if ent:GetClass() == "sent_rocks" then ply:AddToInventoryRocks(ent:GetSkin()) end
@@ -280,29 +282,32 @@ end)
 hook.Add("PlayerInitialSpawn", "InventoryLoadout", function(ply)
     ply.inv = ply:FirstCreateInv()
     local plymeta = ply:GetItem("Wood")
-    ply:Give("weapon_rock")
-    ply:Give("weapon_torch")
+    ply:Give("rust_rock")
+    --ply:Give("weapon_torch")
     for k, v in pairs(ents.FindInSphere(ply:GetPos(), 10)) do
         if v:GetClass() == "sent_rocks" then ply:SetPos(v:GetPos() + Vector(v:OBBMins().x, v:OBBMins().y, v:OBBMins().z + 12)) end
     end
 
+    ply:SetModel("models/player/Spike/RustGuy.mdl")
     if plymeta == nil then return end
     ply:SetNWFloat("wood", plymeta.Amount)
 end)
 
 hook.Add("PlayerSpawn", "GiveITems", function(ply)
     ply.inv = ply:FirstCreateInv()
-    ply:Give("weapon_rock")
-    ply:Give("weapon_torch")
+    ply:Give("rust_rock")
+    --ply:Give("weapon_torch")
     for k, v in pairs(ents.FindInSphere(ply:GetPos(), 10)) do
         if v:GetClass() == "sent_rocks" then ply:SetPos(v:GetPos() + Vector(v:OBBMins().x, v:OBBMins().y, v:OBBMins().z + 12)) end
     end
 
+    ply:SetModel("models/player/Spike/RustGuy.mdl")
     local plymeta = ply:GetItem("Wood")
     if plymeta == nil then return end
     ply:SetNWFloat("wood", plymeta.Amount)
 end)
 
+hook.Add("PlayerDeath", "RemoveItems", function(ply) ply.inv = ply:FirstCreateInv("b_dead") end)
 hook.Add("PlayerUse", "USeInventory", function(ply, ent)
     if ent.IsItem == true then
         ply:AddToInventory(ent)

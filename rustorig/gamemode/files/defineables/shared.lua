@@ -1,5 +1,8 @@
 GMRustTable = GMRustTable or {}
 Crafting = Crafting or {}
+player_manager.AddValidModel("RustGuy", "models/player/Spike/RustGuy.mdl")
+list.Set("PlayerOptionsModel", "RustGuy", "models/player/Spike/RustGuy.mdl")
+player_manager.AddValidHands("RustGuy", "models/player/spike/RustGuyArms.mdl", 0, "00000000")
 Translation = function(txt) return GMRustTable[txt] or {} end
 function BluePrint_Make(txt, tbl)
     GMRustTable[#GMRustTable + 1] = tbl
@@ -173,9 +176,9 @@ BluePrint_Make("Syringe", {
     gotob = function(txt) print(txt, "cancelled") end,
     need = {
         {
-        txt = "Cloth",
-        amt = 30,
-        yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("cloth", 0)) or 0,
+            txt = "Cloth",
+            amt = 30,
+            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("cloth", 0)) or 0,
         },
     },
     need2 = {},
