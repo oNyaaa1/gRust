@@ -93,7 +93,7 @@ function SWEP:PrimaryAttack()
     if SERVER then
         local ply = self:GetOwner()
         if not IsValid(ply) then return end
-       // if ply:HasEnoughVood(25) then
+        if ply:HasEnoughVood(25) then
             local Pos, Angl
             local Position = math.Round(360 - ply:GetAngles().y % 360)
             local twig = ents.Create(self.Owner.ModelFN or "sent_foundation")
@@ -110,7 +110,7 @@ function SWEP:PrimaryAttack()
 
             ply:EmitSound("building/hammer_saw_1.wav")
             ply:DeductVood(25)
-        //end
+        end
 
         
         -- end

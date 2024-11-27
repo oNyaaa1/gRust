@@ -77,7 +77,7 @@ function SWEP:PrimaryAttack()
         et:SetAngles(Angle(0, rotation, 0))
     end
 
-    if et_own.What == "Wood" then //and self:GetOwner():GetNWFloat("wood", 0) >= 50 then
+    if et_own.What == "Wood" and self:GetOwner():GetNWFloat("wood", 0) >= 50 then
         if et and string.find(et:GetClass(), "sent_") then
             for k, v in pairs(Build) do --models/galaxy/rust/wood_foundation.mdl
                 if v.sent == et:GetClass() then

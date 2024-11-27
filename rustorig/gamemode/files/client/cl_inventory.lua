@@ -109,7 +109,12 @@ net.Receive("ForgiveMeInventory", function()
                         end
 
                         self.button2.DoClick = function()
-                            Derma_Query("Craft?", "Craft:", "Yes", function()
+                            local str = "Craft: "
+                            for k, v in pairs(b.need) do
+                                str = str .. "Need: " .. v.txt .. " Amount: " .. v.amt
+                            end
+
+                            Derma_Query(str, "Craft?", "Yes", function()
                                 net.Start("Craft_BP")
                                 net.WriteString(b.name)
                                 net.SendToServer()
@@ -130,7 +135,12 @@ net.Receive("ForgiveMeInventory", function()
                         end
 
                         modelPanel.DoClick = function()
-                            Derma_Query("Craft?", "Craft:", "Yes", function()
+                            local str = "Craft: "
+                            for k, v in pairs(b.need) do
+                                str = str .. "Need: " .. v.txt .. " Amount: " .. v.amt
+                            end
+
+                            Derma_Query(str, "Craft?", "Yes", function()
                                 net.Start("Craft_BP")
                                 net.WriteString(b.name)
                                 net.SendToServer()
