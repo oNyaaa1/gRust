@@ -7,6 +7,10 @@ surface.CreateFont("StringFont2", {
     weight = 700
 })
 
+local Panel2 = {}
+local invw = {}
+invw.SlotPos = 15
+invw.Storage = 0
 local Tbl = {}
 Tbl[1] = {"Favorite", "icons/favorite_inactive.png"}
 Tbl[2] = {"Construction", "icons/construction.png"}
@@ -23,7 +27,56 @@ local vgui_New
 net.Receive("ForgiveMeInventory", function()
     local tbln = net.ReadTable()
     if vgui_New then vgui_New:Remove() end
-    vgui_New = vgui.Create("gRust_Panel")
+    vgui_New = vgui.Create("DPanel")
+    vgui_New:SetSize(560, 480)
+    vgui_New:SetPos(ScrW() / 2 * 0.65, ScrH() / 2 * 0.65)
+    vgui_New:Droppable("gDrop")
+    vgui_New.Paint = function(self, w, h)
+        surface.SetDrawColor(80, 76, 70, 0)
+        surface.DrawRect(0, 0, w, h)
+    end
+
+    local grid = vgui.Create("DGrid", vgui_New)
+    grid:SetPos(10, 30)
+    grid:SetCols(6)
+    grid:SetColWide(90)
+    grid:SetRowHeight(90)
+    local DPanel = {}
+    for i = 1, 30 do
+        DPanel[i] = vgui.Create("DPanel")
+        DPanel[i]:SetPos(2, 2)
+        DPanel[i]:SetSize(85, 85)
+        DPanel[i]:Droppable("gDrop")
+        DPanel[i].Paint = function(s, w, h)
+            surface.SetDrawColor(80, 76, 70, 180)
+            surface.DrawRect(0, 0, w, h)
+        end
+
+        grid:AddItem(DPanel[i])
+    end
+
+    for k, v in pairs(tbln) do
+        DPanel[k].Paint = function(s, w, h)
+            --draw.RoundedBox(0, 0, 0, w, h, Color(0, 0, 0, 0))
+            surface.SetDrawColor(80, 76, 70, 180)
+            surface.DrawRect(0, 0, w, h)
+            draw.DrawText(tostring(v.Name) .. " +" .. tostring(v.Amount), "StringFont2", 0, h - 15, Color(255, 255, 255), TEXT_ALIGN_LEFT)
+        end
+
+        local DModelPanel = vgui.Create('DModelPanel', DPanel[k])
+        DModelPanel:SetModel(v.Mdl)
+        DModelPanel:Dock(FILL)
+        if v.Skins then DModelPanel.Entity:SetSkin(v.Skins) end
+        local PrevMins, PrevMaxs = DModelPanel.Entity:GetRenderBounds()
+        DModelPanel:SetCamPos(PrevMins:Distance(PrevMaxs) * Vector(0.8, 0.8, 0.5))
+        DModelPanel:SetLookAt((PrevMaxs + PrevMins) / 2)
+        function DModelPanel:LayoutEntity(ent)
+            if self:GetParent().Hovered then ent:SetAngles(Angle(0, ent:GetAngles().y + 2, 0)) end
+        end
+
+        DModelPanel.DoClick = function(val2) print(v.Mdl, v.Name, val2:GetValue()) end
+    end
+    --[[vgui_New = vgui.Create("gRust_Panel")
     vgui_New:SetSize(Scr_W / 2 + 135, Scr_H / 2 + 240)
     vgui_New:Center()
     vgui_New:AddButton("Inventory", "grustorig/inventory.png", function(self, val, text)
@@ -57,7 +110,7 @@ net.Receive("ForgiveMeInventory", function()
         end
     end)
 
-    vgui_New:AddButton("Crafting", "grustorig/inventory.png", function(self, val, text)
+    vgui_New:AddButton("Crafting2", "grustorig/inventory.png", function(self, val, text)
         local DPanel = vgui.Create("DPanel", self)
         DPanel:Dock(LEFT) -- Set the position of the panel
         DPanel:SetSize(200, 100)
@@ -155,10 +208,57 @@ net.Receive("ForgiveMeInventory", function()
                 end
             end
         end
-    end)
+    end)]]
 end)
 
 hook.Add("OnSpawnMenuOpen", "Fuck", function()
     net.Start("SendInventory")
     net.SendToServer()
+end)
+
+hook.Add("OnSpawnMenuClose", "Fuck", function() vgui_New:Remove() end)
+
+
+hook.Add("InitPostEntity", "RustInv", function()
+    for i = 1, 6 do
+        Panel2[i] = vgui.Create("DPanel")
+        Panel2[i]:SetPos(ScrW() / 2 * 0.65 + invw.SlotPos, ScrH() / 2 * 1.75)
+        Panel2[i]:SetText("")
+        Panel2[i]:SetSize(80, 80)
+        Panel2[i]:Droppable("gDrop")
+        Panel2[i].Paint = function(self, w, h)
+            surface.SetDrawColor(80, 76, 70, 180)
+            surface.DrawRect(0, 0, w, h)
+        end
+
+        invw.SlotPos = invw.SlotPos + 90
+    end
+    --[[for i = 1, 6 do
+       frame = vgui.Create("DPanel")
+        frame:SetSize(100, 100)
+        frame:SetPos(ScrW() / 2 * 0.5 + invw.SlotPos, ScrH() / 2 * 1.75)
+        frame.Paint = function(self, w, h)
+            surface.SetDrawColor(80, 76, 70, 121)
+            surface.DrawRect(0, 0, w, h)
+        end
+        Panel2[i] = vgui.Create("DPanel", frame)
+        Panel2[i]:SetText("")
+        Panel2[i]:SetSize(200, 200)
+        Panel2[i]:Droppable("gDrop")
+        Panel2[i].Paint = function(self, w, h)
+            surface.SetDrawColor(80, 76, 70, 180)
+            surface.DrawRect(0, 0, w, h)
+        end
+
+        Panel2[i].nClass = {
+            Class = "",
+            Slotx = invw.SlotPos
+        }
+
+        invw.Storage = invw.Storage + 1
+        if invw.Storage <= 5 then invw.SlotPos = invw.SlotPos + 120 end
+        InitPostEntity = true
+    end
+
+    DoOne(inventory.Test)]]
 end)

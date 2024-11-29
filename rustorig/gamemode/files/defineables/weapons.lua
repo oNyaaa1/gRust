@@ -6,7 +6,7 @@ BluePrint_Make("Salvaged Cleaver", {
     amount = 40,
     timers = 25,
     func = function(txt)
-        net.Start("gRust_Queue_Crafting")
+        net.Start("Craft_BP")
         net.WriteString(txt)
         net.SendToServer()
     end,
@@ -32,7 +32,7 @@ BluePrint_Make("Salvaged Sword", {
     amount = 40,
     timers = 25,
     func = function(txt)
-        net.Start("gRust_Queue_Crafting")
+        net.Start("Craft_BP")
         net.WriteString(txt)
         net.SendToServer()
     end,
@@ -58,7 +58,7 @@ BluePrint_Make("Bone Club", {
     amount = 40,
     timers = 25,
     func = function(txt)
-        net.Start("gRust_Queue_Crafting")
+        net.Start("Craft_BP")
         net.WriteString(txt)
         net.SendToServer()
     end,
@@ -84,7 +84,7 @@ BluePrint_Make("Wooden Spear", {
     amount = 40,
     timers = 25,
     func = function(txt)
-        net.Start("gRust_Queue_Crafting")
+        net.Start("Craft_BP")
         net.WriteString(txt)
         net.SendToServer()
     end,
@@ -110,7 +110,7 @@ BluePrint_Make("Stone Spear", {
     amount = 40,
     timers = 25,
     func = function(txt)
-        net.Start("gRust_Queue_Crafting")
+        net.Start("Craft_BP")
         net.WriteString(txt)
         net.SendToServer()
     end,
@@ -136,7 +136,7 @@ BluePrint_Make("Assault Rifle", {
     amount = 40,
     timers = 25,
     func = function(txt)
-        net.Start("gRust_Queue_Crafting")
+        net.Start("Craft_BP")
         net.WriteString(txt)
         net.SendToServer()
     end,
@@ -162,7 +162,7 @@ BluePrint_Make("Rocket Launcher", {
     amount = 40,
     timers = 25,
     func = function(txt)
-        net.Start("gRust_Queue_Crafting")
+        net.Start("Craft_BP")
         net.WriteString(txt)
         net.SendToServer()
     end,
@@ -188,7 +188,7 @@ BluePrint_Make("M39 Rifle", {
     amount = 40,
     timers = 25,
     func = function(txt)
-        net.Start("gRust_Queue_Crafting")
+        net.Start("Craft_BP")
         net.WriteString(txt)
         net.SendToServer()
     end,
@@ -214,7 +214,7 @@ BluePrint_Make("M92 Pistol", {
     amount = 40,
     timers = 25,
     func = function(txt)
-        net.Start("gRust_Queue_Crafting")
+        net.Start("Craft_BP")
         net.WriteString(txt)
         net.SendToServer()
     end,
@@ -240,7 +240,7 @@ BluePrint_Make("M249", {
     amount = 40,
     timers = 25,
     func = function(txt)
-        net.Start("gRust_Queue_Crafting")
+        net.Start("Craft_BP")
         net.WriteString(txt)
         net.SendToServer()
     end,
@@ -266,7 +266,7 @@ BluePrint_Make("MP5A4", {
     amount = 40,
     timers = 25,
     func = function(txt)
-        net.Start("gRust_Queue_Crafting")
+        net.Start("Craft_BP")
         net.WriteString(txt)
         net.SendToServer()
     end,
@@ -292,7 +292,7 @@ BluePrint_Make("Nailgun", {
     amount = 40,
     timers = 25,
     func = function(txt)
-        net.Start("gRust_Queue_Crafting")
+        net.Start("Craft_BP")
         net.WriteString(txt)
         net.SendToServer()
     end,
@@ -318,7 +318,7 @@ BluePrint_Make("Python Revolver", {
     amount = 40,
     timers = 25,
     func = function(txt)
-        net.Start("gRust_Queue_Crafting")
+        net.Start("Craft_BP")
         net.WriteString(txt)
         net.SendToServer()
     end,
@@ -344,7 +344,7 @@ BluePrint_Make("Revolver", {
     amount = 40,
     timers = 25,
     func = function(txt)
-        net.Start("gRust_Queue_Crafting")
+        net.Start("Craft_BP")
         net.WriteString(txt)
         net.SendToServer()
     end,
@@ -370,7 +370,7 @@ BluePrint_Make("Semi-Automatic Pistol", {
     amount = 40,
     timers = 25,
     func = function(txt)
-        net.Start("gRust_Queue_Crafting")
+        net.Start("Craft_BP")
         net.WriteString(txt)
         net.SendToServer()
     end,

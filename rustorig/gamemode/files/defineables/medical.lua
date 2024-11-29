@@ -7,7 +7,7 @@ BluePrint_Make("Syringe", {
     amount = 40,
     timers = 25,
     func = function(txt)
-        net.Start("gRust_Queue_Crafting")
+        net.Start("Craft_BP")
         net.WriteString(txt)
         net.SendToServer()
     end,

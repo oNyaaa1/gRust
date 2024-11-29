@@ -7,7 +7,7 @@ BluePrint_Make("Hammer", {
     timers = 20,
     func = function(txt)
         print(txt)
-        net.Start("gRust_Queue_Crafting")
+        net.Start("Craft_BP")
         net.WriteString(txt)
         net.SendToServer()
     end,
@@ -33,7 +33,7 @@ BluePrint_Make("Building Plan", {
     amount = 40,
     timers = 25,
     func = function(txt)
-        net.Start("gRust_Queue_Crafting")
+        net.Start("Craft_BP")
         net.WriteString(txt)
         net.SendToServer()
     end,
