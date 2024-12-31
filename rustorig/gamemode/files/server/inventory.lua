@@ -63,6 +63,7 @@ net.Receive("Craft_BP", function(l, ply)
     end
 end)
 
+local cd_iZz = 0
 function meta:AddToInventory(item)
     -- Cooldown check to prevent spamming
     if cd_iZz >= CurTime() then return end
@@ -369,10 +370,10 @@ hook.Add("EntityTakeDamage", "EntityDamageExample", function(ent, dmginfo)
     local ply = dmginfo:GetAttacker()
     if not IsValid(ply) then return end
     local wep = ply:GetActiveWeapon()
-    if not string.find(wep:GetClass(), "hachet") and string.find(wep:GetClass(), "pickaxe") and string.find(wep:GetClass(), "rock") then return end
-    if MAT[ent:GetMaterialType()] == "MAT_WOOD" and not string.find(ent:GetClass(), "sent_") then
+    local found = string.find(wep:GetClass(), "hatchet") or string.find(wep:GetClass(), "pickaxe") or string.find(wep:GetClass(), "rock")
+    if found and MAT[ent:GetMaterialType()] == "MAT_WOOD" then
         if not IsValid(ply) then return end
-        if ply:GetActiveWeapon():GetClass() == "rust_rock" then ply:AddToInventoryWood(5) end
+        ply:AddToInventoryWood(5)
     end
 
     if ent:GetClass() == "sent_rocks" then ply:AddToInventoryRocks(ent:GetSkin()) end
