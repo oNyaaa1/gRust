@@ -48,15 +48,24 @@ net.Receive("Craft_BP", function(l, ply)
     local str = net.ReadString()
     local plymeta = ply:GetItem("Wood")
     ply.bp = BluePrint_Get(str)
-    if type(plymeta) == "table" then
-        for k, v in pairs(ply.bp.need) do
-            if plymeta.Amount >= v.amt then
-                if v.txt == "Stone" then ply:RemoveInventoryRocks(v.amt) end
-                if v.txt == "Wood" then ply:RemoveInventoryWood(v.amt) end
+    ply.Craft_Can = false
+    for k, v in pairs(ply.bp.need) do
+        if plymeta.Amount >= v.amt then
+            if string.lower(v.txt) == "stone" then
+                ply:RemoveInventoryRocks(v.amt)
+                ply.Craft_Can = true
+            end
+
+            if string.lower(v.txt) == "wood" then
+                ply:RemoveInventoryWood(v.amt)
+                ply.Craft_Can = true
             end
         end
+    end
 
-        timer.Create("Create" .. tostring(str), ply.bp.timers, 0, function()
+    -- ply.bp.timers
+    if ply.Craft_Can then
+        timer.Create("Create" .. tostring(str), 0, 0, function()
             ply:Give(ply.bp.Class)
             timer.Remove("Create" .. tostring(str))
         end)
@@ -146,7 +155,7 @@ function meta:AddWepInventory(item)
         if inv[i] == nil or inv[i].Class == item:GetClass() then
             if t > 30 then continue end
             t = t + 1
-            t2.Slot[t] = i
+            t2.Slot[1] = i
         end
     end
 
@@ -162,7 +171,7 @@ function meta:AddWepInventory(item)
     tbl.Mdl = item:GetModel() or ""
     tbl.Ammo_New = ammo1 or 0
     tbl.Amount = 1 or 0
-    inv[chooseSlot] = tbl
+    inv[t2.Slot[1]] = tbl
     --net.Start("SendInventory")
     --net.WriteTable(inv)
     --net.Send(self)
@@ -193,7 +202,8 @@ function meta:Give(item, bAmmo)
     if iZ >= CurTime() then return end
     iZ = CurTime() + 1
     local wep = self:GetWeapon(item)
-    self:AddWepInventory(self:GetWeapon(item))
+    if not IsValid(wep) then return end
+    self:AddWepInventory(wep)
 end
 
 hook.Add("PlayerDroppedWeapon", "RemoveWepFromInv", function(owner, wep) owner:RemoveWepInventory(wep) end)

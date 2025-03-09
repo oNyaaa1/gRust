@@ -16,7 +16,7 @@ BluePrint_Make("Syringe", {
         {
             txt = "Cloth",
             amt = 30,
-            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("cloth", 0)) or 0,
+            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
         },
     },
     need2 = {},

@@ -25,8 +25,10 @@ Tbl[11] = {"Fun", "icons/servers.png"}
 Tbl[12] = {"Other", "icons/electric.png"}
 local vgui_New
 net.Receive("ForgiveMeInventory", function()
+    
     local tbln = net.ReadTable()
-    if vgui_New then vgui_New:Remove() end
+    if IsValid(vgui_New) then vgui_New:Remove() gui.EnableScreenClicker(false) end
+    gui.EnableScreenClicker(true)
     vgui_New = vgui.Create("DPanel")
     vgui_New:SetSize(560, 480)
     vgui_New:SetPos(ScrW() / 2 * 0.65, ScrH() / 2 * 0.65)
@@ -216,9 +218,7 @@ hook.Add("OnSpawnMenuOpen", "Fuck", function()
     net.SendToServer()
 end)
 
-hook.Add("OnSpawnMenuClose", "Fuck", function() vgui_New:Remove() end)
-
-
+hook.Add("OnSpawnMenuClose", "Fuck", function() if IsValid(vgui_New) then vgui_New:Remove() gui.EnableScreenClicker(false) end end)
 hook.Add("InitPostEntity", "RustInv", function()
     for i = 1, 6 do
         Panel2[i] = vgui.Create("DPanel")

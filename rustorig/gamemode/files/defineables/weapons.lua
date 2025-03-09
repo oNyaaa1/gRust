@@ -1,6 +1,6 @@
-BluePrint_Make("Salvaged Cleaver", {
-    name = "Salvaged Cleaver",
-    Class = "rust_salvagedcleaver",
+BluePrint_Make("Salvaged Machete", {
+    name = "Salvaged Machete",
+    Class = "rust_machete",
     Mdl = "models/weapons/darky_m/rust/w_salvaged_Cleaver.mdl",
     ammo = "none",
     amount = 40,
@@ -13,9 +13,9 @@ BluePrint_Make("Salvaged Cleaver", {
     gotob = function(txt) print(txt, "cancelled") end,
     need = {
         {
-            txt = "Metal Fragments",
+            txt = "wood",
             amt = 40,
-            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("metal", 0)) or 0,
+            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
         },
     },
     img = "materials/items/weapons/salvaged_cleaver.png",
@@ -26,7 +26,7 @@ BluePrint_Make("Salvaged Cleaver", {
 
 BluePrint_Make("Salvaged Sword", {
     name = "Salvaged Sword",
-    Class = "rust_salvagedsword",
+    Class = "rust_salvaged_sword",
     Mdl = "models/weapons/darky_m/rust/w_salvaged_sword.mdl",
     ammo = "none",
     amount = 40,
@@ -39,9 +39,9 @@ BluePrint_Make("Salvaged Sword", {
     gotob = function(txt) print(txt, "cancelled") end,
     need = {
         {
-            txt = "Metal Fragments",
+            txt = "wood",
             amt = 20,
-            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("metal", 0)) or 0,
+            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
         },
     },
     img = "materials/items/weapons/salvaged_sword.png",
@@ -52,7 +52,7 @@ BluePrint_Make("Salvaged Sword", {
 
 BluePrint_Make("Bone Club", {
     name = "Bone Club",
-    Class = "rust_boneclub",
+    Class = "rust_bone_knife",
     Mdl = "models/weapons/darky_m/rust/w_boneclub.mdl",
     ammo = "none",
     amount = 40,
@@ -78,7 +78,7 @@ BluePrint_Make("Bone Club", {
 
 BluePrint_Make("Wooden Spear", {
     name = "Wooden Spear",
-    Class = "rust_woodenspear",
+    Class = "rust_wooden_spear",
     Mdl = "models/weapons/darky_m/rust/w_wooden_spear.mdl",
     ammo = "none",
     amount = 40,
@@ -104,7 +104,7 @@ BluePrint_Make("Wooden Spear", {
 
 BluePrint_Make("Stone Spear", {
     name = "Stone Spear",
-    Class = "rust_stonespear",
+    Class = "rust_stone_spear",
     Mdl = "models/weapons/darky_m/rust/w_stone_spear.mdl",
     ammo = "none",
     amount = 40,
@@ -130,7 +130,7 @@ BluePrint_Make("Stone Spear", {
 
 BluePrint_Make("Assault Rifle", {
     name = "Assault Rifle",
-    Class = "rust_assaultrifle",
+    Class = "rust_ak47u",
     Mdl = "models/weapons/darky_m/rust/w_ak47u.mdl",
     ammo = "none",
     amount = 40,
@@ -143,9 +143,9 @@ BluePrint_Make("Assault Rifle", {
     gotob = function(txt) print(txt, "cancelled") end,
     need = {
         {
-            txt = "metal",
+            txt = "wood",
             amt = 100,
-            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("metal", 0)) or 0,
+            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
         },
     },
     img = "materials/items/weapons/assault_rifle.png",
@@ -169,9 +169,9 @@ BluePrint_Make("Rocket Launcher", {
     gotob = function(txt) print(txt, "cancelled") end,
     need = {
         {
-            txt = "Metal Fragments",
+            txt = "wood",
             amt = 40,
-            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("metal", 0)) or 0,
+            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
         },
     },
     img = "materials/items/weapons/salvaged_cleaver.png",
@@ -182,7 +182,7 @@ BluePrint_Make("Rocket Launcher", {
 
 BluePrint_Make("M39 Rifle", {
     name = "M39 Rifle",
-    Class = "rust_m39",
+    Class = "rust_m39emr",
     Mdl = "models/weapons/darky_m/rust/w_m39.mdl",
     ammo = "none",
     amount = 40,
@@ -195,9 +195,9 @@ BluePrint_Make("M39 Rifle", {
     gotob = function(txt) print(txt, "cancelled") end,
     need = {
         {
-            txt = "Metal Fragments",
+            txt = "wood",
             amt = 40,
-            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("metal", 0)) or 0,
+            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
         },
     },
     img = "materials/items/weapons/m39.png",
@@ -221,9 +221,9 @@ BluePrint_Make("M92 Pistol", {
     gotob = function(txt) print(txt, "cancelled") end,
     need = {
         {
-            txt = "Metal Fragments",
+            txt = "wood",
             amt = 40,
-            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("metal", 0)) or 0,
+            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
         },
     },
     img = "materials/items/weapons/m92.png",
@@ -247,9 +247,9 @@ BluePrint_Make("M249", {
     gotob = function(txt) print(txt, "cancelled") end,
     need = {
         {
-            txt = "Metal Fragments",
+            txt = "wood",
             amt = 40,
-            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("metal", 0)) or 0,
+            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
         },
     },
     img = "materials/items/weapons/m249.png",
@@ -273,9 +273,9 @@ BluePrint_Make("MP5A4", {
     gotob = function(txt) print(txt, "cancelled") end,
     need = {
         {
-            txt = "Metal Fragments",
+            txt = "wood",
             amt = 40,
-            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("metal", 0)) or 0,
+            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
         },
     },
     img = "materials/items/weapons/mp5.png",
@@ -299,9 +299,9 @@ BluePrint_Make("Nailgun", {
     gotob = function(txt) print(txt, "cancelled") end,
     need = {
         {
-            txt = "Metal Fragments",
+            txt = "wood",
             amt = 40,
-            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("metal", 0)) or 0,
+            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
         },
     },
     img = "materials/items/weapons/nailgun.png",
@@ -325,9 +325,9 @@ BluePrint_Make("Python Revolver", {
     gotob = function(txt) print(txt, "cancelled") end,
     need = {
         {
-            txt = "Metal Fragments",
+            txt = "wood",
             amt = 40,
-            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("metal", 0)) or 0,
+            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
         },
     },
     img = "materials/items/weapons/python.png",
@@ -351,9 +351,9 @@ BluePrint_Make("Revolver", {
     gotob = function(txt) print(txt, "cancelled") end,
     need = {
         {
-            txt = "Metal Fragments",
+            txt = "wood",
             amt = 40,
-            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("metal", 0)) or 0,
+            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
         },
     },
     img = "materials/items/weapons/revolver.png",
@@ -362,9 +362,9 @@ BluePrint_Make("Revolver", {
     Infomation = "A slow, but powerful gun weapon\nTime = 15 seconds to make!",
 })
 
-BluePrint_Make("Semi-Automatic Pistol", {
-    name = "Semi-Automatic Pistol",
-    Class = "rust_sap",
+BluePrint_Make("Semi-Automatic Rifle", {
+    name = "Semi-Automatic Rifle",
+    Class = "rust_sar",
     Mdl = "models/weapons/darky_m/rust/w_sap.mdl",
     ammo = "none",
     amount = 40,
@@ -377,9 +377,9 @@ BluePrint_Make("Semi-Automatic Pistol", {
     gotob = function(txt) print(txt, "cancelled") end,
     need = {
         {
-            txt = "Metal Fragments",
+            txt = "wood",
             amt = 40,
-            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("metal", 0)) or 0,
+            yours = CLIENT and IsValid(LocalPlayer()) and tostring(LocalPlayer():GetNWFloat("wood", 0)) or 0,
         },
     },
     img = "materials/items/weapons/sap.png",
