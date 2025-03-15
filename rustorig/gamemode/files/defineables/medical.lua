@@ -1,6 +1,6 @@
 
-BluePrint_Make("Syringe", {
-    name = "Syringe",
+BluePrint_Make(GetLanguage("Syringe"), {
+    name = GetLanguage("Syringe"),
     Class = "rust_syringe",
     Mdl = "models/weapons/darky_m/rust/w_syringe_v2.mdl",
     ammo = "none",
@@ -21,7 +21,7 @@ BluePrint_Make("Syringe", {
     },
     need2 = {},
     img = "materials/items/weapons/salvaged_cleaver.png",
-    Where = "Medical",
+    Where = GetLanguage("Medical"),
     locked = false,
-    Infomation = "A slow, but powerful melee weapon\nTime = 15 seconds to make!",
+    Infomation = GetLanguage("Syringe_Info"),
 })

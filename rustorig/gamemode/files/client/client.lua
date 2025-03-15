@@ -10,7 +10,7 @@ surface.CreateFont("StringFont", {
     size = 23,
     weight = 700
 })
- 
+
 local start, oldhp, newhp = 0, -1, -1
 local barW = 200
 local animationTime = 0.9
@@ -55,7 +55,6 @@ local function hud()
     draw.RoundedBoxEx(15, ScrW() - 306, scrh - 162, 238, 32, color_b, false, false, false, false)
     draw.RoundedBoxEx(15, ScrW() - 270, scrh - 159, math.Clamp(0, 100, smoothHP) / maxhp * barW, 25, color_g, false, false, false, false)
     draw.SimpleText(hp, "StringFont", ScrW() - 270, scrh - 159, color_white)
-
     draw.RoundedBoxEx(15, ScrW() - 306, scrh - 128, 238, 32, color_b, false, false, false, false)
     draw.RoundedBoxEx(15, ScrW() - 270, scrh - 125, math.Clamp(0, 100, smoothAR) * 2, 25, color_blue, false, false, false, false)
     draw.SimpleText(ar, "StringFont", ScrW() - 270, scrh - 125, color_white)

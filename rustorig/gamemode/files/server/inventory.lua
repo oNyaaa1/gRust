@@ -84,16 +84,15 @@ function meta:AddToInventory(item)
     local altered = false
     local ammo1 = GetAmmoForCurrentWeapon(self)
     local t2 = {}
-    t2.Slot = {}
+    local slotAva = 1
     local chooseSlot = 1
     local t = 0
     -- Find an available slot for the item
     for i = 1, 30 do
         -- Check for a slot that is either empty or can be filled with the same item
-        if inv[i] == nil or inv[i].Class == item:GetClass() then
-            if t > 30 then continue end
-            t = t + 1
-            t2.Slot[t] = i
+        if inv[i] == nil then --or inv[i].Class != item:GetClass() then
+            slotAva = i
+            continue
         end
     end
 
@@ -104,7 +103,7 @@ function meta:AddToInventory(item)
     end
 
     -- Choose the first available slot
-    chooseSlot = t2.Slot[1]
+    chooseSlot = slotAva
     -- Check if the item already exists in the inventory
     for k, v in pairs(inv) do
         if v.Class == item:GetClass() then
@@ -152,17 +151,11 @@ function meta:AddWepInventory(item)
     -- Find an available slot for the item
     for i = 1, 30 do
         -- Check for a slot that is either empty or can be filled with the same item
-        if inv[i] == nil or inv[i].Class == item:GetClass() then
-            if t > 30 then continue end
-            t = t + 1
-            t2.Slot[1] = i
+        if inv[i] == nil then --or inv[i].Class != item:GetClass() then
+            slotAva = i
+            print(slotAva)
+            break
         end
-    end
-
-    -- If no slot is available, return without adding item
-    if #t2.Slot == 0 then
-        print("No available slots.")
-        return
     end
 
     tbl.Name = item.PrintName
@@ -171,7 +164,7 @@ function meta:AddWepInventory(item)
     tbl.Mdl = item:GetModel() or ""
     tbl.Ammo_New = ammo1 or 0
     tbl.Amount = 1 or 0
-    inv[t2.Slot[1]] = tbl
+    inv[slotAva] = tbl
     --net.Start("SendInventory")
     --net.WriteTable(inv)
     --net.Send(self)
@@ -391,6 +384,10 @@ end)
 
 hook.Add("PlayerInitialSpawn", "InventoryLoadout", function(ply)
     ply.inv = ply:FirstCreateInv()
+    for k, v in pairs(ply.inv) do
+        if v.WepClass ~= "" then ply:Give(v.WepClass) end
+    end
+
     timer.Simple(3, function() ply:Give("rust_rock") end)
     for k, v in pairs(ents.FindByClass("rust_sleepingbag")) do
         if v.Owner == ply then ply:SetPos(v.GetPosz + Vector(0, 0, 10)) end
@@ -401,7 +398,7 @@ hook.Add("PlayerInitialSpawn", "InventoryLoadout", function(ply)
         if v:GetClass() == "sent_rocks" then ply:SetPos(v:GetPos() + Vector(v:OBBMins().x, v:OBBMins().y, v:OBBMins().z + 12)) end
     end
 
-    ply:SetModel("models/player/Spike/RustGuy.mdl")
+    ply:SetModel("models/player/darky_m/rust/hazmat.mdl")
     local plymeta = ply:GetItem("Wood")
     if plymeta == nil then return end
     ply:SetNWFloat("wood", plymeta.Amount)
@@ -419,12 +416,13 @@ hook.Add("PlayerSpawn", "GiveITems", function(ply)
         if v:GetClass() == "sent_rocks" then ply:SetPos(v:GetPos() + Vector(v:OBBMins().x, v:OBBMins().y, v:OBBMins().z + 12)) end
     end
 
-    ply:SetModel("models/player/Spike/RustGuy.mdl")
+    ply:SetModel("models/player/darky_m/rust/hazmat.mdl")
     local plymeta = ply:GetItem("Wood")
     if plymeta == nil then return end
     ply:SetNWFloat("wood", plymeta.Amount)
 end)
 
+-- Choose the model for hands according to their player model
 hook.Add("PlayerDeath", "RemoveItems", function(ply) ply.inv = ply:FirstCreateInv("b_dead") end)
 hook.Add("PlayerUse", "USeInventory", function(ply, ent)
     if ent.IsItem == true then

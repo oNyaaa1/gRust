@@ -1,5 +1,5 @@
-BluePrint_Make("Salvaged Machete", {
-    name = "Salvaged Machete",
+BluePrint_Make(GetLanguage("Salvaged Machete"), {
+    name = GetLanguage("Salvaged Machete"),
     Class = "rust_machete",
     Mdl = "models/weapons/darky_m/rust/w_salvaged_Cleaver.mdl",
     ammo = "none",
@@ -19,13 +19,13 @@ BluePrint_Make("Salvaged Machete", {
         },
     },
     img = "materials/items/weapons/salvaged_cleaver.png",
-    Where = "Weapons",
+    Where = GetLanguage("Weapons"),
     locked = false,
-    Infomation = "A slow, but powerful melee weapon\nTime = 15 seconds to make!",
+    Infomation = GetLanguage("SalvedgeMach_Info"),
 })
 
-BluePrint_Make("Salvaged Sword", {
-    name = "Salvaged Sword",
+BluePrint_Make(GetLanguage("Salvaged Sword"), {
+    name = GetLanguage("Salvaged Sword"),
     Class = "rust_salvaged_sword",
     Mdl = "models/weapons/darky_m/rust/w_salvaged_sword.mdl",
     ammo = "none",
@@ -45,13 +45,13 @@ BluePrint_Make("Salvaged Sword", {
         },
     },
     img = "materials/items/weapons/salvaged_sword.png",
-    Where = "Weapons",
+    Where = GetLanguage("Weapons"),
     locked = false,
-    Infomation = "A slow, but powerful melee weapon\nTime = 15 seconds to make!",
+    Infomation = GetLanguage("SalvedgeSword_Info")
 })
 
-BluePrint_Make("Bone Club", {
-    name = "Bone Club",
+BluePrint_Make(GetLanguage("Bone Club"), {
+    name = GetLanguage("Bone Club"),
     Class = "rust_bone_knife",
     Mdl = "models/weapons/darky_m/rust/w_boneclub.mdl",
     ammo = "none",
@@ -71,13 +71,13 @@ BluePrint_Make("Bone Club", {
         },
     },
     img = "materials/items/weapons/bone_club.png",
-    Where = "Weapons",
+    Where = GetLanguage("Weapons"),
     locked = false,
-    Infomation = "A slow, but powerful melee weapon\nTime = 15 seconds to make!",
+    Infomation = GetLanguage("Bone Club info"),
 })
 
-BluePrint_Make("Wooden Spear", {
-    name = "Wooden Spear",
+BluePrint_Make(GetLanguage("Wooden Spear"), {
+    name = GetLanguage("Wooden Spear"),
     Class = "rust_wooden_spear",
     Mdl = "models/weapons/darky_m/rust/w_wooden_spear.mdl",
     ammo = "none",
@@ -97,13 +97,13 @@ BluePrint_Make("Wooden Spear", {
         },
     },
     img = "materials/items/weapons/wooden_spear.png",
-    Where = "Weapons",
+    Where = GetLanguage("Weapons"),
     locked = false,
-    Infomation = "A slow, but powerful melee weapon\nTime = 15 seconds to make!",
+    Infomation = GetLanguage("woodenspear_info"),
 })
 
-BluePrint_Make("Stone Spear", {
-    name = "Stone Spear",
+BluePrint_Make(GetLanguage("Stone Spear"), {
+    name = GetLanguage("Stone Spear"),
     Class = "rust_stone_spear",
     Mdl = "models/weapons/darky_m/rust/w_stone_spear.mdl",
     ammo = "none",
@@ -123,13 +123,13 @@ BluePrint_Make("Stone Spear", {
         },
     },
     img = "materials/items/weapons/stone_spear.png",
-    Where = "Weapons",
+    Where = GetLanguage("Weapons"),
     locked = false,
-    Infomation = "A slow, but powerful melee weapon\nTime = 15 seconds to make!",
+    Infomation = GetLanguage("Stone Spear info"),
 })
 
-BluePrint_Make("Assault Rifle", {
-    name = "Assault Rifle",
+BluePrint_Make(GetLanguage("Assault Rifle"), {
+    name = GetLanguage("Assault Rifle"),
     Class = "rust_ak47u",
     Mdl = "models/weapons/darky_m/rust/w_ak47u.mdl",
     ammo = "none",
@@ -149,13 +149,13 @@ BluePrint_Make("Assault Rifle", {
         },
     },
     img = "materials/items/weapons/assault_rifle.png",
-    Where = "Weapons",
+    Where = GetLanguage("Weapons"),
     locked = false,
-    Infomation = "A slow, but powerful gun weapon\nTime = 15 seconds to make!",
+    Infomation = GetLanguage("Assault Rifle Info"),
 })
 
-BluePrint_Make("Rocket Launcher", {
-    name = "Rocket Launcher",
+BluePrint_Make(GetLanguage("Rocket Launcher"), {
+    name = GetLanguage("Rocket Launcher"),
     Class = "rust_rocketlauncher",
     Mdl = "models/weapons/darky_m/rust/w_rocketlauncher.mdl",
     ammo = "none",
@@ -175,13 +175,13 @@ BluePrint_Make("Rocket Launcher", {
         },
     },
     img = "materials/items/weapons/salvaged_cleaver.png",
-    Where = "Weapons",
+    Where = GetLanguage("Weapons"),
     locked = false,
-    Infomation = "A slow, but powerful gun weapon\nTime = 15 seconds to make!",
+    Infomation = GetLanguage("Rocker Launcher info"),
 })
 
-BluePrint_Make("M39 Rifle", {
-    name = "M39 Rifle",
+BluePrint_Make(GetLanguage("M39 Rifle"), {
+    name = GetLanguage("M39 Rifle"),
     Class = "rust_m39emr",
     Mdl = "models/weapons/darky_m/rust/w_m39.mdl",
     ammo = "none",
@@ -201,13 +201,13 @@ BluePrint_Make("M39 Rifle", {
         },
     },
     img = "materials/items/weapons/m39.png",
-    Where = "Weapons",
+    Where = GetLanguage("Weapons"),
     locked = false,
-    Infomation = "A slow, but powerful gun weapon\nTime = 15 seconds to make!",
+    Infomation = GetLanguage("M39 Rifle info"),
 })
 
-BluePrint_Make("M92 Pistol", {
-    name = "M92 Pistol",
+BluePrint_Make(GetLanguage("M92 Pistol"), {
+    name = GetLanguage("M92 Pistol"),
     Class = "rust_m92",
     Mdl = "models/weapons/darky_m/rust/w_m92.mdl",
     ammo = "none",
@@ -227,13 +227,13 @@ BluePrint_Make("M92 Pistol", {
         },
     },
     img = "materials/items/weapons/m92.png",
-    Where = "Weapons",
+    Where = GetLanguage("Weapons"),
     locked = false,
-    Infomation = "A slow, but powerful gun weapon\nTime = 15 seconds to make!",
+    Infomation = GetLanguage("M92 Pistol Info"),
 })
 
-BluePrint_Make("M249", {
-    name = "M249",
+BluePrint_Make(GetLanguage("M249"), {
+    name = GetLanguage("M249"),
     Class = "rust_m249",
     Mdl = "models/weapons/darky_m/rust/w_m249.mdl",
     ammo = "none",
@@ -253,13 +253,13 @@ BluePrint_Make("M249", {
         },
     },
     img = "materials/items/weapons/m249.png",
-    Where = "Weapons",
+    Where = GetLanguage("Weapons"),
     locked = false,
-    Infomation = "A slow, but powerful gun weapon\nTime = 15 seconds to make!",
+    Infomation = GetLanguage("M249 Info"),
 })
 
-BluePrint_Make("MP5A4", {
-    name = "MP5A4",
+BluePrint_Make(GetLanguage("MP5A4"), {
+    name = GetLanguage("MP5A4"),
     Class = "rust_mp5",
     Mdl = "models/weapons/darky_m/rust/w_mp5.mdl",
     ammo = "none",
@@ -279,13 +279,13 @@ BluePrint_Make("MP5A4", {
         },
     },
     img = "materials/items/weapons/mp5.png",
-    Where = "Weapons",
+    Where = GetLanguage("Weapons"),
     locked = false,
-    Infomation = "A slow, but powerful gun weapon\nTime = 15 seconds to make!",
+    Infomation = GetLanguage("MP5A4 Info"),
 })
 
-BluePrint_Make("Nailgun", {
-    name = "Nailgun",
+BluePrint_Make(GetLanguage("Nailgun"), {
+    name = GetLanguage("Nailgun"),
     Class = "rust_nailgun",
     Mdl = "models/weapons/darky_m/rust/w_nailgun.mdl",
     ammo = "none",
@@ -305,13 +305,13 @@ BluePrint_Make("Nailgun", {
         },
     },
     img = "materials/items/weapons/nailgun.png",
-    Where = "Weapons",
+    Where = GetLanguage("Weapons"),
     locked = false,
-    Infomation = "A slow, but powerful gun weapon\nTime = 15 seconds to make!",
+    Infomation = GetLanguage("Nailgun Info"),
 })
 
-BluePrint_Make("Python Revolver", {
-    name = "Python Revolver",
+BluePrint_Make(GetLanguage("Python Revolver"), {
+    name = GetLanguage("Python Revolver"),
     Class = "rust_python",
     Mdl = "models/weapons/darky_m/rust/w_python.mdl",
     ammo = "none",
@@ -331,13 +331,13 @@ BluePrint_Make("Python Revolver", {
         },
     },
     img = "materials/items/weapons/python.png",
-    Where = "Weapons",
+    Where = GetLanguage("Weapons"),
     locked = false,
-    Infomation = "A slow, but powerful gun weapon\nTime = 15 seconds to make!",
+    Infomation = GetLanguage("Python Revolver info"),
 })
 
-BluePrint_Make("Revolver", {
-    name = "Revolver",
+BluePrint_Make(GetLanguage("Revolver"), {
+    name = GetLanguage("Revolver"),
     Class = "rust_revolver",
     Mdl = "models/weapons/darky_m/rust/w_revolver.mdl",
     ammo = "none",
@@ -357,12 +357,12 @@ BluePrint_Make("Revolver", {
         },
     },
     img = "materials/items/weapons/revolver.png",
-    Where = "Weapons",
+    Where = GetLanguage("Weapons"),
     locked = false,
-    Infomation = "A slow, but powerful gun weapon\nTime = 15 seconds to make!",
+    Infomation = GetLanguage("Revolver Info"),
 })
 
-BluePrint_Make("Semi-Automatic Rifle", {
+BluePrint_Make(GetLanguage("Semi-Automatic Rifle"), {
     name = "Semi-Automatic Rifle",
     Class = "rust_sar",
     Mdl = "models/weapons/darky_m/rust/w_sap.mdl",
@@ -383,7 +383,7 @@ BluePrint_Make("Semi-Automatic Rifle", {
         },
     },
     img = "materials/items/weapons/sap.png",
-    Where = "Weapons",
+    Where = GetLanguage("Weapons"),
     locked = false,
-    Infomation = "A slow, but powerful gun weapon\nTime = 15 seconds to make!",
+    Infomation = GetLanguage("Semi-Automatic Rifle info"),
 })

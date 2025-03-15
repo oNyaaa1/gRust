@@ -1,5 +1,5 @@
-BluePrint_Make("Hammer", {
-    name = "Hammer",
+BluePrint_Make(GetLanguage("Hammer"), {
+    name = GetLanguage("Hammer"),
     Class = "hands_hammer",
     Mdl = "models/weapons/darky_m/rust/w_hammer.mdl",
     amount = 50,
@@ -20,13 +20,13 @@ BluePrint_Make("Hammer", {
         },
     },
     img = "items/tools/hammer.png",
-    Where = "Construction",
+    Where = GetLanguage("Construction"),
     locked = false,
-    Infomation = "Mallet there to upgrade stuff\nTime = 20 seconds to make!",
+    Infomation = GetLanguage("Mallet_Wep"),
 })
 
-BluePrint_Make("Building Plan", {
-    name = "Building Plan",
+BluePrint_Make(GetLanguage("Building Plan"), {
+    name = GetLanguage("Building Plan"),
     Class = "hands_builder",
     Mdl = "models/darky_m/rust/w_buildingplan.mdl",
     ammo = "none",
@@ -46,7 +46,7 @@ BluePrint_Make("Building Plan", {
         },
     },
     img = "items/tools/building_plan.png",
-    Where = "Construction",
+    Where = GetLanguage("Construction"),
     locked = false,
-    Infomation = "Building plan there to build stuff\nTime = 25 seconds to make!",
+    Infomation = GetLanguage("Building_Plan"),
 })

@@ -1,5 +1,5 @@
-BluePrint_Make("Sleeping Bag", {
-    name = "Sleeping Bag",
+BluePrint_Make(GetLanguage("Sleeping Bag"), {
+    name = GetLanguage("Sleeping Bag"),
     Class = "sleeper_bag",
     Mdl = "models/galaxy/rust/sleepingbag.mdl",
     ammo = "none",
@@ -20,7 +20,7 @@ BluePrint_Make("Sleeping Bag", {
     },
     need2 = {},
     img = "materials/items/weapons/salvaged_cleaver.png",
-    Where = "Resources",
+    Where = GetLanguage("Resources"),
     locked = false,
-    Infomation = "A slow, but powerful melee weapon\nTime = 15 seconds to make!",
+    Infomation = GetLanguage("Sleeping Bag Info"),
 })

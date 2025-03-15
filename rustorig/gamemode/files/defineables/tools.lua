@@ -1,5 +1,5 @@
-BluePrint_Make("Stone Hatchet", {
-    name = "Stone Hatchet",
+BluePrint_Make(GetLanguage("Stone Hatchet"), {
+    name = GetLanguage("Stone Hatchet"),
     Class = "tfa_rustalpha_stone_hatchet",
     Mdl = "models/weapons/yurie_rustalpha/wm-stonehatchet.mdl",
     ammo = "none",
@@ -24,7 +24,7 @@ BluePrint_Make("Stone Hatchet", {
         },
     },
     img = "materials/items/weapons/salvaged_cleaver.png",
-    Where = "Tools",
+    Where = GetLanguage("Tools"),
     locked = false,
-    Infomation = "A slow, but powerful melee weapon\nTime = 15 seconds to make!",
+    Infomation = GetLanguage("Stone Hatchet Info"),
 })
