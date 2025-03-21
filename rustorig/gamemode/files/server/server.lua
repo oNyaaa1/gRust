@@ -8,9 +8,40 @@ hook.Add("InitPostEntity", "SpawnRockyss", function()
                 ent:SetPos(v)
                 ent:Spawn()
                 ent:Activate()
+                print("Spawned Rock as Pos: " .. tostring(v))
+            end
+
+            for i = 1, 20 do
+                local rnd = ents.FindByClass("prop_dynamic")[math.random(1, #ents.FindByClass("prop_dynamic"))]
+                if IsValid(rnd) then
+                    local ent = ents.Create("npc_vj_felt_chicken")
+                    ent:SetPos(Vector(rnd:GetPos().x, rnd:GetPos().y + math.random(100, 200), rnd:GetPos().z + 300))
+                    ent:Spawn()
+                    ent:Activate()
+                    ent:DropToFloor()
+                    print("Spawned Chicken as Pos: " .. tostring(rnd:GetPos()))
+                end
+
+                local rnd2 = ents.FindByClass("prop_dynamic")[math.random(1, #ents.FindByClass("prop_dynamic"))]
+                if IsValid(rnd2) then
+                    --/local ent2 = ents.Create("models/props_zaza/hemp.mdl")
+                    --/ent2:SetPos(rnd2:GetPos())
+                    --/ent2:Spawn()
+                    -- ent2:Activate()
+                    print("Spawned Hemp as Pos: " .. tostring(rnd2:GetPos()))
+                end
             end
         end
     end)
 
     if game.GetMap() ~= "rust_highland_v1_3a" then game.ConsoleCommand("changelevel rust_highland_v1_3a\n") end
 end)
+
+hook.Add("PlayerCanHearPlayersVoice", "ProximityVoice", function(listener, talker)
+    local range = 700
+    local distance = listener:GetPos():Distance(talker:GetPos())
+    if distance <= range then return true, true end
+    return false
+end)
+
+hook.Add("PlayerNoClip", "adminnoclip", function(ply, bool) return ply:IsAdmin() end)

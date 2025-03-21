@@ -376,6 +376,7 @@ hook.Add("EntityTakeDamage", "EntityDamageExample", function(ent, dmginfo)
     local found = string.find(wep:GetClass(), "hatchet") or string.find(wep:GetClass(), "pickaxe") or string.find(wep:GetClass(), "rock")
     if found and MAT[ent:GetMaterialType()] == "MAT_WOOD" then
         if not IsValid(ply) then return end
+        if not py:IsPlayer() then return end
         ply:AddToInventoryWood(5)
     end
 
