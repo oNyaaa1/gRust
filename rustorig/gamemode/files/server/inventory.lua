@@ -92,14 +92,13 @@ function meta:AddToInventory(item)
         -- Check for a slot that is either empty or can be filled with the same item
         if inv[i] == nil then --or inv[i].Class != item:GetClass() then
             slotAva = i
-            continue
+            break
         end
-    end
 
-    -- If no slot is available, return without adding item
-    if #t2.Slot == 0 then
-        print("No available slots.")
-        return
+        if inv[i].Class == item:GetClass() then
+            slotAva = i
+            break
+        end
     end
 
     -- Choose the first available slot
@@ -376,7 +375,7 @@ hook.Add("EntityTakeDamage", "EntityDamageExample", function(ent, dmginfo)
     local found = string.find(wep:GetClass(), "hatchet") or string.find(wep:GetClass(), "pickaxe") or string.find(wep:GetClass(), "rock")
     if found and MAT[ent:GetMaterialType()] == "MAT_WOOD" then
         if not IsValid(ply) then return end
-        if not py:IsPlayer() then return end
+        if not ply:IsPlayer() then return end
         ply:AddToInventoryWood(5)
     end
 
@@ -389,7 +388,7 @@ hook.Add("PlayerInitialSpawn", "InventoryLoadout", function(ply)
         if v.WepClass ~= "" then ply:Give(v.WepClass) end
     end
 
-    timer.Simple(3, function() ply:Give("rust_rock") end)
+    timer.Simple(3, function() ply:Give("weapon_rock") end)
     for k, v in pairs(ents.FindByClass("rust_sleepingbag")) do
         if v.Owner == ply then ply:SetPos(v.GetPosz + Vector(0, 0, 10)) end
     end
@@ -411,7 +410,7 @@ hook.Add("PlayerSpawn", "GiveITems", function(ply)
         if v.Owner == ply then ply:SetPos(v.GetPosz + Vector(0, 0, 10)) end
     end
 
-    ply:Give("rust_rock")
+    ply:Give("weapon_rock")
     --ply:Give("weapon_torch")
     for k, v in pairs(ents.FindInSphere(ply:GetPos(), 10)) do
         if v:GetClass() == "sent_rocks" then ply:SetPos(v:GetPos() + Vector(v:OBBMins().x, v:OBBMins().y, v:OBBMins().z + 12)) end

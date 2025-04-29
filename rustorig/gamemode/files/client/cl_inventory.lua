@@ -25,9 +25,12 @@ Tbl[11] = {GetLanguage("Fun"), "icons/servers.png"}
 Tbl[12] = {GetLanguage("Other"), "icons/electric.png"}
 local vgui_New
 net.Receive("ForgiveMeInventory", function()
-    
     local tbln = net.ReadTable()
-    if IsValid(vgui_New) then vgui_New:Remove() gui.EnableScreenClicker(false) end
+    if IsValid(vgui_New) then
+        vgui_New:Remove()
+        gui.EnableScreenClicker(false)
+    end
+
     gui.EnableScreenClicker(true)
     vgui_New = vgui.Create("DPanel")
     vgui_New:SetSize(560, 480)
@@ -57,7 +60,8 @@ net.Receive("ForgiveMeInventory", function()
         grid:AddItem(DPanel[i])
     end
 
-    for k, v in pairs(tbln) do
+    for k, v in ipairs(tbln) do
+        print(k,v)
         DPanel[k].Paint = function(s, w, h)
             --draw.RoundedBox(0, 0, 0, w, h, Color(0, 0, 0, 0))
             surface.SetDrawColor(80, 76, 70, 180)
@@ -218,7 +222,13 @@ hook.Add("OnSpawnMenuOpen", "Fuck", function()
     net.SendToServer()
 end)
 
-hook.Add("OnSpawnMenuClose", "Fuck", function() if IsValid(vgui_New) then vgui_New:Remove() gui.EnableScreenClicker(false) end end)
+hook.Add("OnSpawnMenuClose", "Fuck", function()
+    if IsValid(vgui_New) then
+        vgui_New:Remove()
+        gui.EnableScreenClicker(false)
+    end
+end)
+
 hook.Add("InitPostEntity", "RustInv", function()
     for i = 1, 6 do
         Panel2[i] = vgui.Create("DPanel")
