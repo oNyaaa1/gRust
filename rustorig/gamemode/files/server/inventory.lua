@@ -12,9 +12,9 @@ end
 
 local meta = FindMetaTable("Player")
 function meta:FirstCreateInv(b_Alive)
+    file.Write("ginv/inventory_" .. self:SteamID64() .. ".txt", util.TableToJSON({}))
     b_Alive = b_Alive or ""
     if not file.IsDir("ginv", "DATA") then file.CreateDir("ginv") end
-    if not file.Exists("ginv/inventory_" .. self:SteamID64() .. ".txt", "DATA") then file.Write("ginv/inventory_" .. self:SteamID64() .. ".txt", util.TableToJSON({})) end
     if b_Alive == "b_dead" then file.Write("ginv/inventory_" .. self:SteamID64() .. ".txt", util.TableToJSON({})) end
     local inv = util.JSONToTable(file.Read("ginv/inventory_" .. self:SteamID64() .. ".txt", "DATA"))
     net.Start("SendInventory")
@@ -173,7 +173,7 @@ end
 function meta:RemoveWepInventory(item)
     local inv = self.inv or {}
     for k, v in pairs(inv) do
-        if v.Class == item:GetClass() then inv[k] = nil end
+        if item.GetClass and v.Class == item:GetClass() then inv[k] = nil end
     end
 
     self.inv = inv
@@ -190,7 +190,7 @@ function meta:Give(item, bAmmo)
     bAmmo = bAmmo or false
     item = item or ""
     if item == "" then return end
-    oldGive(self, item, ammo)
+    oldGive(self, item, bAmmo)
     if iZ >= CurTime() then return end
     iZ = CurTime() + 1
     local wep = self:GetWeapon(item)
@@ -382,30 +382,9 @@ hook.Add("EntityTakeDamage", "EntityDamageExample", function(ent, dmginfo)
     if ent:GetClass() == "sent_rocks" then ply:AddToInventoryRocks(ent:GetSkin()) end
 end)
 
-hook.Add("PlayerInitialSpawn", "InventoryLoadout", function(ply)
-    ply.inv = ply:FirstCreateInv()
-    for k, v in pairs(ply.inv) do
-        if v.WepClass ~= "" then ply:Give(v.WepClass) end
-    end
-
-    timer.Simple(3, function() ply:Give("weapon_rock") end)
-    for k, v in pairs(ents.FindByClass("rust_sleepingbag")) do
-        if v.Owner == ply then ply:SetPos(v.GetPosz + Vector(0, 0, 10)) end
-    end
-
-    --ply:Give("weapon_torch")
-    for k, v in pairs(ents.FindInSphere(ply:GetPos(), 10)) do
-        if v:GetClass() == "sent_rocks" then ply:SetPos(v:GetPos() + Vector(v:OBBMins().x, v:OBBMins().y, v:OBBMins().z + 12)) end
-    end
-
-    ply:SetModel("models/player/darky_m/rust/hazmat.mdl")
-    local plymeta = ply:GetItem("Wood")
-    if plymeta == nil then return end
-    ply:SetNWFloat("wood", plymeta.Amount)
-end)
-
 hook.Add("PlayerSpawn", "GiveITems", function(ply)
     ply.inv = ply:FirstCreateInv()
+    ply:SetModel("models/player/darky_m/rust/hazmat.mdl")
     for k, v in pairs(ents.FindByClass("rust_sleepingbag")) do
         if v.Owner == ply then ply:SetPos(v.GetPosz + Vector(0, 0, 10)) end
     end
@@ -416,7 +395,6 @@ hook.Add("PlayerSpawn", "GiveITems", function(ply)
         if v:GetClass() == "sent_rocks" then ply:SetPos(v:GetPos() + Vector(v:OBBMins().x, v:OBBMins().y, v:OBBMins().z + 12)) end
     end
 
-    ply:SetModel("models/player/darky_m/rust/hazmat.mdl")
     local plymeta = ply:GetItem("Wood")
     if plymeta == nil then return end
     ply:SetNWFloat("wood", plymeta.Amount)
